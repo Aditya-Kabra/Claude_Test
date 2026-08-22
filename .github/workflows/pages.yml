@@ -20,6 +20,9 @@ concurrency:
 
 jobs:
   deploy:
+    # Only the default branch can deploy, so skip cleanly on the other one
+    # rather than failing. This re-targets itself if the default ever changes.
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     environment:
       name: github-pages
