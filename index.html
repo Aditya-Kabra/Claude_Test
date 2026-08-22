@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Smart Fabrics &amp; E-Textiles Ecosystem Map</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    :root {
+      --color-bg-base: #f9fafb;
+      --color-bg-card: #ffffff;
+      --color-border: #e5e7eb;
+      --color-border-hover: #cbd5e1;
+      --color-text-primary: #111827;
+      --color-text-secondary: #4b5563;
+      --color-text-tertiary: #9ca3af;
+      --color-accent: #2563eb;
+      --color-accent-hover: #1d4ed8;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-base: #0f172a;
+        --color-bg-card: #1e293b;
+        --color-border: #334155;
+        --color-border-hover: #475569;
+        --color-text-primary: #f8fafc;
+        --color-text-secondary: #cbd5e1;
+        --color-text-tertiary: #64748b;
+        --color-accent: #3b82f6;
+        --color-accent-hover: #60a5fa;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+
+    .ecosystem-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title-row h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .header-title-row p {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 2px;
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
+    .controls-bar {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--color-accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-tertiary);
+      font-size: 1.1rem;
+    }
+
+    /* Faceted filter rows */
+    .filter-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .filter-row-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-tertiary);
+      padding-top: 6px;
+    }
+
+    .filters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-text-primary);
+      color: var(--color-bg-card);
+      border-color: var(--color-text-primary);
+    }
+
+    .filter-btn.dim {
+      opacity: 0.4;
+    }
+
+    .filter-cnt {
+      opacity: 0.6;
+      font-size: 0.7rem;
+      background: rgba(0,0,0,0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .filter-btn.active .filter-cnt {
+      background: rgba(255,255,255,0.2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .filter-cnt { background: rgba(255,255,255,0.08); }
+    }
+
+    .clear-all-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-accent);
+      background: transparent;
+      color: var(--color-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+      align-self: flex-start;
+    }
+
+    .clear-all-btn:hover {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .clear-all-btn[hidden] { display: none; }
+
+    .results-meta {
+      font-size: 0.8rem;
+      color: var(--color-text-tertiary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Grid and Cards */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .company-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    }
+
+    .company-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-border-hover);
+      box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .company-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.3;
+    }
+
+    .company-name:hover {
+      color: var(--color-accent);
+      text-decoration: underline;
+    }
+
+    .category-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Stage + tech layer strip */
+    .attr-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .stage-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .layer-chip {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .layer-chip i { font-size: 0.8rem; opacity: 0.7; }
+
+    /* Structured use case layer */
+    .usecase-container {
+      background: rgba(0, 0, 0, 0.02);
+      border-left: 3px solid var(--color-accent);
+      padding: 6px 10px;
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .usecase-container {
+        background: rgba(255, 255, 255, 0.03);
+      }
+    }
+
+    .usecase-label {
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .usecase-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .usecase-tag {
+      font-size: 0.725rem;
+      font-weight: 600;
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+    }
+
+    .company-desc {
+      font-size: 0.825rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .footer-meta-item {
+      font-size: 0.725rem;
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .footer-meta-item i {
+      font-size: 0.85rem;
+    }
+
+    .status-note {
+      font-size: 0.7rem;
+      font-style: italic;
+      color: var(--color-text-tertiary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .cert-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      line-height: 1.5;
+    }
+
+    /* Sector Palette */
+    .cat-health      { background: #e6f1fb; color: #0c447c; border: 1px solid #185fa5; }
+    .cat-sports      { background: #eaf3de; color: #27500a; border: 1px solid #3b6d11; }
+    .cat-defense     { background: #f1efe8; color: #444441; border: 1px solid #5f5e5a; }
+    .cat-industrial  { background: #faeeda; color: #633806; border: 1px solid #854f0b; }
+    .cat-fashion     { background: #fbeaf0; color: #72243e; border: 1px solid #993556; }
+    .cat-mobility    { background: #e6f8fb; color: #08445a; border: 1px solid #0f6e86; }
+    .cat-materials   { background: #f5f0fb; color: #3a1f6b; border: 1px solid #6b3fa0; }
+    .cat-energy      { background: #fbf4e6; color: #5a3a08; border: 1px solid #8c6010; }
+    .cat-electronics { background: #eeedfe; color: #3c3489; border: 1px solid #534ab7; }
+    .cat-software    { background: #e1f5ee; color: #085041; border: 1px solid #0f6e56; }
+    .cat-research    { background: #e8f4fb; color: #0a3d5c; border: 1px solid #1565a0; }
+    .cat-standards   { background: #fcebeb; color: #791f1f; border: 1px solid #a32d2d; }
+
+    /* Stage Palette */
+    .stage-research   { background: #eef2ff; color: #3730a3; border: 1px solid #6366f1; }
+    .stage-pilot      { background: #fffbeb; color: #92400e; border: 1px solid #f59e0b; }
+    .stage-commercial { background: #f0fdf4; color: #166534; border: 1px solid #22c55e; }
+
+    /* Standards Palette */
+    .cert-oekotex   { background: #ecfdf5; color: #065f46; border: 1px solid #10b981; }
+    .cert-ce        { background: #eff6ff; color: #1e40af; border: 1px solid #3b82f6; }
+    .cert-fda       { background: #f5f3ff; color: #5b21b6; border: 1px solid #8b5cf6; }
+    .cert-iso13485  { background: #fff1f2; color: #9f1239; border: 1px solid #f43f5e; }
+    .cert-milspec   { background: #f1f5f9; color: #334155; border: 1px solid #64748b; }
+    .cert-ul        { background: #fff7ed; color: #9a3412; border: 1px solid #f97316; }
+
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .filter-row { grid-template-columns: 1fr; gap: 4px; }
+      .filter-row-label { padding-top: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ecosystem-container">
+  <!-- Header -->
+  <header class="header-section">
+    <div class="header-title-row">
+      <h1>Global Smart Fabrics &amp; E-Textiles Ecosystem Map</h1>
+      <p>A worldwide directory of the organizations building electronic textiles &mdash; conductive fibers and yarns, sensing garments, textile energy and actuation, interconnect and packaging, and the research institutes and standards bodies behind them. Filter by sector, maturity, position in the technology stack, and standards held.</p>
+    </div>
+
+    <!-- Stats Dashboard -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-total">0</div>
+        <div class="stat-lbl">Organizations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-commercial" style="color: #166534;">0</div>
+        <div class="stat-lbl">Commercial</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-pilot" style="color: #92400e;">0</div>
+        <div class="stat-lbl">Pilot / Deployed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-research" style="color: #3730a3;">0</div>
+        <div class="stat-lbl">Research / Lab</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-countries">0</div>
+        <div class="stat-lbl">Countries</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Controls Bar -->
+  <section class="controls-bar">
+    <!-- Search -->
+    <div class="search-wrapper">
+      <i class="ti ti-search search-icon" aria-hidden="true"></i>
+      <input type="text" id="search-input" class="search-input" placeholder="Search by organization, country, technology, or use case (e.g. 'ECG', 'graphene', 'energy harvesting', 'Japan')...">
+    </div>
+
+    <!-- Faceted Filters -->
+    <div class="filter-groups" id="filter-groups"></div>
+
+    <button type="button" class="clear-all-btn" id="clear-all" hidden onclick="clearAllFilters()">
+      <i class="ti ti-x" aria-hidden="true"></i> Clear all filters
+    </button>
+  </section>
+
+  <!-- Meta Info -->
+  <div class="results-meta">
+    <span id="results-count">0 items found</span>
+    <span style="font-size: 0.75rem;">Last Updated: August 2026</span>
+  </div>
+
+  <!-- Cards Grid -->
+  <main class="grid-layout" id="grid"></main>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Lookup tables. Every value used in the data array below must
+   appear in exactly one of these four lists.
+   --------------------------------------------------------------- */
+
+const sectors = [
+  {id: "health",      label: "Health & Medical"},
+  {id: "sports",      label: "Sports & Performance"},
+  {id: "defense",     label: "Defense & Tactical"},
+  {id: "industrial",  label: "Industrial & Safety"},
+  {id: "fashion",     label: "Fashion & Consumer"},
+  {id: "mobility",    label: "Automotive & Aerospace"},
+  {id: "materials",   label: "Fibers, Yarns & Materials"},
+  {id: "energy",      label: "Energy & Power"},
+  {id: "electronics", label: "Electronics & Interconnect"},
+  {id: "software",    label: "Software & Platforms"},
+  {id: "research",    label: "Research Institutes"},
+  {id: "standards",   label: "Standards & Consortia"},
+];
+
+const stages = [
+  {id: "research",   label: "Research / Lab"},
+  {id: "pilot",      label: "Pilot / Deployed"},
+  {id: "commercial", label: "Commercial"},
+];
+
+const layers = [
+  {id: "fiber",       label: "Conductive Fiber & Yarn", icon: "ti-line"},
+  {id: "sensing",     label: "Sensing",                 icon: "ti-wave-sine"},
+  {id: "energy",      label: "Energy & Power",          icon: "ti-battery-charging"},
+  {id: "actuation",   label: "Actuation & Output",      icon: "ti-bulb"},
+  {id: "integration", label: "Interconnect & Packaging",icon: "ti-circuit-changeover"},
+  {id: "software",    label: "Software & Analytics",    icon: "ti-chart-dots"},
+];
+
+const certs = [
+  {id: "oekotex",  label: "OEKO-TEX"},
+  {id: "ce",       label: "CE"},
+  {id: "fda",      label: "US FDA"},
+  {id: "iso13485", label: "ISO 13485"},
+  {id: "milspec",  label: "MIL-SPEC"},
+  {id: "ul",       label: "UL"},
+];
+
+/* ---------------------------------------------------------------
+   Organizations. Funding and founding figures are left as "—"
+   wherever they could not be confidently sourced.
+   --------------------------------------------------------------- */
+
+const data = [
+
+  // ---------- HEALTH & MEDICAL ----------
+  {
+    n: "Myant", cat: "health", url: "https://myant.ca", hq: "🇨🇦 Canada",
+    f: "2010", fund: "$100M+ R&D", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["ce", "iso13485"],
+    uc: ["Continuous ECG", "Sleep staging", "Remote patient monitoring", "Core body temperature"],
+    note: "Acquired MIT spinout FIGUR8 (2025)",
+    d: "Textile computing platform behind the Skiin line of sensor-knit underwear and garments. Vertically integrated in Toronto from conductive yarn through cloud analytics, with over 1,000 patents covering knitted electrode structures."
+  },
+  {
+    n: "Hexoskin (Carré Technologies)", cat: "health", url: "https://hexoskin.com", hq: "🇨🇦 Canada",
+    f: "2006", fund: "$4.2M+", stage: "commercial",
+    layer: ["sensing", "software"], cert: ["fda", "ce", "iso13485"],
+    uc: ["Long-term ECG", "Respiratory monitoring", "Clinical trial biomarkers", "Astronaut monitoring"],
+    note: "FDA 510(k) for Hexoskin Medical System (Nov 2025)",
+    d: "Smart shirts with textile electrodes and respiratory inductance bands capturing ECG, breathing rate and volume, activity and sleep. The Astroskin variant has flown with the Canadian Space Agency; the medical system targets COPD and atrial fibrillation."
+  },
+  {
+    n: "BioSerenity", cat: "health", url: "https://bioserenity.com", hq: "🇫🇷 France",
+    f: "2014", fund: "$120M", stage: "commercial",
+    layer: ["sensing", "software"], cert: ["fda", "ce", "iso13485"],
+    uc: ["Epilepsy EEG", "Sleep apnea screening", "Cardiac Holter", "Neonatal EEG"],
+    note: "",
+    d: "Neuronaute smart cap and shirt integrate dry biosensors for ambulatory EEG and cardiac recording, paired with a cloud reading service. Neuronaute Plus and the ICECap disposable EEG caps are FDA cleared."
+  },
+  {
+    n: "Nanowear", cat: "health", url: "https://www.nanowearinc.com", hq: "🇺🇸 United States",
+    f: "2014", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["fda"],
+    uc: ["Heart failure management", "Hospital-at-home", "Hypertension", "Congestion detection"],
+    note: "",
+    d: "SimpleSense is a cloth-based nanosensor undergarment using vertically aligned carbon nanotube electrodes to capture electrophysiological, hemodynamic and acoustic signals simultaneously. Holds FDA 510(k) clearances for the platform and its AI diagnostics."
+  },
+  {
+    n: "Sensoria Health", cat: "health", url: "https://www.sensoriahealth.com", hq: "🇺🇸 United States",
+    f: "2013", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["ce", "fda"],
+    uc: ["Diabetic foot ulcer prevention", "Gait and mobility analysis", "Fall risk", "Running form"],
+    note: "",
+    d: "Textile pressure sensors printed into socks and a detachable Sensoria Core electronics module. Clinical products target gait impairment in neurological and aging patients; the fitness line covers cadence and foot-strike coaching."
+  },
+  {
+    n: "Chronolife", cat: "health", url: "https://www.chronolife.net", hq: "🇫🇷 France",
+    f: "2015", fund: "—", stage: "pilot",
+    layer: ["sensing", "software"], cert: ["ce", "iso13485"],
+    uc: ["Heart failure decompensation", "Multi-parameter vitals", "Post-discharge monitoring"],
+    note: "",
+    d: "Nexkin smart t-shirt records six physiological parameters continuously — ECG, thoracic and abdominal breathing, pulmonary impedance, activity and skin temperature — feeding an algorithm that flags cardiac decompensation before hospitalization."
+  },
+  {
+    n: "Comftech", cat: "health", url: "https://www.comftech.com", hq: "🇮🇹 Italy",
+    f: "2007", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing"], cert: ["ce", "iso13485"],
+    uc: ["Neonatal monitoring", "Maternal-fetal monitoring", "Sleep research"],
+    note: "",
+    d: "Knitted sensor garments for the smallest patients, including neonatal bands and maternity belts that capture ECG, respiration and movement without adhesive electrodes on fragile skin."
+  },
+  {
+    n: "Nuubo", cat: "health", url: "https://www.nuubo.com", hq: "🇪🇸 Spain",
+    f: "2007", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing"], cert: ["ce", "iso13485"],
+    uc: ["Ambulatory ECG", "Arrhythmia detection", "Cardiac rehabilitation"],
+    note: "",
+    d: "Textile Holter vests using dry Blended Sensor Fabric electrodes in place of gel pads, aimed at multi-day arrhythmia recording with better patient compliance than adhesive systems."
+  },
+  {
+    n: "Siren", cat: "health", url: "https://siren.care", hq: "🇺🇸 United States",
+    f: "2015", fund: "$14M+", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["fda"],
+    uc: ["Diabetic foot ulcer detection", "Inflammation tracking", "Podiatry remote monitoring"],
+    note: "",
+    d: "Neurofabric socks weave temperature microsensors directly into the yarn structure, detecting the localized heat that precedes diabetic foot ulceration and reporting it to a podiatry monitoring service."
+  },
+  {
+    n: "Footfalls & Heartbeats", cat: "health", url: "https://www.footfallsandheartbeats.com", hq: "🇬🇧 United Kingdom",
+    f: "2011", fund: "—", stage: "pilot",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Compression bandage pressure", "Wound care", "Textile strain sensing"],
+    note: "",
+    d: "Uses the knitted structure itself as the sensing element — no added electronics in the fabric — so that changes in yarn-to-yarn contact resistance report strain and pressure. Lead application is correctly tensioned compression therapy."
+  },
+  {
+    n: "Elitac Wearables", cat: "health", url: "https://elitacwearables.com", hq: "🇳🇱 Netherlands",
+    f: "2010", fund: "—", stage: "commercial",
+    layer: ["actuation", "integration"], cert: ["ce"],
+    uc: ["Haptic navigation", "Surgical skills training", "Posture correction", "Sensory substitution"],
+    note: "",
+    d: "Wearable haptic vests and belts with arrays of vibrotactile actuators, used for eyes-free navigation, feedback in medical training, and sensory substitution for visually impaired users."
+  },
+  {
+    n: "Prevayl", cat: "health", url: "https://prevayl.com", hq: "🇬🇧 United Kingdom",
+    f: "2018", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["ce"],
+    uc: ["Clinical-grade ECG apparel", "Heart rate variability", "Training load"],
+    note: "",
+    d: "Apparel with integrated textile electrodes and a detachable SmartWear sensor, positioning single-lead clinical-grade ECG inside everyday clothing rather than a chest strap."
+  },
+  {
+    n: "Ambiotex", cat: "health", url: "https://www.ambiotex.com", hq: "🇩🇪 Germany",
+    f: "2014", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["ce"],
+    uc: ["Heart rate variability", "Stress and recovery", "Anaerobic threshold"],
+    note: "",
+    d: "Smart shirt with knitted-in electrodes and a clip-on TechUnit, marketed for occupational health and corporate wellbeing programs as much as for training analytics."
+  },
+  {
+    n: "Bonbouton", cat: "health", url: "https://www.bonbouton.com", hq: "🇺🇸 United States",
+    f: "2014", fund: "—", stage: "pilot",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Diabetic foot ulcer prediction", "Thermal imaging insoles", "Pressure mapping"],
+    note: "",
+    d: "Graphene-based thermal and pressure sensors printed onto flexible substrates and built into insoles, detecting the inflammation signature that precedes tissue breakdown in diabetic patients."
+  },
+  {
+    n: "WEARABLE LIFE SCIENCE (Antelope)", cat: "health", url: "https://www.antelope.club", hq: "🇩🇪 Germany",
+    f: "2013", fund: "—", stage: "commercial",
+    layer: ["fiber", "actuation"], cert: ["ce"],
+    uc: ["Electro muscle stimulation", "Rehabilitation", "Strength training"],
+    note: "",
+    d: "Garments with integrated EMS electrodes that deliver muscle stimulation during ordinary movement, sold both as training apparel and as a rehabilitation aid."
+  },
+
+  // ---------- SPORTS & PERFORMANCE ----------
+  {
+    n: "Nextiles", cat: "sports", url: "https://www.nextiles.tech", hq: "🇺🇸 United States",
+    f: "2018", fund: "$5M", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: [],
+    uc: ["Pitching biomechanics", "Range of motion", "Force measurement", "Return-to-play"],
+    note: "Backed by the NBA, MSG Sports and Drive by DraftKings",
+    d: "Patented sewing process turns conductive thread stitched into ordinary fabric into a force and flex sensor, with an SDK exposing raw signals. Deployed in baseball and basketball performance programs."
+  },
+  {
+    n: "Xenoma", cat: "sports", url: "https://xenoma.com", hq: "🇯🇵 Japan",
+    f: "2015", fund: "$3.5M", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: [],
+    uc: ["Full-body motion capture", "Sleep and elderly monitoring", "VR interaction", "Form analysis"],
+    note: "University of Tokyo (Someya Lab) spin-off",
+    d: "e-skin garments use printed circuit fabric with stretch sensors distributed across the body for camera-free motion capture. Product lines span motion capture suits, sleepwear for elder care, and developer kits."
+  },
+  {
+    n: "AiQ Smart Clothing", cat: "sports", url: "https://www.aiqsmartclothing.com", hq: "🇹🇼 Taiwan",
+    f: "2009", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "integration"], cert: ["ce"],
+    uc: ["ECG and heart rate apparel", "Respiration monitoring", "Night visibility", "Textile electrodes"],
+    note: "Smart textile division of TexRay Industrial",
+    d: "BioMan+ garments use stainless-steel yarn electrodes and conductive thread routing for 1–3 lead ECG; the NeonMan line integrates LED strands for visibility. Also supplies conductive textile cable and electrodes as components."
+  },
+  {
+    n: "Athos", cat: "sports", url: "https://www.liveathos.com", hq: "🇺🇸 United States",
+    f: "2012", fund: "$51M", stage: "pilot",
+    layer: ["fiber", "sensing", "software"], cert: [],
+    uc: ["Surface EMG", "Muscle activation balance", "Training load"],
+    note: "Cloud services and firmware updates discontinued (2022)",
+    d: "Compression apparel with woven-in EMG and heart rate sensors that reported per-muscle-group effort in real time. A landmark product for textile EMG, and a cautionary case in cloud-dependent smart apparel."
+  },
+  {
+    n: "Wearable X", cat: "sports", url: "https://www.wearablex.com", hq: "🇺🇸 United States",
+    f: "2013", fund: "—", stage: "commercial",
+    layer: ["actuation", "integration"], cert: [],
+    uc: ["Yoga posture feedback", "Guided movement", "Haptic coaching"],
+    note: "",
+    d: "Nadi X yoga pants embed haptic actuators at hip, knee and ankle that pulse when a pose drifts out of alignment, pairing textile-integrated vibration with an app-guided practice."
+  },
+  {
+    n: "KYMIRA", cat: "sports", url: "https://kymira.com", hq: "🇬🇧 United Kingdom",
+    f: "2014", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing"], cert: ["ce"],
+    uc: ["Infrared recovery apparel", "ECG sportswear", "Circulation support"],
+    note: "",
+    d: "KYnergy fabric embeds mineral particles that re-emit body heat as far infrared to aid circulation and recovery. A separate medical arm develops ECG-sensing garments."
+  },
+  {
+    n: "Enflux", cat: "sports", url: "https://www.getenflux.com", hq: "🇺🇸 United States",
+    f: "2015", fund: "—", stage: "pilot",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["3D motion capture", "Squat and lift form", "Physical therapy tracking"],
+    note: "",
+    d: "Compression shirt and leggings with embedded inertial sensor arrays producing a full 3D skeleton without cameras, aimed at form correction in strength training and rehab."
+  },
+  {
+    n: "asensei", cat: "sports", url: "https://asensei.com", hq: "🇺🇸 United States",
+    f: "2014", fund: "—", stage: "commercial",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["Rowing technique coaching", "Strength form cues", "Connected coaching"],
+    note: "",
+    d: "Connected coaching platform that ingests data from instrumented apparel and equipment to deliver real-time technique correction, licensed into partner fitness products rather than sold as garments alone."
+  },
+  {
+    n: "Goldwin C3fit IN-pulse", cat: "sports", url: "https://www.goldwin.co.jp/en/", hq: "🇯🇵 Japan",
+    f: "1950", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["ECG sportswear", "Heart rate zone training"],
+    note: "Built on Toray/NTT hitoe electrode fabric",
+    d: "Sportswear line using the hitoe conductive nanofiber electrode developed with Toray and NTT, capturing ECG-quality heart signal from a fabric electrode band knitted into the garment."
+  },
+  {
+    n: "Polar Electro", cat: "sports", url: "https://www.polar.com", hq: "🇫🇮 Finland",
+    f: "1977", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: ["ce"],
+    uc: ["Textile ECG chest straps", "Training load", "Team sport telemetry"],
+    note: "",
+    d: "Long-running pioneer of textile-electrode heart rate straps. The Pro strap and Team Pro system remain a reference implementation of durable, washable conductive-fabric electrodes at consumer scale."
+  },
+  {
+    n: "Under Armour", cat: "sports", url: "https://www.underarmour.com", hq: "🇺🇸 United States",
+    f: "1996", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: [],
+    uc: ["Connected footwear gait metrics", "Recovery sleepwear", "Training analytics"],
+    note: "",
+    d: "UA HOVR connected footwear embeds sensors reporting cadence, stride length and ground contact, while Athlete Recovery Sleepwear uses a bioceramic print that returns far infrared energy to the body during sleep."
+  },
+  {
+    n: "Digitsole", cat: "sports", url: "https://digitsole.com", hq: "🇫🇷 France",
+    f: "2014", fund: "—", stage: "commercial",
+    layer: ["sensing", "energy", "software"], cert: ["ce"],
+    uc: ["Gait analysis", "Heated insoles", "Clinical podiatry assessment"],
+    note: "",
+    d: "Connected insoles combining pressure and inertial sensing with resistive heating, sold both as a consumer warming product and as a clinical gait assessment system for podiatrists."
+  },
+  {
+    n: "Heddoko", cat: "sports", url: "https://www.heddoko.com", hq: "🇨🇦 Canada",
+    f: "2013", fund: "—", stage: "pilot",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["3D motion capture garment", "Movement quality scoring"],
+    note: "Ceased operations",
+    d: "Full-body motion capture suit with distributed inertial sensors that rendered a 3D avatar of the wearer's movement. Included here as part of the historical record of smart apparel motion capture."
+  },
+
+  // ---------- DEFENSE & TACTICAL ----------
+  {
+    n: "BAE Systems Broadsword", cat: "defense", url: "https://www.baesystems.com", hq: "🇬🇧 United Kingdom",
+    f: "1999", fund: "—", stage: "commercial",
+    layer: ["integration", "energy"], cert: ["milspec"],
+    uc: ["Soldier power and data distribution", "Cable-free load carriage", "EMI-safe routing"],
+    note: "",
+    d: "Broadsword Spine is an e-textile power and data bus woven into vests and load carriage, replacing the cable spaghetti of a dismounted soldier's electronics with conductive fabric routing that survives laundering and battlefield wear."
+  },
+  {
+    n: "Intelligent Textiles Limited", cat: "defense", url: "https://www.intelligenttextiles.com", hq: "🇬🇧 United Kingdom",
+    f: "2002", fund: "—", stage: "pilot",
+    layer: ["fiber", "integration", "energy"], cert: ["milspec"],
+    uc: ["Woven soldier power buses", "Textile keypads and antennas", "Signature reduction"],
+    note: "",
+    d: "Weaves power and data conductors directly on the loom, so the fabric emerges as a circuit with no post-processing. Developed integrated soldier systems with UK and US defense programs."
+  },
+  {
+    n: "TenCate Protective Fabrics", cat: "defense", url: "https://www.tencatefabrics.com", hq: "🇳🇱 Netherlands",
+    f: "1704", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["milspec", "oekotex"],
+    uc: ["Flame-resistant combat uniforms", "Arc flash protection", "Chemical protection"],
+    note: "",
+    d: "Defender M and related fabric families are the substrate under a large share of NATO combat uniforms, combining inherent flame resistance with the durability and comfort needed for continuous wear."
+  },
+  {
+    n: "Warwick Mills", cat: "defense", url: "https://www.warwickmills.com", hq: "🇺🇸 United States",
+    f: "1938", fund: "—", stage: "commercial",
+    layer: ["fiber", "integration"], cert: ["milspec"],
+    uc: ["Ballistic and puncture resistance", "Spacesuit outer layers", "Planetary lander airbags"],
+    note: "",
+    d: "TurtleSkin engineered textiles for cut, puncture and ballistic protection, plus specialty woven structures used in NASA landing systems and pressure suit assemblies."
+  },
+  {
+    n: "DuPont Protection Technologies", cat: "defense", url: "https://www.dupont.com/personal-protection.html", hq: "🇺🇸 United States",
+    f: "1802", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["milspec", "ce"],
+    uc: ["Ballistic protection", "Arc flash and flash fire", "Cut resistance"],
+    note: "",
+    d: "Kevlar, Nomex and Tyvek remain the reference high-performance fiber families for protective apparel, and are the base fabric into which much defense and industrial smart textile instrumentation is integrated."
+  },
+  {
+    n: "Milliken & Company", cat: "defense", url: "https://www.milliken.com", hq: "🇺🇸 United States",
+    f: "1865", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["milspec", "oekotex"],
+    uc: ["Flame-resistant workwear", "Military textiles", "Chemical finishes"],
+    note: "",
+    d: "Large diversified textile manufacturer with a substantial protective fabrics business and an active research arm in functional finishes, conductive coatings and performance chemistries."
+  },
+  {
+    n: "Revision Military", hq: "🇺🇸 United States", cat: "defense", url: "https://www.revisionmilitary.com",
+    f: "2001", fund: "—", stage: "commercial",
+    layer: ["energy", "integration"], cert: ["milspec"],
+    uc: ["Soldier-worn power management", "Centralized battery systems", "Head system integration"],
+    note: "",
+    d: "Soldier systems supplier whose Kinetic Operations Suit and power management products address the wearable energy distribution problem that e-textile buses are designed to solve."
+  },
+  {
+    n: "DEVCOM Soldier Center (Natick)", cat: "defense", url: "https://www.army.mil/devcom-sc", hq: "🇺🇸 United States",
+    f: "1954", fund: "Government", stage: "research",
+    layer: ["fiber", "sensing", "energy"], cert: ["milspec"],
+    uc: ["Soldier-worn physiological sensing", "Chem-bio protective textiles", "Thermal management"],
+    note: "",
+    d: "The US Army's principal laboratory for clothing, equipment and rations, and a long-standing funder and proving ground for functional fiber, wearable sensing and protective textile research."
+  },
+  {
+    n: "DRDO DMSRDE", cat: "defense", url: "https://www.drdo.gov.in", hq: "🇮🇳 India",
+    f: "1959", fund: "Government", stage: "research",
+    layer: ["fiber"], cert: ["milspec"],
+    uc: ["Ballistic textiles", "NBC protective clothing", "Extreme cold weather systems"],
+    note: "",
+    d: "India's Defence Materials and Stores Research and Development Establishment develops indigenous protective and functional textiles, including lightweight body armour and high-altitude clothing systems."
+  },
+
+  // ---------- INDUSTRIAL & SAFETY ----------
+  {
+    n: "Sioen Industries", cat: "industrial", url: "https://www.sioen.com", hq: "🇧🇪 Belgium",
+    f: "1960", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["ce", "oekotex"],
+    uc: ["High-visibility PPE", "Flame-resistant workwear", "Coated technical textiles"],
+    note: "",
+    d: "Vertically integrated producer of coated technical textiles and protective clothing, and an active participant in EU projects integrating sensing and connectivity into certified PPE."
+  },
+  {
+    n: "Klopman International", cat: "industrial", url: "https://www.klopman.com", hq: "🇮🇹 Italy",
+    f: "1968", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex", "ce"],
+    uc: ["Antistatic workwear fabric", "Flame-retardant fabric", "Chemical splash protection"],
+    note: "",
+    d: "One of Europe's largest workwear fabric mills, supplying inherently antistatic and flame-retardant blends that form the certified base layer for instrumented industrial garments."
+  },
+  {
+    n: "Schoeller Textil", cat: "industrial", url: "https://www.schoeller-textiles.com", hq: "🇨🇭 Switzerland",
+    f: "1868", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Climate-regulating fabric", "Abrasion resistance", "Phase-change thermal management"],
+    note: "",
+    d: "Functional fabric developer behind corkshell, energear and ceraspace finishes — passive smart textiles that regulate temperature and resist abrasion without electronics."
+  },
+  {
+    n: "Cetriko", cat: "industrial", url: "https://www.cetriko.com", hq: "🇪🇸 Spain",
+    f: "1972", fund: "—", stage: "pilot",
+    layer: ["fiber", "sensing", "integration"], cert: ["ce"],
+    uc: ["Worker heat stress monitoring", "Textile electrode manufacture", "Smart PPE integration"],
+    note: "",
+    d: "Knitting specialist that has moved into smart textile manufacture, producing sensorized bands and garments for industrial safety and medical partners at production volumes."
+  },
+  {
+    n: "Kinetic", cat: "industrial", url: "https://www.wearkinetic.com", hq: "🇺🇸 United States",
+    f: "2013", fund: "$11M+", stage: "commercial",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["Ergonomic injury prevention", "Unsafe bend detection", "Workforce risk scoring"],
+    note: "",
+    d: "Reflex is a worn device and analytics platform that detects high-risk bending and lifting postures in warehouse and logistics work, giving haptic feedback to the wearer and aggregate risk data to safety teams."
+  },
+  {
+    n: "StrongArm Technologies", cat: "industrial", url: "https://www.strongarmtech.com", hq: "🇺🇸 United States",
+    f: "2012", fund: "—", stage: "commercial",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["Industrial ergonomics", "Proximity and safety analytics", "Injury risk scoring"],
+    note: "",
+    d: "FUSE platform combines worn sensors with a safety analytics layer, scoring individual and site-level ergonomic risk across industrial workforces."
+  },
+
+  // ---------- FASHION & CONSUMER ----------
+  {
+    n: "Google ATAP Project Jacquard", cat: "fashion", url: "https://atap.google.com/jacquard/", hq: "🇺🇸 United States",
+    f: "2015", fund: "Corporate", stage: "pilot",
+    layer: ["fiber", "sensing", "integration"], cert: [],
+    uc: ["Touch-sensitive garment interfaces", "Gesture control", "Tag-based garment electronics"],
+    note: "Wound down; companion app shut down (2023)",
+    d: "Wove capacitive touch yarn into ordinary garments — the Levi's Commuter jacket, YSL backpacks, Adidas insoles — paired with a removable Jacquard Tag. The most visible mainstream attempt at conductive-yarn interfaces, and a reminder of the cloud dependency risk in smart apparel."
+  },
+  {
+    n: "CuteCircuit", cat: "fashion", url: "https://cutecircuit.com", hq: "🇬🇧 United Kingdom",
+    f: "2004", fund: "—", stage: "commercial",
+    layer: ["actuation", "integration"], cert: [],
+    uc: ["LED couture", "Haptic communication garments", "Stage and performance costume"],
+    note: "",
+    d: "The longest-running e-textile fashion house, known for the HugShirt haptic garment and micro-LED dresses. Pieces are in the Victoria and Albert Museum and Smithsonian collections."
+  },
+  {
+    n: "LOOMIA", cat: "fashion", url: "https://www.loomia.com", hq: "🇺🇸 United States",
+    f: "2015", fund: "—", stage: "commercial",
+    layer: ["integration", "actuation", "sensing"], cert: ["ul"],
+    uc: ["Heated apparel and gear", "Soft goods circuitry", "Automotive interior sensing", "Pressure sensing panels"],
+    note: "",
+    d: "The LOOMIA Electronic Layer is a flexible, washable circuit laminate designed to be sewn or bonded into soft goods, supplying heating, lighting and sensing to apparel, footwear and vehicle interiors."
+  },
+  {
+    n: "Clim8", cat: "fashion", url: "https://www.clim8.com", hq: "🇫🇷 France",
+    f: "2016", fund: "—", stage: "commercial",
+    layer: ["actuation", "sensing", "software"], cert: ["ce"],
+    uc: ["Adaptive body heating", "Microclimate regulation", "Cold-weather workwear"],
+    note: "Integrated by Softmatter into circular-knitted garments",
+    d: "Intelligent heating technology that measures body and ambient temperature and modulates textile heating elements to hold a target microclimate, rather than heating at a fixed level."
+  },
+  {
+    n: "Ministry of Supply", cat: "fashion", url: "https://www.ministryofsupply.com", hq: "🇺🇸 United States",
+    f: "2012", fund: "—", stage: "commercial",
+    layer: ["fiber", "actuation"], cert: [],
+    uc: ["Adaptive thermoregulating apparel", "Heated outerwear", "Phase-change workwear"],
+    note: "",
+    d: "MIT-founded apparel brand applying phase-change materials and, in the Mercury jacket, app-controlled carbon fiber heating to professional clothing — smart textiles positioned as ordinary business wear."
+  },
+  {
+    n: "Vollebak", cat: "fashion", url: "https://vollebak.com", hq: "🇬🇧 United Kingdom",
+    f: "2015", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Graphene-enhanced apparel", "Solar-charged garments", "Copper antimicrobial fabric"],
+    note: "",
+    d: "Experimental clothing brand that commercializes exotic material science in small runs — graphene jackets, phosphorescent solar-charged garments, copper and ceramic fabrics — functioning as a public test bed for functional fibers."
+  },
+  {
+    n: "Pauline van Dongen", cat: "fashion", url: "https://www.paulinevandongen.nl", hq: "🇳🇱 Netherlands",
+    f: "2010", fund: "—", stage: "research",
+    layer: ["fiber", "energy", "sensing"], cert: [],
+    uc: ["Wearable solar textiles", "Posture-sensing garments", "Design research"],
+    note: "",
+    d: "Design practice and research studio working at the intersection of fashion and technology, best known for the Solar Shirt and wearable photovoltaic collections, and for scholarship on how people actually live with smart garments."
+  },
+  {
+    n: "Studio Roosegaarde", cat: "fashion", url: "https://www.studioroosegaarde.net", hq: "🇳🇱 Netherlands",
+    f: "2007", fund: "—", stage: "research",
+    layer: ["actuation", "sensing"], cert: [],
+    uc: ["Interactive light-emitting garments", "Responsive surfaces", "Public art installations"],
+    note: "",
+    d: "Art and design studio whose Intimacy dresses — garments whose opacity responds to the wearer's heartbeat — helped define the expressive end of e-textiles alongside its larger interactive environment work."
+  },
+
+  // ---------- AUTOMOTIVE & AEROSPACE ----------
+  {
+    n: "Gentherm", cat: "mobility", url: "https://www.gentherm.com", hq: "🇺🇸 United States",
+    f: "1991", fund: "—", stage: "commercial",
+    layer: ["actuation", "sensing", "integration"], cert: ["ul"],
+    uc: ["Heated and ventilated seats", "Occupant thermal comfort", "Medical patient warming"],
+    note: "",
+    d: "The largest supplier of thermal management built into seating and interior surfaces, combining textile-integrated heating elements, airflow and sensing — the highest-volume smart textile application in production today."
+  },
+  {
+    n: "Forvia Faurecia", cat: "mobility", url: "https://www.forvia.com", hq: "🇫🇷 France",
+    f: "1997", fund: "—", stage: "pilot",
+    layer: ["sensing", "actuation", "integration"], cert: [],
+    uc: ["In-seat biometric monitoring", "Driver drowsiness detection", "Adaptive comfort"],
+    note: "",
+    d: "Active Wellness seat programs embed capacitive and pressure sensing into upholstery to read heart and breathing rate through clothing, then respond with massage, ventilation and posture changes."
+  },
+  {
+    n: "Toyota Boshoku", cat: "mobility", url: "https://www.toyota-boshoku.com", hq: "🇯🇵 Japan",
+    f: "1918", fund: "—", stage: "pilot",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Seat-embedded occupant vitals", "Interior textile development", "Cabin comfort sensing"],
+    note: "",
+    d: "Interior systems supplier developing seat fabrics with integrated sensing for occupant state monitoring, part of the wider move to treat the vehicle cabin as a health sensing environment."
+  },
+  {
+    n: "Bally Ribbon Mills", cat: "mobility", url: "https://www.ballyribbon.com", hq: "🇺🇸 United States",
+    f: "1923", fund: "—", stage: "commercial",
+    layer: ["fiber", "integration"], cert: ["milspec"],
+    uc: ["3D woven thermal protection", "E-textile webbing", "Aerospace structural preforms"],
+    note: "",
+    d: "Narrow fabrics specialist weaving three-dimensional structures for aerospace thermal protection systems, plus webbing with conductors woven in for power and data on harnesses and load-bearing equipment."
+  },
+  {
+    n: "Adient", cat: "mobility", url: "https://www.adient.com", hq: "🇮🇪 Ireland",
+    f: "2016", fund: "—", stage: "pilot",
+    layer: ["sensing", "integration"], cert: [],
+    uc: ["Occupant position sensing", "Seat comfort analytics", "Interior textile integration"],
+    note: "",
+    d: "Global automotive seating supplier integrating pressure and capacitive sensing into seat trim, targeting occupant classification and comfort adaptation at production volume."
+  },
+
+  // ---------- FIBERS, YARNS & MATERIALS ----------
+  {
+    n: "Shieldex (Statex)", cat: "materials", url: "https://www.shieldex.de", hq: "🇩🇪 Germany",
+    f: "1978", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Silver-plated conductive yarn", "EMI and RF shielding", "Textile electrodes", "Antimicrobial fabric"],
+    note: "",
+    d: "The reference supplier of silver-plated polyamide yarns, threads and fabrics used across e-textile prototyping and production. Much of the field's electrode and shielding work is built on Shieldex material."
+  },
+  {
+    n: "Bekaert", cat: "materials", url: "https://www.bekaert.com", hq: "🇧🇪 Belgium",
+    f: "1880", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Stainless steel fiber yarn", "Antistatic textiles", "High-temperature filtration", "Heating elements"],
+    note: "",
+    d: "Bekinox and Bekitex stainless steel fibers can be blended into conventional yarn to give durable, launderable conductivity — the workhorse behind many antistatic garments and textile heating elements."
+  },
+  {
+    n: "Coats Group", cat: "materials", url: "https://www.coats.com", hq: "🇬🇧 United Kingdom",
+    f: "1755", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Conductive sewing thread", "Signal transmission thread", "Heating thread", "Sensing yarn"],
+    note: "",
+    d: "The world's largest industrial thread manufacturer, whose Signal range brings conductive, resistive and sensing threads into standard garment sewing lines — the route by which e-textiles reach existing apparel factories."
+  },
+  {
+    n: "Toray Industries", cat: "materials", url: "https://www.toray.com", hq: "🇯🇵 Japan",
+    f: "1926", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Conductive nanofiber electrodes", "ECG sensing fabric", "Carbon fiber", "Functional filament"],
+    note: "hitoe developed with NTT",
+    d: "hitoe is a conductive polymer-impregnated nanofiber fabric that captures biosignals through a fabric electrode with clinical-grade fidelity, licensed into sportswear and workwear across Japan."
+  },
+  {
+    n: "Teijin", cat: "materials", url: "https://www.teijin.com", hq: "🇯🇵 Japan",
+    f: "1918", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Aramid ballistic fiber", "Flame-resistant fiber", "Piezoelectric fabric", "Conductive filament"],
+    note: "",
+    d: "Twaron and Technora aramids anchor the protective side of the portfolio, while the group's piezoelectric polylactic acid fabric research targets textiles that sense deformation without an added sensor."
+  },
+  {
+    n: "Mitsufuji", cat: "materials", url: "https://www.mitsufuji.co.jp/en/", hq: "🇯🇵 Japan",
+    f: "1956", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: [],
+    uc: ["Silver conductive fiber", "Heat stroke prevention", "ECG shirts", "EMI shielding"],
+    note: "AGposs adopted for ISS astronaut underwear (2008)",
+    d: "A Nishijin weaving house turned wearable IoT manufacturer. AGposs silver-metalized fiber feeds the hamon garment platform, giving one of the few end-to-end chains from fiber production through cloud service under a single roof."
+  },
+  {
+    n: "Directa Plus", cat: "materials", url: "https://www.directa-plus.com", hq: "🇮🇹 Italy",
+    f: "2005", fund: "AIM: DCTA", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Graphene thermal regulation", "Antibacterial fabric", "Antistatic finishing", "Abrasion resistance"],
+    note: "London AIM listed; ~€6.7M revenue (2024)",
+    d: "Produces G+ graphene nanoplatelets and applies them to textiles as a coating or in-fiber additive, giving thermal spreading, bacteriostatic and antistatic behaviour without electronics."
+  },
+  {
+    n: "Swicofil", cat: "materials", url: "https://www.swicofil.com", hq: "🇨🇭 Switzerland",
+    f: "1986", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Conductive yarn supply", "Metallic and specialty yarns", "Prototype material sourcing"],
+    note: "",
+    d: "Specialty yarn distributor and technical resource that supplies small quantities of conductive, metallic and functional yarns — a common first stop for e-textile prototyping outside the large mills."
+  },
+  {
+    n: "Syscom Advanced Materials", cat: "materials", url: "https://www.metalcladfibers.com", hq: "🇺🇸 United States",
+    f: "1997", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["milspec"],
+    uc: ["Metal-clad polymer fiber", "Lightweight EMI shielding", "Aerospace cabling", "Signal-carrying yarn"],
+    note: "",
+    d: "Amberstrand and Liberator metal-clad fibers combine the strength of high-performance polymer cores with a metallic surface, cutting the weight of shielding and data-carrying textile structures in aerospace and defense."
+  },
+  {
+    n: "Kolon Industries", cat: "materials", url: "https://www.kolonindustries.com", hq: "🇰🇷 South Korea",
+    f: "1957", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Aramid fiber", "Conductive functional fiber", "Membrane and coating"],
+    note: "",
+    d: "Producer of Heracron aramid alongside a broad functional fiber portfolio, and an active developer of conductive and thermally regulating filament for the Korean smart apparel supply chain."
+  },
+  {
+    n: "Kuraray", cat: "materials", url: "https://www.kuraray.com", hq: "🇯🇵 Japan",
+    f: "1926", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Functional synthetic fiber", "Activated carbon fabric", "Man-made leather substrates"],
+    note: "",
+    d: "Specialty chemicals and fiber group supplying functional filaments, activated carbon textiles for filtration and chemical protection, and substrate materials used in flexible electronics lamination."
+  },
+  {
+    n: "Chromatic Technologies (CTI)", cat: "materials", url: "https://ctiinks.com", hq: "🇺🇸 United States",
+    f: "1993", fund: "—", stage: "commercial",
+    layer: ["fiber", "actuation"], cert: [],
+    uc: ["Thermochromic textile inks", "Photochromic finishes", "Temperature indication"],
+    note: "",
+    d: "Color-changing ink chemistry applied to textiles and packaging, delivering passive visual signalling of temperature and UV exposure — smart behaviour with no power source at all."
+  },
+  {
+    n: "Eeonyx", cat: "materials", url: "https://www.eeonyx.com", hq: "🇺🇸 United States",
+    f: "1998", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Piezoresistive coated fabric", "Pressure sensing textiles", "Antistatic and shielding"],
+    note: "",
+    d: "Conductive polymer coatings applied to nonwovens and knits to produce piezoresistive textiles — the material behind a large share of the field's textile pressure and stretch sensors."
+  },
+  {
+    n: "Far Eastern New Century", cat: "materials", url: "https://www.fenc.com", hq: "🇹🇼 Taiwan",
+    f: "1954", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Functional polyester", "Recycled performance fiber", "Conductive filament"],
+    note: "",
+    d: "Major polyester producer supplying functional and recycled filament to the global sportswear supply chain, including conductive and moisture-management fibers used in sensing garments."
+  },
+  {
+    n: "Arvind Advanced Materials", cat: "materials", url: "https://arvindsmartspaces.com", hq: "🇮🇳 India",
+    f: "1931", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Flame-resistant fabric", "Protective workwear textiles", "Technical textile composites"],
+    note: "",
+    d: "The advanced materials arm of one of India's largest textile groups, producing certified protective fabrics and technical textiles and a key domestic route to industrial-scale functional fabric production."
+  },
+  {
+    n: "Welspun Living", cat: "materials", url: "https://www.welspunliving.com", hq: "🇮🇳 India",
+    f: "1985", fund: "—", stage: "commercial",
+    layer: ["fiber"], cert: ["oekotex"],
+    uc: ["Functional home textiles", "Traceable fiber supply", "Antimicrobial finishes"],
+    note: "",
+    d: "Large home and technical textile manufacturer with the Wel-Trak traceability system and a growing functional finishes portfolio, representing the volume end of the smart textile transition."
+  },
+
+  // ---------- ENERGY & POWER ----------
+  {
+    n: "Jenax", cat: "energy", url: "https://jenaxinc.com", hq: "🇰🇷 South Korea",
+    f: "2011", fund: "—", stage: "commercial",
+    layer: ["energy"], cert: ["ul"],
+    uc: ["Flexible lithium batteries", "Bendable wearable power", "Conformal battery packs"],
+    note: "",
+    d: "J.Flex is a bendable, foldable lithium-ion battery designed to survive repeated flexing, addressing the hard constraint on smart garments — a rigid battery pack undoes the comfort the textile provides."
+  },
+  {
+    n: "Enfucell", cat: "energy", url: "https://www.enfucell.com", hq: "🇫🇮 Finland",
+    f: "2002", fund: "—", stage: "commercial",
+    layer: ["energy"], cert: ["ul"],
+    uc: ["Printed thin batteries", "Smart label power", "Skin patch power"],
+    note: "",
+    d: "SoftBattery is a printed, flexible, non-toxic zinc battery around half a millimetre thick, aimed at single-use and low-power applications where a coin cell is too rigid or too hazardous against skin."
+  },
+  {
+    n: "Imprint Energy", cat: "energy", url: "https://www.imprintenergy.com", hq: "🇺🇸 United States",
+    f: "2010", fund: "—", stage: "pilot",
+    layer: ["energy"], cert: [],
+    uc: ["Screen-printed zinc batteries", "Conformal power for wearables", "Flexible IoT power"],
+    note: "",
+    d: "ZincPoly chemistry allows batteries to be screen printed in arbitrary shapes onto flexible substrates, sidestepping the form-factor limits of conventional lithium cells in worn products."
+  },
+  {
+    n: "Blue Spark Technologies", cat: "energy", url: "https://www.bluesparktechnologies.com", hq: "🇺🇸 United States",
+    f: "2002", fund: "—", stage: "commercial",
+    layer: ["energy", "sensing"], cert: ["fda", "ul"],
+    uc: ["Printed thin-film batteries", "Continuous temperature patches", "Single-use medical power"],
+    note: "",
+    d: "Printed carbon-zinc batteries thin enough to laminate into a patch, productized in TempTraq — an FDA-cleared wearable continuous thermometer worn as an adhesive strip."
+  },
+  {
+    n: "Exeger (Powerfoyle)", cat: "energy", url: "https://www.exeger.com", hq: "🇸🇪 Sweden",
+    f: "2009", fund: "—", stage: "commercial",
+    layer: ["energy"], cert: [],
+    uc: ["Printed solar cells in apparel", "Self-charging accessories", "Indoor light harvesting"],
+    note: "",
+    d: "Powerfoyle is a printed dye-sensitized solar cell that works in indoor as well as outdoor light and can be shaped and coloured to match a product surface, shipping in headphones, helmets and bags."
+  },
+  {
+    n: "Sunew", cat: "energy", url: "https://sunew.com.br", hq: "🇧🇷 Brazil",
+    f: "2011", fund: "—", stage: "pilot",
+    layer: ["energy"], cert: [],
+    uc: ["Organic photovoltaic film", "Flexible solar lamination", "Textile-integrated harvesting"],
+    note: "",
+    d: "Roll-to-roll printed organic photovoltaic film, lightweight and flexible enough to laminate onto fabric and curved surfaces where conventional silicon panels cannot go."
+  },
+
+  // ---------- ELECTRONICS & INTERCONNECT ----------
+  {
+    n: "Ohmatex", cat: "electronics", url: "https://www.ohmatex.dk", hq: "🇩🇰 Denmark",
+    f: "2007", fund: "—", stage: "commercial",
+    layer: ["integration", "sensing", "energy"], cert: [],
+    uc: ["Washable textile connectors", "Textile cabling", "Space and medical sensor integration"],
+    note: "Long-running ESA smart textile projects",
+    d: "Specialist in the unglamorous but decisive part of e-textiles: connectors, cabling and terminations that survive laundering and flexing. Work spans ESA astronaut monitoring, prosthetics and medical garments."
+  },
+  {
+    n: "Nanoleq", cat: "electronics", url: "https://www.nanoleq.com", hq: "🇨🇭 Switzerland",
+    f: "2017", fund: "—", stage: "commercial",
+    layer: ["integration", "sensing"], cert: [],
+    uc: ["Stretchable washable cables", "Textile interconnect", "Wearable sensor wiring"],
+    note: "ETH Zurich spin-off",
+    d: "Elastic conductive cables and interconnects that stretch with the garment and survive hundreds of wash cycles, sold as components to smart apparel manufacturers rather than as finished garments."
+  },
+  {
+    n: "DuPont Intexar", cat: "electronics", url: "https://www.dupont.com/electronic-materials.html", hq: "🇺🇸 United States",
+    f: "1802", fund: "—", stage: "commercial",
+    layer: ["integration", "sensing"], cert: [],
+    uc: ["Stretchable printed circuits", "Printed textile electrodes", "Heated garment circuitry"],
+    note: "",
+    d: "A family of stretchable electronic inks and films printed onto thermoplastic polyurethane and heat-laminated into garments, letting apparel factories add circuitry with equipment they already own."
+  },
+  {
+    n: "Forster Rohner Textile Innovations", cat: "electronics", url: "https://www.frti.ch", hq: "🇨🇭 Switzerland",
+    f: "1904", fund: "—", stage: "commercial",
+    layer: ["integration", "actuation"], cert: [],
+    uc: ["Embroidered lighting", "Textile heating panels", "Decorative conductive embroidery"],
+    note: "",
+    d: "A heritage embroidery house that turned its machinery toward circuitry, with e-broidery techniques placing LEDs, heating elements and conductive traces into fabric as an embroidery operation."
+  },
+  {
+    n: "ZSK Stickmaschinen", cat: "electronics", url: "https://www.zsk.de", hq: "🇩🇪 Germany",
+    f: "1902", fund: "—", stage: "commercial",
+    layer: ["integration", "fiber"], cert: [],
+    uc: ["Embroidered circuit manufacture", "Tailored fiber placement", "Textile antenna production"],
+    note: "",
+    d: "Technical embroidery machinery used across the industry to lay conductive thread into precise circuit geometries, including textile antennas, heating grids and sensor arrays."
+  },
+  {
+    n: "Madeira Garnfabrik", cat: "electronics", url: "https://www.madeira.com", hq: "🇩🇪 Germany",
+    f: "1919", fund: "—", stage: "commercial",
+    layer: ["fiber", "integration"], cert: ["oekotex"],
+    uc: ["Conductive embroidery thread", "Textile circuit traces", "Shielding embroidery"],
+    note: "",
+    d: "HC12 and related conductive embroidery threads are the standard consumable for stitched textile circuitry, chosen because they run on ordinary embroidery machinery without special handling."
+  },
+  {
+    n: "Interactive Wear", cat: "electronics", url: "https://www.interactive-wear.com", hq: "🇩🇪 Germany",
+    f: "2005", fund: "—", stage: "commercial",
+    layer: ["integration", "sensing", "actuation"], cert: ["ce"],
+    uc: ["Garment electronics modules", "Heating controllers", "Sensor integration services"],
+    note: "",
+    d: "Builds the electronics modules, controllers and integration engineering that turn a functional fabric into a shippable product, working as a development partner to apparel brands."
+  },
+
+  // ---------- SOFTWARE & PLATFORMS ----------
+  {
+    n: "Softmatter", cat: "software", url: "https://softmatter.io", hq: "🇱🇰 Sri Lanka",
+    f: "2019", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "integration", "software"], cert: ["oekotex"],
+    uc: ["Biosensing garment platforms", "Textile circuitry kits", "Thermoregulation", "Wearable strap engineering"],
+    note: "Wearables technology arm of MAS Holdings",
+    d: "Couples apparel manufacturing scale with e-textile engineering, offering textile circuitry and thermoregulation toolkits alongside contract development. Won an ISPO award for a circular-knitted pant with Clim8 heating fully integrated."
+  },
+  {
+    n: "Shimmer Research", cat: "software", url: "https://shimmersensing.com", hq: "🇮🇪 Ireland",
+    f: "2008", fund: "—", stage: "commercial",
+    layer: ["sensing", "software"], cert: ["iso13485", "ce"],
+    uc: ["Research-grade physiological capture", "Clinical trial data collection", "Textile electrode validation"],
+    note: "",
+    d: "Wearable sensor platforms with open access to raw signal, widely used as the reference instrument against which textile electrodes and garment sensors are validated in academic and clinical studies."
+  },
+  {
+    n: "Sensing Tex", cat: "software", url: "https://sensingtex.com", hq: "🇪🇸 Spain",
+    f: "2012", fund: "—", stage: "commercial",
+    layer: ["fiber", "sensing", "software"], cert: [],
+    uc: ["Pressure mapping mats", "Bed and seat occupancy", "Smart surface development kits"],
+    note: "",
+    d: "Printed textile pressure sensor matrices sold as development platforms, letting integrators build pressure mapping into mattresses, seats, rehabilitation equipment and sports surfaces."
+  },
+  {
+    n: "Movella (Xsens)", cat: "software", url: "https://www.movella.com", hq: "🇳🇱 Netherlands",
+    f: "2000", fund: "—", stage: "commercial",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["Inertial motion capture suits", "Biomechanics analysis", "Animation and VFX capture"],
+    note: "",
+    d: "Xsens motion capture suits distribute inertial sensors across a worn harness for camera-free full-body capture, and set the accuracy benchmark that textile-integrated motion sensing is measured against."
+  },
+  {
+    n: "Tekscan", cat: "software", url: "https://www.tekscan.com", hq: "🇺🇸 United States",
+    f: "1987", fund: "—", stage: "commercial",
+    layer: ["sensing", "software"], cert: [],
+    uc: ["In-shoe pressure mapping", "Seating pressure analysis", "Gait laboratory measurement"],
+    note: "",
+    d: "Thin-film pressure sensing systems, including in-shoe F-Scan, that established the clinical and research workflows now being reimplemented in fully textile pressure sensors."
+  },
+
+  // ---------- RESEARCH INSTITUTES ----------
+  {
+    n: "AFFOA", cat: "research", url: "https://affoa.org", hq: "🇺🇸 United States",
+    f: "2016", fund: "US DoD", stage: "pilot",
+    layer: ["fiber", "sensing", "energy", "integration"], cert: ["milspec"],
+    uc: ["Functional fiber devices", "Fiber-based sensing and comms", "Defense prototyping", "Domestic manufacturing scale-up"],
+    note: "Manufacturing USA institute; HQ in Bedford, MA",
+    d: "The US public-private institute for advanced fabrics, running a fiber and fabric prototyping line that bridges academic fiber device research and domestic manufacture. Hosts the annual Advanced Functional Fabrics Summit."
+  },
+  {
+    n: "Fibers@MIT (Fink Lab)", cat: "research", url: "https://fibers.mit.edu", hq: "🇺🇸 United States",
+    f: "2000", fund: "Academic", stage: "research",
+    layer: ["fiber", "sensing", "energy"], cert: [],
+    uc: ["Acoustic fabrics", "Thermally drawn fiber devices", "Fiber computers", "In-fiber semiconductors"],
+    note: "",
+    d: "Pioneered the thermal drawing of multimaterial fibers containing semiconductors and electronics, producing fabrics that hear, sense and compute — the research lineage behind much of the functional fiber field."
+  },
+  {
+    n: "Fraunhofer IZM", cat: "research", url: "https://www.izm.fraunhofer.de", hq: "🇩🇪 Germany",
+    f: "1993", fund: "Public", stage: "research",
+    layer: ["integration", "sensing"], cert: [],
+    uc: ["Washable electronics packaging", "Textile interconnect reliability", "Encapsulation methods"],
+    note: "",
+    d: "Europe's leading laboratory for the reliability question in e-textiles: how to package, bond and encapsulate electronics so they survive laundering, flexing and sweat over a product lifetime."
+  },
+  {
+    n: "ITA — RWTH Aachen", cat: "research", url: "https://www.ita.rwth-aachen.de", hq: "🇩🇪 Germany",
+    f: "1934", fund: "Academic", stage: "research",
+    layer: ["fiber", "integration"], cert: [],
+    uc: ["Textile machinery for e-textiles", "Braided sensor structures", "Composite preforms"],
+    note: "",
+    d: "Institut für Textiltechnik works on the production engineering of functional textiles — adapting weaving, knitting and braiding machinery so smart structures can be made at industrial rates."
+  },
+  {
+    n: "DITF Denkendorf", cat: "research", url: "https://www.ditf.de", hq: "🇩🇪 Germany",
+    f: "1921", fund: "Public", stage: "research",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Functional fiber spinning", "Textile sensor development", "Bio-based functional fibers"],
+    note: "",
+    d: "The German Institutes of Textile and Fiber Research cover the chain from polymer chemistry through fiber spinning to finished functional textile, including conductive and sensor-active filament development."
+  },
+  {
+    n: "Centexbel", cat: "research", url: "https://www.centexbel.be", hq: "🇧🇪 Belgium",
+    f: "1950", fund: "Public", stage: "pilot",
+    layer: ["fiber", "integration"], cert: ["ce", "oekotex"],
+    uc: ["Smart textile prototyping", "Textile testing and certification", "PPE conformity assessment"],
+    note: "Notified body for protective textiles",
+    d: "Belgian textile research centre and notified body, combining smart textile development support with the certification testing that determines whether an instrumented garment can legally be sold as PPE."
+  },
+  {
+    n: "Holst Centre (TNO)", cat: "research", url: "https://www.holstcentre.com", hq: "🇳🇱 Netherlands",
+    f: "2005", fund: "Public", stage: "research",
+    layer: ["integration", "sensing", "energy"], cert: [],
+    uc: ["Stretchable electronics", "Printed sensors in textiles", "Thin-film integration"],
+    note: "",
+    d: "Open innovation centre for flexible and stretchable electronics, developing the printing, thinning and interconnect processes that let silicon-grade functionality live on a conformable substrate."
+  },
+  {
+    n: "Empa", cat: "research", url: "https://www.empa.ch", hq: "🇨🇭 Switzerland",
+    f: "1880", fund: "Public", stage: "research",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Biomedical textiles", "Functional membranes", "Fiber-level material science"],
+    note: "",
+    d: "Swiss federal materials laboratory with a substantial biomedical and protective textile programme, spanning implantable fibers, moisture management membranes and textile-based sensing."
+  },
+  {
+    n: "CSEM", cat: "research", url: "https://www.csem.ch", hq: "🇨🇭 Switzerland",
+    f: "1984", fund: "Public", stage: "research",
+    layer: ["sensing", "energy", "integration"], cert: [],
+    uc: ["Ultra-low-power wearable sensing", "Energy harvesting", "Miniaturized biosignal front ends"],
+    note: "",
+    d: "Applied research centre supplying the low-power sensing and harvesting electronics that make continuously worn textile systems viable without daily charging."
+  },
+  {
+    n: "NC State ASSIST Center", cat: "research", url: "https://assist.ncsu.edu", hq: "🇺🇸 United States",
+    f: "2012", fund: "NSF ERC", stage: "research",
+    layer: ["sensing", "energy", "fiber"], cert: [],
+    uc: ["Self-powered health sensing", "Textile electrode research", "Thermoelectric harvesting"],
+    note: "Alongside NC State's Wilson College of Textiles",
+    d: "NSF engineering research centre targeting battery-free wearables powered by body heat and motion, sited next to one of the world's largest academic textile programmes."
+  },
+  {
+    n: "Hong Kong PolyU — ITC", cat: "research", url: "https://www.polyu.edu.hk", hq: "🇭🇰 Hong Kong",
+    f: "1957", fund: "Academic", stage: "research",
+    layer: ["fiber", "energy", "sensing"], cert: [],
+    uc: ["Fiber supercapacitors", "Triboelectric textile generators", "Wearable antenna research"],
+    note: "",
+    d: "The Institute of Textiles and Clothing is among the most prolific publishers in textile energy storage and harvesting, with sustained output on fiber-shaped supercapacitors and self-powered fabrics."
+  },
+  {
+    n: "Nanyang Technological University", cat: "research", url: "https://www.ntu.edu.sg", hq: "🇸🇬 Singapore",
+    f: "1991", fund: "Academic", stage: "research",
+    layer: ["energy", "sensing", "fiber"], cert: [],
+    uc: ["Triboelectric energy harvesting", "Wearable sensor arrays", "Body-coupled communication"],
+    note: "",
+    d: "Strong programme in self-powered wearable systems, including textile triboelectric nanogenerators and metamaterial fabrics that confine wireless signal to the body surface."
+  },
+  {
+    n: "Hohenstein Institute", cat: "research", url: "https://www.hohenstein.com", hq: "🇩🇪 Germany",
+    f: "1946", fund: "Private", stage: "research",
+    layer: ["fiber", "sensing"], cert: ["oekotex"],
+    uc: ["Washability testing", "Skin comfort assessment", "Smart textile validation"],
+    note: "Founding OEKO-TEX institute",
+    d: "Testing and research institute whose laundering, comfort and skin-contact protocols are the practical gate a smart garment must pass before it can be sold, and a founding member of the OEKO-TEX association."
+  },
+  {
+    n: "IIT Delhi — Textile & Fibre Engineering", cat: "research", url: "https://textile.iitd.ac.in", hq: "🇮🇳 India",
+    f: "1961", fund: "Academic", stage: "research",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Smart and functional textile research", "Protective textiles", "Technical textile skilling"],
+    note: "",
+    d: "India's leading academic textile department, running smart textile, nanofiber and protective clothing research and anchoring several National Technical Textiles Mission projects."
+  },
+  {
+    n: "SITRA", cat: "research", url: "https://www.sitra.org.in", hq: "🇮🇳 India",
+    f: "1956", fund: "Public", stage: "research",
+    layer: ["fiber"], cert: [],
+    uc: ["Medical textile development", "Textile testing services", "Process research"],
+    note: "",
+    d: "The South India Textile Research Association combines testing services for the Coimbatore mill cluster with applied development in medical and technical textiles."
+  },
+  {
+    n: "ATIRA", cat: "research", url: "https://www.atira.in", hq: "🇮🇳 India",
+    f: "1947", fund: "Public", stage: "research",
+    layer: ["fiber"], cert: [],
+    uc: ["Technical textile R&D", "Geotextile and medical textile testing", "NTTM projects"],
+    note: "",
+    d: "Ahmedabad Textile Industry's Research Association, one of India's oldest textile research bodies, now focused on technical textiles and a designated centre of excellence under national textile programmes."
+  },
+  {
+    n: "CSIRO", cat: "research", url: "https://www.csiro.au", hq: "🇦🇺 Australia",
+    f: "1926", fund: "Public", stage: "research",
+    layer: ["fiber", "sensing"], cert: [],
+    uc: ["Functional fibre research", "Wearable sensing", "Wool science"],
+    note: "",
+    d: "Australia's national science agency, with a long fibre science lineage and current work on graphene inks, flexible sensors and functional finishes for textiles."
+  },
+  {
+    n: "AIST", cat: "research", url: "https://www.aist.go.jp/index_en.html", hq: "🇯🇵 Japan",
+    f: "2001", fund: "Public", stage: "research",
+    layer: ["sensing", "integration", "fiber"], cert: [],
+    uc: ["Printed flexible devices", "Textile-compatible sensors", "Materials characterization"],
+    note: "",
+    d: "Japan's National Institute of Advanced Industrial Science and Technology runs extensive printed and flexible electronics programmes that feed the country's unusually mature smart textile supply chain."
+  },
+
+  // ---------- STANDARDS & CONSORTIA ----------
+  {
+    n: "IPC E-Textiles Committee", cat: "standards", url: "https://www.ipc.org", hq: "🇺🇸 United States",
+    f: "1957", fund: "Association", stage: "commercial",
+    layer: ["integration", "fiber"], cert: [],
+    uc: ["E-textile design standards", "Washability test methods", "Conductive yarn qualification"],
+    note: "IPC-8921 / 8931 / 8941 series",
+    d: "The most active standards body for electronic textiles, publishing the qualification and performance specifications for conductive yarns, e-textile assemblies and integrated systems that the industry now cites by number."
+  },
+  {
+    n: "AATCC", cat: "standards", url: "https://www.aatcc.org", hq: "🇺🇸 United States",
+    f: "1921", fund: "Association", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["Textile test methods", "Electrically conductive textile testing", "Colorfastness and durability"],
+    note: "",
+    d: "The American Association of Textile Chemists and Colorists writes the test methods used across the industry, including the surface resistivity and durability protocols applied to conductive fabrics."
+  },
+  {
+    n: "ASTM Committee D13", cat: "standards", url: "https://www.astm.org", hq: "🇺🇸 United States",
+    f: "1898", fund: "Association", stage: "commercial",
+    layer: ["fiber", "integration"], cert: [],
+    uc: ["Textile standards", "Smart textile subcommittee work", "Terminology and classification"],
+    note: "Subcommittee D13.90 covers executive and smart textile scope",
+    d: "ASTM's textiles committee maintains the broad standards base for fiber and fabric measurement, with dedicated activity on definitions and test approaches for smart and electronically functional textiles."
+  },
+  {
+    n: "CEN/TC 248 WG 31", cat: "standards", url: "https://www.cencenelec.eu", hq: "🇪🇺 European Union",
+    f: "1989", fund: "Association", stage: "commercial",
+    layer: ["fiber", "integration"], cert: ["ce"],
+    uc: ["European smart textile standardization", "Terminology harmonization", "Conformity routes"],
+    note: "",
+    d: "The European standardization working group for smart textiles, defining the vocabulary and conformity pathways that determine how an instrumented garment is classified and CE marked in the EU."
+  },
+  {
+    n: "Advanced Textiles Association", cat: "standards", url: "https://textiles.org", hq: "🇺🇸 United States",
+    f: "1912", fund: "Association", stage: "commercial",
+    layer: ["fiber", "integration"], cert: [],
+    uc: ["Industry convening", "Market data", "Advanced textiles advocacy"],
+    note: "Formerly IFAI",
+    d: "Trade association for technical and advanced textiles, running the sector's main North American events and providing the market data and policy advocacy that shape smart textile commercialization."
+  },
+  {
+    n: "e-Textiles Network", cat: "standards", url: "https://www.etextilesnetwork.com", hq: "🇬🇧 United Kingdom",
+    f: "2016", fund: "Public", stage: "commercial",
+    layer: ["fiber", "integration"], cert: [],
+    uc: ["Research and industry convening", "Sustainability in e-textiles", "Design practice sharing"],
+    note: "",
+    d: "UK network linking academic e-textile researchers, designers and manufacturers, with a notable focus on the end-of-life and repairability problems that electronics in clothing create."
+  },
+  {
+    n: "Textile ETP", cat: "standards", url: "https://textile-platform.eu", hq: "🇪🇺 European Union",
+    f: "2004", fund: "Public", stage: "commercial",
+    layer: ["fiber"], cert: [],
+    uc: ["EU research agenda setting", "Innovation roadmapping", "Consortium formation"],
+    note: "",
+    d: "The European Technology Platform for the Future of Textiles and Clothing sets the research priorities that steer EU funding into smart, functional and circular textile programmes."
+  },
+];
+
+/* ---------------------------------------------------------------
+   Filter state and matching.
+   OR within a group, AND across groups. An empty group is
+   unconstrained.
+   --------------------------------------------------------------- */
+
+const GROUPS = ["cat", "stage", "layer", "cert"];
+
+const GROUP_META = {
+  cat:   {label: "Sector",     list: sectors},
+  stage: {label: "Stage",      list: stages},
+  layer: {label: "Tech Layer", list: layers},
+  cert:  {label: "Standards",  list: certs},
+};
+
+const filters = {cat: new Set(), stage: new Set(), layer: new Set(), cert: new Set()};
+let searchQuery = "";
+
+const labelOf = (list, id) => list.find(x => x.id === id)?.label || id;
+
+function matchesGroup(item, group, active) {
+  if (active.size === 0) return true;
+  if (group === "cat")   return active.has(item.cat);
+  if (group === "stage") return active.has(item.stage);
+  if (group === "layer") return item.layer.some(x => active.has(x));
+  if (group === "cert")  return item.cert.some(x => active.has(x));
+  return true;
+}
+
+function matchesSearch(item) {
+  const s = searchQuery.toLowerCase().trim();
+  if (s === "") return true;
+  const haystack = [
+    item.n, item.d, item.hq, item.note || "", item.f, item.fund,
+    labelOf(sectors, item.cat),
+    labelOf(stages, item.stage),
+    ...item.uc,
+    ...item.layer.map(x => labelOf(layers, x)),
+    ...item.cert.map(x => labelOf(certs, x)),
+  ].join(" ").toLowerCase();
+  return haystack.includes(s);
+}
+
+// Matches every active group except `skipGroup`, plus the search query.
+function matchesAll(item, skipGroup) {
+  for (const g of GROUPS) {
+    if (g === skipGroup) continue;
+    if (!matchesGroup(item, g, filters[g])) return false;
+  }
+  return matchesSearch(item);
+}
+
+// Count for one chip, measured against the other groups' active filters
+// so a chip never advertises a combination that yields nothing.
+function chipCount(group, id) {
+  const single = new Set([id]);
+  return data.filter(x => matchesAll(x, group) && matchesGroup(x, group, single)).length;
+}
+
+function anyFilterActive() {
+  return GROUPS.some(g => filters[g].size > 0);
+}
+
+/* ---------------------------------------------------------------
+   Rendering
+   --------------------------------------------------------------- */
+
+function calculateStats() {
+  document.getElementById("stat-total").textContent = data.length;
+  document.getElementById("stat-commercial").textContent = data.filter(x => x.stage === "commercial").length;
+  document.getElementById("stat-pilot").textContent = data.filter(x => x.stage === "pilot").length;
+  document.getElementById("stat-research").textContent = data.filter(x => x.stage === "research").length;
+  document.getElementById("stat-countries").textContent = new Set(data.map(x => x.hq)).size;
+}
+
+function buildFilterGroups() {
+  const container = document.getElementById("filter-groups");
+  container.innerHTML = GROUPS.map(g => {
+    const meta = GROUP_META[g];
+    const chips = meta.list.map(opt => {
+      const active = filters[g].has(opt.id);
+      const count = chipCount(g, opt.id);
+      const dim = (!active && count === 0) ? " dim" : "";
+      return `<button type="button" class="filter-btn${active ? " active" : ""}${dim}"
+        aria-pressed="${active}" onclick="toggleFilter('${g}','${opt.id}')">
+        <span>${opt.label}</span><span class="filter-cnt">${count}</span>
+      </button>`;
+    }).join("");
+    return `<div class="filter-row">
+      <span class="filter-row-label">${meta.label}</span>
+      <div class="filters-grid">${chips}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("clear-all").hidden = !anyFilterActive();
+}
+
+function toggleFilter(group, id) {
+  const set = filters[group];
+  if (set.has(id)) set.delete(id); else set.add(id);
+  buildFilterGroups();
+  render();
+}
+
+function clearAllFilters() {
+  GROUPS.forEach(g => filters[g].clear());
+  buildFilterGroups();
+  render();
+}
+
+function render() {
+  const grid = document.getElementById("grid");
+  const visible = data.filter(x => matchesAll(x, null));
+
+  document.getElementById("results-count").textContent =
+    `${visible.length} organization${visible.length === 1 ? "" : "s"} visible`;
+
+  if (visible.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--color-text-secondary); background: var(--color-bg-card); border: 1px dashed var(--color-border); border-radius: var(--border-radius-lg);">
+        <i class="ti ti-search-off" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; color: var(--color-text-tertiary);"></i>
+        <p style="font-weight: 500;">No matching organizations found.</p>
+        <p style="font-size: 0.8rem; margin-top: 4px;">Try clearing a filter or broadening your search.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = visible.map(c => {
+    const layerChips = c.layer.map(l => {
+      const meta = layers.find(x => x.id === l);
+      return `<span class="layer-chip"><i class="ti ${meta.icon}" aria-hidden="true"></i>${meta.label}</span>`;
+    }).join("");
+
+    const certBadges = c.cert.map(r =>
+      `<span class="cert-badge cert-${r}">${labelOf(certs, r)}</span>`
+    ).join("");
+
+    const ucTags = c.uc.map(u => `<span class="usecase-tag">${u}</span>`).join("");
+
+    return `
+      <div class="company-card">
+        <div class="card-header">
+          <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="company-name">
+            ${c.n} <i class="ti ti-external-link" aria-hidden="true" style="font-size: 0.8rem; opacity: 0.5;"></i>
+          </a>
+          <span class="category-badge cat-${c.cat}">${labelOf(sectors, c.cat)}</span>
+        </div>
+
+        <div class="attr-row">
+          <span class="stage-pill stage-${c.stage}">${labelOf(stages, c.stage)}</span>
+          ${layerChips}
+        </div>
+
+        <div class="usecase-container">
+          <span class="usecase-label">Use Cases</span>
+          <div class="usecase-tags">${ucTags}</div>
+        </div>
+
+        <p class="company-desc">${c.d}</p>
+
+        <div class="card-footer">
+          <span class="footer-meta-item"><i class="ti ti-map-pin" aria-hidden="true"></i>${c.hq}</span>
+          ${c.f !== "—" ? `<span class="footer-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i>Est. ${c.f}</span>` : ""}
+          ${c.fund !== "—" ? `<span class="footer-meta-item"><i class="ti ti-coins" aria-hidden="true"></i>${c.fund}</span>` : ""}
+          <div style="margin-left: auto; display: flex; gap: 4px; flex-wrap: wrap;">${certBadges}</div>
+          ${c.note ? `<span class="status-note"><i class="ti ti-info-circle" aria-hidden="true"></i>${c.note}</span>` : ""}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+document.getElementById("search-input").addEventListener("input", (e) => {
+  searchQuery = e.target.value;
+  buildFilterGroups();
+  render();
+});
+
+calculateStats();
+buildFilterGroups();
+render();
+</script>
+
+</body>
+</html>
