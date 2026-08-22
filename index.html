@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Global Smart Fabrics &amp; E-Textiles Ecosystem Map</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <style>
     :root {
       --color-bg-base: #f9fafb;
@@ -33,6 +32,19 @@
         --color-accent: #3b82f6;
         --color-accent-hover: #60a5fa;
       }
+    }
+
+    /* Inline SVG icons: sized in em so font-size still controls them. */
+    .icon {
+      width: 1em;
+      height: 1em;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: -0.125em;
+      flex-shrink: 0;
     }
 
     * {
@@ -348,7 +360,7 @@
       gap: 3px;
     }
 
-    .layer-chip i { font-size: 0.8rem; opacity: 0.7; }
+    .layer-chip .icon { font-size: 0.8rem; opacity: 0.7; }
 
     /* Structured use case layer */
     .usecase-container {
@@ -414,7 +426,7 @@
       gap: 4px;
     }
 
-    .footer-meta-item i {
+    .footer-meta-item .icon {
       font-size: 0.85rem;
     }
 
@@ -472,6 +484,88 @@
 </head>
 <body>
 
+<!-- Icons from Tabler Icons (MIT), inlined so the page has no external dependencies. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </symbol>
+    <symbol id="i-search-off" viewBox="0 0 24 24">
+      <path d="M5.039 5.062a7 7 0 0 0 9.91 9.89m1.584 -2.434a7 7 0 0 0 -9.038 -9.057" />
+      <path d="M3 3l18 18" />
+    </symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24">
+      <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+      <path d="M11 13l9 -9" />
+      <path d="M15 4h5v5" />
+    </symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24">
+      <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0" />
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24">
+      <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12" />
+      <path d="M16 3v4" />
+      <path d="M8 3v4" />
+      <path d="M4 11h16" />
+      <path d="M11 15h1" />
+      <path d="M12 15v3" />
+    </symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24">
+      <path d="M9 14c0 1.657 2.686 3 6 3s6 -1.343 6 -3s-2.686 -3 -6 -3s-6 1.343 -6 3" />
+      <path d="M9 14v4c0 1.656 2.686 3 6 3s6 -1.344 6 -3v-4" />
+      <path d="M3 6c0 1.072 1.144 2.062 3 2.598s4.144 .536 6 0c1.856 -.536 3 -1.526 3 -2.598c0 -1.072 -1.144 -2.062 -3 -2.598s-4.144 -.536 -6 0c-1.856 .536 -3 1.526 -3 2.598" />
+      <path d="M3 6v10c0 .888 .772 1.45 2 2" />
+      <path d="M3 11c0 .888 .772 1.45 2 2" />
+    </symbol>
+    <symbol id="i-info-circle" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M12 9h.01" />
+      <path d="M11 12h1v4h1" />
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M18 6l-12 12" />
+      <path d="M6 6l12 12" />
+    </symbol>
+    <symbol id="i-line" viewBox="0 0 24 24">
+      <path d="M4 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M16 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M7.5 16.5l9 -9" />
+    </symbol>
+    <symbol id="i-wave-sine" viewBox="0 0 24 24">
+      <path d="M21 12h-2c-.894 0 -1.662 -.857 -1.761 -2c-.296 -3.45 -.749 -6 -2.749 -6s-2.5 3.582 -2.5 8s-.5 8 -2.5 8s-2.452 -2.547 -2.749 -6c-.1 -1.147 -.867 -2 -1.763 -2h-2" />
+    </symbol>
+    <symbol id="i-battery-charging" viewBox="0 0 24 24">
+      <path d="M16 7h1a2 2 0 0 1 2 2v.5a.5 .5 0 0 0 .5 .5a.5 .5 0 0 1 .5 .5v3a.5 .5 0 0 1 -.5 .5a.5 .5 0 0 0 -.5 .5v.5a2 2 0 0 1 -2 2h-2" />
+      <path d="M8 7h-2a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h1" />
+      <path d="M12 8l-2 4h3l-2 4" />
+    </symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24">
+      <path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" />
+      <path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" />
+      <path d="M9.7 17l4.6 0" />
+    </symbol>
+    <symbol id="i-circuit-changeover" viewBox="0 0 24 24">
+      <path d="M2 12h2" />
+      <path d="M20 7h2" />
+      <path d="M4 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M16 7a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M20 17h2" />
+      <path d="M16 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M7.5 10.5l8.5 -3.5" />
+    </symbol>
+    <symbol id="i-chart-dots" viewBox="0 0 24 24">
+      <path d="M3 3v18h18" />
+      <path d="M7 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M17 7a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M12 15a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+      <path d="M10.16 10.62l2.34 2.88" />
+      <path d="M15.088 13.328l2.837 -4.586" />
+    </symbol>
+  </defs>
+</svg>
+
 <div class="ecosystem-container">
   <!-- Header -->
   <header class="header-section">
@@ -509,7 +603,7 @@
   <section class="controls-bar">
     <!-- Search -->
     <div class="search-wrapper">
-      <i class="ti ti-search search-icon" aria-hidden="true"></i>
+      <svg class="icon search-icon" aria-hidden="true"><use href="#i-search"/></svg>
       <input type="text" id="search-input" class="search-input" placeholder="Search by organization, country, technology, or use case (e.g. 'ECG', 'graphene', 'energy harvesting', 'Japan')...">
     </div>
 
@@ -517,7 +611,7 @@
     <div class="filter-groups" id="filter-groups"></div>
 
     <button type="button" class="clear-all-btn" id="clear-all" hidden onclick="clearAllFilters()">
-      <i class="ti ti-x" aria-hidden="true"></i> Clear all filters
+      <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg> Clear all filters
     </button>
   </section>
 
@@ -559,12 +653,12 @@ const stages = [
 ];
 
 const layers = [
-  {id: "fiber",       label: "Conductive Fiber & Yarn", icon: "ti-line"},
-  {id: "sensing",     label: "Sensing",                 icon: "ti-wave-sine"},
-  {id: "energy",      label: "Energy & Power",          icon: "ti-battery-charging"},
-  {id: "actuation",   label: "Actuation & Output",      icon: "ti-bulb"},
-  {id: "integration", label: "Interconnect & Packaging",icon: "ti-circuit-changeover"},
-  {id: "software",    label: "Software & Analytics",    icon: "ti-chart-dots"},
+  {id: "fiber",       label: "Conductive Fiber & Yarn", icon: "i-line"},
+  {id: "sensing",     label: "Sensing",                 icon: "i-wave-sine"},
+  {id: "energy",      label: "Energy & Power",          icon: "i-battery-charging"},
+  {id: "actuation",   label: "Actuation & Output",      icon: "i-bulb"},
+  {id: "integration", label: "Interconnect & Packaging",icon: "i-circuit-changeover"},
+  {id: "software",    label: "Software & Analytics",    icon: "i-chart-dots"},
 ];
 
 const certs = [
@@ -1648,7 +1742,7 @@ function render() {
   if (visible.length === 0) {
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--color-text-secondary); background: var(--color-bg-card); border: 1px dashed var(--color-border); border-radius: var(--border-radius-lg);">
-        <i class="ti ti-search-off" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; color: var(--color-text-tertiary);"></i>
+        <svg class="icon" aria-hidden="true" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; color: var(--color-text-tertiary);"><use href="#i-search-off"/></svg>
         <p style="font-weight: 500;">No matching organizations found.</p>
         <p style="font-size: 0.8rem; margin-top: 4px;">Try clearing a filter or broadening your search.</p>
       </div>
@@ -1659,7 +1753,7 @@ function render() {
   grid.innerHTML = visible.map(c => {
     const layerChips = c.layer.map(l => {
       const meta = layers.find(x => x.id === l);
-      return `<span class="layer-chip"><i class="ti ${meta.icon}" aria-hidden="true"></i>${meta.label}</span>`;
+      return `<span class="layer-chip"><svg class="icon" aria-hidden="true"><use href="#${meta.icon}"/></svg>${meta.label}</span>`;
     }).join("");
 
     const certBadges = c.cert.map(r =>
@@ -1672,7 +1766,7 @@ function render() {
       <div class="company-card">
         <div class="card-header">
           <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="company-name">
-            ${c.n} <i class="ti ti-external-link" aria-hidden="true" style="font-size: 0.8rem; opacity: 0.5;"></i>
+            ${c.n} <svg class="icon" aria-hidden="true" style="font-size: 0.8rem; opacity: 0.5;"><use href="#i-external-link"/></svg>
           </a>
           <span class="category-badge cat-${c.cat}">${labelOf(sectors, c.cat)}</span>
         </div>
@@ -1690,11 +1784,11 @@ function render() {
         <p class="company-desc">${c.d}</p>
 
         <div class="card-footer">
-          <span class="footer-meta-item"><i class="ti ti-map-pin" aria-hidden="true"></i>${c.hq}</span>
-          ${c.f !== "—" ? `<span class="footer-meta-item"><i class="ti ti-calendar" aria-hidden="true"></i>Est. ${c.f}</span>` : ""}
-          ${c.fund !== "—" ? `<span class="footer-meta-item"><i class="ti ti-coins" aria-hidden="true"></i>${c.fund}</span>` : ""}
+          <span class="footer-meta-item"><svg class="icon" aria-hidden="true"><use href="#i-map-pin"/></svg>${c.hq}</span>
+          ${c.f !== "—" ? `<span class="footer-meta-item"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Est. ${c.f}</span>` : ""}
+          ${c.fund !== "—" ? `<span class="footer-meta-item"><svg class="icon" aria-hidden="true"><use href="#i-coins"/></svg>${c.fund}</span>` : ""}
           <div style="margin-left: auto; display: flex; gap: 4px; flex-wrap: wrap;">${certBadges}</div>
-          ${c.note ? `<span class="status-note"><i class="ti ti-info-circle" aria-hidden="true"></i>${c.note}</span>` : ""}
+          ${c.note ? `<span class="status-note"><svg class="icon" aria-hidden="true"><use href="#i-info-circle"/></svg>${c.note}</span>` : ""}
         </div>
       </div>
     `;

@@ -4,20 +4,23 @@ A directory of the organizations building electronic textiles worldwide: conduct
 yarns, sensing garments, textile energy and actuation, interconnect and packaging, and the
 research institutes and standards bodies behind them.
 
-Everything lives in a single file, `index.html`. There is no build step and no dependency to
-install. The only external request is the Tabler icon webfont from a CDN, and the page still
-works without it.
+Everything lives in a single file, `index.html`. There is no build step, nothing to install,
+and no external requests at all — the icons are an inline SVG sprite, so the page works
+offline and from a local file. Icons are from [Tabler Icons](https://tabler.io/icons) (MIT).
 
 ## Viewing it
 
-Open `index.html` in any browser. To serve it locally instead:
+**Live:** https://aditya-kabra.github.io/Claude_Test/
+
+Deployed by `.github/workflows/pages.yml` on every push to `main`.
+
+Locally, open `index.html` in any browser, or serve it:
 
 ```
 python3 -m http.server 8000
 ```
 
-Then go to `http://localhost:8000`. To publish it, turn on GitHub Pages for this repository
-and point it at the branch root.
+Then go to `http://localhost:8000`.
 
 ## What you can do with it
 
@@ -61,8 +64,9 @@ The four lookup tables sit directly above `data` and define every valid id:
 
 Adding a new sector means adding an entry to `sectors` **and** a matching `.cat-<id>` rule in
 the CSS palette block; the same applies to a new stage (`.stage-<id>`) or standard
-(`.cert-<id>`). Nothing else needs to change — the stats, filter chips and counts all derive
-from the data.
+(`.cert-<id>`). A new tech layer also needs an `icon` value pointing at a `<symbol>` in the
+SVG sprite at the top of `<body>` — add the symbol there first. Nothing else needs to change —
+the stats, filter chips and counts all derive from the data.
 
 ## A note on the data
 
