@@ -12,7 +12,10 @@ offline and from a local file. Icons are from [Tabler Icons](https://tabler.io/i
 
 **Live:** https://aditya-kabra.github.io/Claude_Test/
 
-Deployed by `.github/workflows/pages.yml` on every push to `main`.
+Deployed by `.github/workflows/pages.yml` on every push to `main`. This needs one piece of
+setup, done once: **Settings → Pages → Source: GitHub Actions**. A workflow's `GITHUB_TOKEN`
+can deploy to Pages but is not permitted to create the Pages site, so that first switch has to
+be flipped by a repository admin.
 
 Locally, open `index.html` in any browser, or serve it:
 
