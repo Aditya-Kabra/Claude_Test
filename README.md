@@ -1,3 +1,8 @@
+> This repository holds two independent landscape maps:
+>
+> - **[Smart Fabrics & E-Textiles](https://aditya-kabra.github.io/Claude_Test/)** — this page
+> - **[Roleplay & Conversational Simulation](https://aditya-kabra.github.io/Claude_Test/roleplay/)** — see [`roleplay/`](roleplay/)
+
 # Global Smart Fabrics & E-Textiles Ecosystem Map
 
 A directory of the organizations building electronic textiles worldwide: conductive fibers and

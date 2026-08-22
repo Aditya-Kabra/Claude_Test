@@ -1,0 +1,2818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roleplay AI Landscape</title>
+  <style>
+
+    :root {
+      --color-bg-base: #f9fafb;
+      --color-bg-card: #ffffff;
+      --color-border: #e5e7eb;
+      --color-border-hover: #cbd5e1;
+      --color-text-primary: #111827;
+      --color-text-secondary: #4b5563;
+      --color-text-tertiary: #9ca3af;
+      --color-accent: #2563eb;
+      --color-accent-hover: #1d4ed8;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-base: #0f172a;
+        --color-bg-card: #1e293b;
+        --color-border: #334155;
+        --color-border-hover: #475569;
+        --color-text-primary: #f8fafc;
+        --color-text-secondary: #cbd5e1;
+        --color-text-tertiary: #64748b;
+        --color-accent: #3b82f6;
+        --color-accent-hover: #60a5fa;
+      }
+    }
+
+    /* Inline SVG icons: sized in em so font-size still controls them. */
+    .icon {
+      width: 1em;
+      height: 1em;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: -0.125em;
+      flex-shrink: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+
+    .ecosystem-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title-row h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .header-title-row p {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 2px;
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
+    .controls-bar {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--color-accent);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-tertiary);
+      font-size: 1.1rem;
+    }
+
+    /* Faceted filter rows */
+    .filter-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .filter-row-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-tertiary);
+      padding-top: 6px;
+    }
+
+    .filters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-text-primary);
+      color: var(--color-bg-card);
+      border-color: var(--color-text-primary);
+    }
+
+    .filter-btn.dim {
+      opacity: 0.4;
+    }
+
+    .filter-cnt {
+      opacity: 0.6;
+      font-size: 0.7rem;
+      background: rgba(0,0,0,0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .filter-btn.active .filter-cnt {
+      background: rgba(255,255,255,0.2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .filter-cnt { background: rgba(255,255,255,0.08); }
+    }
+
+    .clear-all-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-accent);
+      background: transparent;
+      color: var(--color-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+      align-self: flex-start;
+    }
+
+    .clear-all-btn:hover {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .clear-all-btn[hidden] { display: none; }
+
+    .results-meta {
+      font-size: 0.8rem;
+      color: var(--color-text-tertiary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Grid and Cards */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .company-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    }
+
+    .company-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-border-hover);
+      box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .company-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.3;
+    }
+
+    .company-name:hover {
+      color: var(--color-accent);
+      text-decoration: underline;
+    }
+
+    .category-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    /* Stage + tech layer strip */
+    .attr-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .stage-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .layer-chip {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .layer-chip .icon { font-size: 0.8rem; opacity: 0.7; }
+
+    /* Structured use case layer */
+    .usecase-container {
+      background: rgba(0, 0, 0, 0.02);
+      border-left: 3px solid var(--color-accent);
+      padding: 6px 10px;
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .usecase-container {
+        background: rgba(255, 255, 255, 0.03);
+      }
+    }
+
+    .usecase-label {
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .usecase-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .usecase-tag {
+      font-size: 0.725rem;
+      font-weight: 600;
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+    }
+
+    .company-desc {
+      font-size: 0.825rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .footer-meta-item {
+      font-size: 0.725rem;
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .footer-meta-item .icon {
+      font-size: 0.85rem;
+    }
+
+    .status-note {
+      font-size: 0.7rem;
+      font-style: italic;
+      color: var(--color-text-tertiary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .cert-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      line-height: 1.5;
+    }
+
+    /* Sector Palette */
+    .cat-health      { background: #e6f1fb; color: #0c447c; border: 1px solid #185fa5; }
+    .cat-sports      { background: #eaf3de; color: #27500a; border: 1px solid #3b6d11; }
+    .cat-defense     { background: #f1efe8; color: #444441; border: 1px solid #5f5e5a; }
+    .cat-industrial  { background: #faeeda; color: #633806; border: 1px solid #854f0b; }
+    .cat-fashion     { background: #fbeaf0; color: #72243e; border: 1px solid #993556; }
+    .cat-mobility    { background: #e6f8fb; color: #08445a; border: 1px solid #0f6e86; }
+    .cat-materials   { background: #f5f0fb; color: #3a1f6b; border: 1px solid #6b3fa0; }
+    .cat-energy      { background: #fbf4e6; color: #5a3a08; border: 1px solid #8c6010; }
+    .cat-electronics { background: #eeedfe; color: #3c3489; border: 1px solid #534ab7; }
+    .cat-software    { background: #e1f5ee; color: #085041; border: 1px solid #0f6e56; }
+    .cat-research    { background: #e8f4fb; color: #0a3d5c; border: 1px solid #1565a0; }
+    .cat-standards   { background: #fcebeb; color: #791f1f; border: 1px solid #a32d2d; }
+
+    /* Stage Palette */
+    .stage-research   { background: #eef2ff; color: #3730a3; border: 1px solid #6366f1; }
+    .stage-pilot      { background: #fffbeb; color: #92400e; border: 1px solid #f59e0b; }
+    .stage-commercial { background: #f0fdf4; color: #166534; border: 1px solid #22c55e; }
+
+    /* Standards Palette */
+    .cert-oekotex   { background: #ecfdf5; color: #065f46; border: 1px solid #10b981; }
+    .cert-ce        { background: #eff6ff; color: #1e40af; border: 1px solid #3b82f6; }
+    .cert-fda       { background: #f5f3ff; color: #5b21b6; border: 1px solid #8b5cf6; }
+    .cert-iso13485  { background: #fff1f2; color: #9f1239; border: 1px solid #f43f5e; }
+    .cert-milspec   { background: #f1f5f9; color: #334155; border: 1px solid #64748b; }
+    .cert-ul        { background: #fff7ed; color: #9a3412; border: 1px solid #f97316; }
+
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .filter-row { grid-template-columns: 1fr; gap: 4px; }
+      .filter-row-label { padding-top: 0; }
+    }
+
+    /* ---------- View tabs ---------- */
+    .view-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .view-tab {
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card);
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .view-tab:hover { border-color: var(--color-border-hover); color: var(--color-text-primary); }
+
+    .view-tab.active {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+    .view-tab-cnt {
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(0,0,0,0.07);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    .view-tab.active .view-tab-cnt { background: rgba(255,255,255,0.22); }
+
+    @media (prefers-color-scheme: dark) {
+      .view-tab-cnt { background: rgba(255,255,255,0.1); }
+    }
+
+    /* ---------- Pinned cross-link ---------- */
+    #pin-bar[hidden] { display: none; }
+
+    .pin-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      padding: 6px 8px 6px 12px;
+      border-radius: 999px;
+      background: var(--color-bg-base);
+      border: 1px solid var(--color-accent);
+      color: var(--color-text-primary);
+    }
+
+    .pin-clear {
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      padding: 2px;
+      border-radius: 50%;
+      font-family: inherit;
+    }
+
+    .pin-clear:hover { background: var(--color-border); color: var(--color-text-primary); }
+
+    /* ---------- Use case cards ---------- */
+    /* Cards size to their content: expanding one card's analysis must not
+       stretch its whole row and leave dead space in the neighbours. */
+    .grid-uc {
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      align-items: start;
+    }
+
+    .uc-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+    }
+
+    .uc-card:hover {
+      border-color: var(--color-border-hover);
+      box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .uc-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--color-text-primary);
+    }
+
+    .domain-chip {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 4px;
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+    }
+
+    .role-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Facts (record) ---------- */
+    .facts {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.8rem;
+      color: var(--color-text-secondary);
+    }
+
+    .fact { display: flex; gap: 8px; align-items: baseline; }
+
+    .fact-label {
+      font-size: 0.675rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-tertiary);
+      flex: 0 0 62px;
+    }
+
+    /* ---------- Opinion (judgement) ---------- */
+    .verdict-block {
+      background: rgba(37, 99, 235, 0.05);
+      border-left: 3px solid var(--color-accent);
+      padding: 8px 10px;
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .verdict-block { background: rgba(96, 165, 250, 0.09); }
+    }
+
+    .verdict-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 3px;
+    }
+
+    .verdict-label em {
+      font-style: normal;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 600;
+      font-size: 0.65rem;
+      color: var(--color-text-tertiary);
+      border: 1px dashed var(--color-border-hover);
+      border-radius: 3px;
+      padding: 0 4px;
+      margin-left: 2px;
+    }
+
+    .verdict-block p {
+      font-size: 0.825rem;
+      line-height: 1.5;
+      color: var(--color-text-primary);
+    }
+
+    .analysis {
+      border-top: 1px dashed var(--color-border);
+      padding-top: 8px;
+    }
+
+    .analysis summary {
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-tertiary);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .analysis summary::-webkit-details-marker { display: none; }
+    .analysis summary:hover { color: var(--color-text-primary); }
+    .analysis .chev { transition: transform 0.15s ease; }
+    .analysis[open] .chev { transform: rotate(180deg); }
+
+    .analysis p {
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--color-text-secondary);
+      margin-top: 8px;
+    }
+
+    .an-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-right: 6px;
+    }
+
+    /* ---------- Card footers ---------- */
+    .org-link {
+      font-family: inherit;
+      font-size: 0.775rem;
+      font-weight: 700;
+      color: var(--color-accent);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      padding: 4px 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .org-link:hover { border-color: var(--color-accent); background: var(--color-bg-base); }
+
+    .org-names {
+      font-size: 0.725rem;
+      color: var(--color-text-tertiary);
+      flex: 1 1 100%;
+    }
+
+    .unserved {
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: #166534;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .unserved { color: #4ade80; }
+    }
+
+    .icon.ext { font-size: 0.8rem; opacity: 0.5; }
+
+    .zero-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--color-text-secondary);
+      background: var(--color-bg-card);
+      border: 1px dashed var(--color-border);
+      border-radius: var(--border-radius-lg);
+    }
+
+    .zero-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+      margin-inline: auto;
+      color: var(--color-text-tertiary);
+    }
+
+    /* ---------- Saturation palette: the opinion axis ---------- */
+    .sat-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .sat-crowded   { background: #fcebeb; color: #791f1f; border: 1px solid #a32d2d; }
+    .sat-contested { background: #faeeda; color: #633806; border: 1px solid #854f0b; }
+    .sat-emerging  { background: #e6f1fb; color: #0c447c; border: 1px solid #185fa5; }
+    .sat-open      { background: #eaf3de; color: #27500a; border: 1px solid #3b6d11; }
+
+    /* ---------- Role palette ---------- */
+    .role-counterpart { background: #e6f1fb; color: #0c447c; border: 1px solid #185fa5; }
+    .role-assessor    { background: #f5f0fb; color: #3a1f6b; border: 1px solid #6b3fa0; }
+    .role-subject     { background: #e1f5ee; color: #085041; border: 1px solid #0f6e56; }
+    .role-adversary   { background: #fcebeb; color: #791f1f; border: 1px solid #a32d2d; }
+    .role-companion   { background: #fbeaf0; color: #72243e; border: 1px solid #993556; }
+    .role-character   { background: #fbf4e6; color: #5a3a08; border: 1px solid #8c6010; }
+    .role-operator    { background: #f1efe8; color: #444441; border: 1px solid #5f5e5a; }
+
+    @media (max-width: 640px) {
+      .grid-uc { grid-template-columns: 1fr; }
+      .fact { flex-direction: column; gap: 0; }
+      .fact-label { flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Icons from Tabler Icons (MIT), inlined so the page has no external dependencies. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </symbol>
+    <symbol id="i-search-off" viewBox="0 0 24 24">
+      <path d="M5.039 5.062a7 7 0 0 0 9.91 9.89m1.584 -2.434a7 7 0 0 0 -9.038 -9.057" />
+      <path d="M3 3l18 18" />
+    </symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24">
+      <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+      <path d="M11 13l9 -9" />
+      <path d="M15 4h5v5" />
+    </symbol>
+    <symbol id="i-map-pin" viewBox="0 0 24 24">
+      <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+      <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0" />
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24">
+      <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12" />
+      <path d="M16 3v4" />
+      <path d="M8 3v4" />
+      <path d="M4 11h16" />
+      <path d="M11 15h1" />
+      <path d="M12 15v3" />
+    </symbol>
+    <symbol id="i-coins" viewBox="0 0 24 24">
+      <path d="M9 14c0 1.657 2.686 3 6 3s6 -1.343 6 -3s-2.686 -3 -6 -3s-6 1.343 -6 3" />
+      <path d="M9 14v4c0 1.656 2.686 3 6 3s6 -1.344 6 -3v-4" />
+      <path d="M3 6c0 1.072 1.144 2.062 3 2.598s4.144 .536 6 0c1.856 -.536 3 -1.526 3 -2.598c0 -1.072 -1.144 -2.062 -3 -2.598s-4.144 -.536 -6 0c-1.856 .536 -3 1.526 -3 2.598" />
+      <path d="M3 6v10c0 .888 .772 1.45 2 2" />
+      <path d="M3 11c0 .888 .772 1.45 2 2" />
+    </symbol>
+    <symbol id="i-info-circle" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M12 9h.01" />
+      <path d="M11 12h1v4h1" />
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M18 6l-12 12" />
+      <path d="M6 6l12 12" />
+    </symbol>
+    <symbol id="i-users" viewBox="0 0 24 24">
+      <path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+      <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+    </symbol>
+    <symbol id="i-clipboard-check" viewBox="0 0 24 24">
+      <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+      <path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2" />
+      <path d="M9 14l2 2l4 -4" />
+    </symbol>
+    <symbol id="i-flask" viewBox="0 0 24 24">
+      <path d="M9 3l6 0" />
+      <path d="M10 9l4 0" />
+      <path d="M10 3v6l-4 11a.7 .7 0 0 0 .5 1h11a.7 .7 0 0 0 .5 -1l-4 -11v-6" />
+    </symbol>
+    <symbol id="i-sword" viewBox="0 0 24 24">
+      <path d="M20 4v5l-9 7l-4 4l-3 -3l4 -4l7 -9l5 0" />
+      <path d="M6.5 11.5l6 6" />
+    </symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24">
+      <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+    </symbol>
+    <symbol id="i-masks-theater" viewBox="0 0 24 24">
+      <path d="M13.192 9h6.616a2 2 0 0 1 1.992 2.183l-.567 6.182a4 4 0 0 1 -3.983 3.635h-1.5a4 4 0 0 1 -3.983 -3.635l-.567 -6.182a2 2 0 0 1 1.992 -2.183" />
+      <path d="M15 13h.01" />
+      <path d="M18 13h.01" />
+      <path d="M15 16.5c1 .667 2 .667 3 0" />
+      <path d="M8.632 15.982a4.037 4.037 0 0 1 -.382 .018h-1.5a4 4 0 0 1 -3.983 -3.635l-.567 -6.182a2 2 0 0 1 1.992 -2.183h6.616a2 2 0 0 1 2 2" />
+      <path d="M6 8h.01" />
+      <path d="M9 8h.01" />
+      <path d="M6 12c.764 -.51 1.528 -.63 2.291 -.36" />
+    </symbol>
+    <symbol id="i-robot" viewBox="0 0 24 24">
+      <path d="M6 6a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -4" />
+      <path d="M12 2v2" />
+      <path d="M9 12v9" />
+      <path d="M15 12v9" />
+      <path d="M5 16l4 -2" />
+      <path d="M15 14l4 2" />
+      <path d="M9 18h6" />
+      <path d="M10 8v.01" />
+      <path d="M14 8v.01" />
+    </symbol>
+    <symbol id="i-message-2" viewBox="0 0 24 24">
+      <path d="M8 9h8" />
+      <path d="M8 13h6" />
+      <path d="M9 18h-3a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-3l-3 3l-3 -3" />
+    </symbol>
+    <symbol id="i-microphone" viewBox="0 0 24 24">
+      <path d="M9 5a3 3 0 0 1 3 -3a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3a3 3 0 0 1 -3 -3l0 -5" />
+      <path d="M5 10a7 7 0 0 0 14 0" />
+      <path d="M8 21l8 0" />
+      <path d="M12 17l0 4" />
+    </symbol>
+    <symbol id="i-video" viewBox="0 0 24 24">
+      <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4" />
+      <path d="M3 8a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -8" />
+    </symbol>
+    <symbol id="i-headset" viewBox="0 0 24 24">
+      <path d="M4 14v-3a8 8 0 1 1 16 0v3" />
+      <path d="M18 19c0 1.657 -2.686 3 -6 3" />
+      <path d="M4 14a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2v-3" />
+      <path d="M15 14a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2v-3" />
+    </symbol>
+    <symbol id="i-user-check" viewBox="0 0 24 24">
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
+      <path d="M15 19l2 2l4 -4" />
+    </symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24">
+      <path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7" />
+      <path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3" />
+      <path d="M9.7 17l4.6 0" />
+    </symbol>
+    <symbol id="i-alert-triangle" viewBox="0 0 24 24">
+      <path d="M12 9v4" />
+      <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0" />
+      <path d="M12 16h.01" />
+    </symbol>
+    <symbol id="i-shield-lock" viewBox="0 0 24 24">
+      <path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3" />
+      <path d="M11 11a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+      <path d="M12 12l0 2.5" />
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 24 24">
+      <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+      <path d="M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+    </symbol>
+    <symbol id="i-layout-grid" viewBox="0 0 24 24">
+      <path d="M4 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" />
+      <path d="M14 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" />
+      <path d="M4 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" />
+      <path d="M14 15a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -4" />
+    </symbol>
+    <symbol id="i-building-store" viewBox="0 0 24 24">
+      <path d="M3 21l18 0" />
+      <path d="M3 7v1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1m0 1a3 3 0 0 0 6 0v-1h-18l2 -4h14l2 4" />
+      <path d="M5 21l0 -10.15" />
+      <path d="M19 21l0 -10.15" />
+      <path d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" />
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12l14 0" />
+      <path d="M13 18l6 -6" />
+      <path d="M13 6l6 6" />
+    </symbol>
+    <symbol id="i-brain" viewBox="0 0 24 24">
+      <path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8" />
+      <path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8" />
+      <path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5" />
+      <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0" />
+      <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5" />
+      <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10" />
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24">
+      <path d="M6 9l6 6l6 -6" />
+    </symbol>
+  </defs>
+</svg>
+
+<div class="ecosystem-container">
+  <header class="header-section">
+    <div class="header-title-row">
+      <h1>Roleplay &amp; Conversational Simulation Landscape</h1>
+      <p>Where conversational AI plays a role in order to elicit, assess or develop human capability &mdash;
+      rather than to do the job itself. Organised by <strong>the role the AI plays</strong>, because that predicts
+      the buyer, the failure mode and the defensibility far better than industry does. Saturation ratings and
+      verdicts are judgement, marked as such throughout.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-uc">0</div>
+        <div class="stat-lbl">Use Cases</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-orgs">0</div>
+        <div class="stat-lbl">Organisations</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-open" style="color: #166534;">0</div>
+        <div class="stat-lbl">Rated Open</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-unserved" style="color: #166534;">0</div>
+        <div class="stat-lbl">No Vendor Found</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-countries">0</div>
+        <div class="stat-lbl">Countries</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="view-tabs" id="view-tabs"></div>
+
+  <section class="controls-bar">
+    <div class="search-wrapper">
+      <svg class="icon search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="text" id="search-input" class="search-input"
+        placeholder="Search use cases, organisations, buyers, verdicts (e.g. 'deposition', 'Medicaid', 'assessment centre')...">
+    </div>
+
+    <div class="filter-groups" id="filter-groups"></div>
+    <div id="pin-bar" hidden></div>
+
+    <button type="button" class="clear-all-btn" id="clear-all" hidden onclick="clearAllFilters()">
+      <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg> Clear all filters
+    </button>
+  </section>
+
+  <div class="results-meta" id="results-meta">
+    <span id="results-count">0 items</span>
+    <span style="font-size: 0.75rem;">Last Updated: August 2026</span>
+  </div>
+
+  <main class="grid-layout grid-uc" id="grid"></main>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Lookup tables. Every id used below must appear in one of these.
+   --------------------------------------------------------------- */
+
+const roles = [
+  {id: "counterpart", label: "Counterpart",  icon: "i-users",           blurb: "The AI is the person you practise against."},
+  {id: "assessor",    label: "Assessor",     icon: "i-clipboard-check", blurb: "The AI interviews you and scores what it hears."},
+  {id: "subject",     label: "Subject",      icon: "i-flask",           blurb: "The AI stands in for a population being studied."},
+  {id: "adversary",   label: "Adversary",    icon: "i-sword",           blurb: "The AI attacks you to test your defences."},
+  {id: "companion",   label: "Companion",    icon: "i-heart",           blurb: "The AI is an ongoing relationship, not an exercise."},
+  {id: "character",   label: "Character",    icon: "i-masks-theater",   blurb: "The AI is narrative or entertainment."},
+  {id: "operator",    label: "Operator",     icon: "i-robot",           blurb: "The AI does the job for real. The crowded zone."},
+];
+
+const domains = [
+  {id: "sales",     label: "Sales & Revenue"},
+  {id: "support",   label: "Customer Support"},
+  {id: "health",    label: "Healthcare & Clinical"},
+  {id: "education", label: "Education & Academia"},
+  {id: "hiring",    label: "Hiring & Talent"},
+  {id: "hr",        label: "Workplace & L&D"},
+  {id: "legal",     label: "Legal"},
+  {id: "safety",    label: "Public Safety & Emergency"},
+  {id: "finance",   label: "Financial Services"},
+  {id: "security",  label: "Security & Fraud"},
+  {id: "defense",   label: "Defence & Government"},
+  {id: "research",  label: "Research & Insight"},
+  {id: "consumer",  label: "Consumer & Wellbeing"},
+  {id: "gaming",    label: "Games & Entertainment"},
+  {id: "social",    label: "Social Care & Nonprofit"},
+];
+
+const modalities = [
+  {id: "text",  label: "Text",              icon: "i-message-2"},
+  {id: "voice", label: "Voice",             icon: "i-microphone"},
+  {id: "video", label: "Video / Avatar",    icon: "i-video"},
+  {id: "xr",    label: "VR / XR",           icon: "i-headset"},
+  {id: "hitl",  label: "Human-in-the-loop", icon: "i-user-check"},
+];
+
+// The opinion axis. Ordered from most to least contested.
+const saturations = [
+  {id: "crowded",   label: "Crowded",   blurb: "Many funded players, converging features, price pressure."},
+  {id: "contested", label: "Contested", blurb: "Real competition, but positioning still moves the outcome."},
+  {id: "emerging",  label: "Emerging",  blurb: "A handful of credible players, category still forming."},
+  {id: "open",      label: "Open",      blurb: "Little or nothing purpose-built. The interesting end."},
+];
+
+/* ---------------------------------------------------------------
+   USE CASES — the strategy layer.
+   buyer/replaces are factual. why/risk/moat/verdict are judgement
+   and are rendered in a visually separate block.
+   --------------------------------------------------------------- */
+
+const useCases = [
+
+  // ---------- COUNTERPART ----------
+  {
+    id: "sales-cold-call", name: "Cold call & prospecting practice",
+    role: "counterpart", domain: ["sales"], modality: ["voice"], saturation: "crowded",
+    buyer: "Sales enablement, VP Sales, SDR leadership",
+    replaces: "Manager-led roleplay, peer practice, burning live leads on new reps",
+    why: "The most product-market-fit-y corner of the whole space. Ramp time is measured, turnover is brutal, and the counterpart is a stranger on a phone — which is exactly the persona an LLM finds easiest to play convincingly.",
+    risk: "Feature convergence is nearly complete. Every platform now has a bot builder, scoring, and a call library. Buyers increasingly get this bundled from their sales-engagement vendor.",
+    moat: "Proprietary call data for realism and scoring calibration, plus attachment to the system of record where real calls happen. Standalone practice is being commoditised.",
+    verdict: "Do not start here. If you are already here, the durable position is upstream in real-call data, not in the roleplay itself.",
+    orgs: ["Hyperbound", "Second Nature", "Quantified", "Nooks", "Mindtickle", "Allego", "Luster"],
+  },
+  {
+    id: "sales-discovery", name: "Discovery, demo & objection handling",
+    role: "counterpart", domain: ["sales"], modality: ["voice", "video"], saturation: "crowded",
+    buyer: "Sales enablement, revenue operations",
+    replaces: "Certification roleplays with managers, ride-along coaching",
+    why: "Longer, more complex conversations than cold calls, so scoring is harder and more valuable. Certification before a rep touches a real account is a genuine compliance need in enterprise sales.",
+    risk: "Same crowd as cold calling, with the same vendors. Scoring rubrics are the differentiator and they are easy to copy.",
+    moat: "Industry-specific buyer personas built from real deal data, and integration into the enablement certification workflow rather than the practice session.",
+    verdict: "Crowded, but the vertical cuts are not. A discovery simulator that knows how a hospital procurement committee actually behaves is a different product from a generic one.",
+    orgs: ["Hyperbound", "Second Nature", "Quantified", "Mindtickle", "Allego", "Attensi"],
+  },
+  {
+    id: "sales-negotiation", name: "Deal negotiation & procurement pushback",
+    role: "counterpart", domain: ["sales", "finance"], modality: ["voice"], saturation: "contested",
+    buyer: "Enterprise sales leadership, procurement teams (both sides)",
+    replaces: "Negotiation training workshops, expensive external consultancies",
+    why: "Negotiation is the highest-value conversation most companies never let people practise. A single point of margin on an enterprise contract dwarfs the cost of any training tool.",
+    risk: "Realistic negotiation requires the AI to hold a position under pressure over many turns, which is where LLMs get agreeable and break the exercise.",
+    moat: "Adversarial persistence: a counterpart that genuinely does not fold. That is a modelling and evaluation problem, not a prompt.",
+    verdict: "Underbuilt relative to its value. The technical difficulty of a counterpart that stays hard is the barrier, and therefore the opportunity.",
+    orgs: ["Hyperbound", "Second Nature", "Exec", "Pactum"],
+  },
+  {
+    id: "csr-training", name: "Contact centre agent training",
+    role: "counterpart", domain: ["support"], modality: ["voice", "text"], saturation: "crowded",
+    buyer: "Contact centre operations, BPO training leads",
+    replaces: "Nesting periods, side-by-side coaching, scripted peer roleplay",
+    why: "Enormous headcount, punishing attrition, and a training cost that is measured to the cent. The ROI arithmetic is trivial to make.",
+    risk: "The same AI that trains the agent is replacing the agent. Every roleplay vendor here is selling into a shrinking headcount.",
+    moat: "Very little at the practice layer. The value is migrating into real-time agent assist and into quality analytics on live calls.",
+    verdict: "Crowded and structurally shrinking. Avoid unless you are attached to the live-call stack.",
+    orgs: ["Zenarate", "Cresta", "Observe.AI", "Mindtickle", "Attensi"],
+  },
+  {
+    id: "clinical-history", name: "Clinical history-taking & diagnostic reasoning",
+    role: "counterpart", domain: ["health", "education"], modality: ["voice", "text", "xr"], saturation: "contested",
+    buyer: "Medical and nursing schools, teaching hospitals, simulation centres",
+    replaces: "Standardised patients (paid actors), at roughly $30-60 per encounter hour",
+    why: "Standardised patient programmes are the single clearest cost target in the whole landscape. Schools already have the budget line, the pedagogy, and the assessment rubrics — the AI just has to be cheaper and available at 2am.",
+    risk: "Accreditation bodies move slowly and simulation faculty are rightly protective. Clinical realism failures are pedagogically harmful, not just embarrassing.",
+    moat: "Accreditation alignment and validated rubrics, plus depth of clinical case libraries. Institutional sales cycles are the barrier and the protection.",
+    verdict: "Real budget, real incumbents, real inertia. Winnable with clinical credibility on the founding team, not winnable on model quality alone.",
+    orgs: ["SimConverse", "Body Interact", "Oxford Medical Simulation", "Shadow Health", "CAE Healthcare", "ScenarioIQ", "MediSim VR"],
+  },
+  {
+    id: "breaking-bad-news", name: "Breaking bad news & end-of-life conversations",
+    role: "counterpart", domain: ["health"], modality: ["voice", "video"], saturation: "open",
+    buyer: "Hospital systems, palliative care programmes, oncology departments",
+    replaces: "Rare, expensive faculty-led workshops that most clinicians attend once",
+    why: "Clinicians consistently report this as the conversation they are least prepared for and get the least practice at. Low frequency plus high stakes is precisely the profile that human roleplay cannot serve economically.",
+    risk: "Emotionally heavy content raises real questions about whether a simulated grieving relative is appropriate practice. Needs clinical psychology input, not just prompt design.",
+    moat: "Emotional fidelity and the evidence base to show transfer to real encounters. Publishing outcome studies is the entry ticket and the barrier.",
+    verdict: "Genuinely open, and one of the strongest whitespace candidates. The counterpart is hard to recruit ethically and impossible to schedule on demand — exactly what simulation is for.",
+    orgs: ["Kognito", "Oxford Medical Simulation", "SimConverse"],
+  },
+  {
+    id: "nursing-handover", name: "Clinical handover, escalation & speaking up",
+    role: "counterpart", domain: ["health", "safety"], modality: ["voice"], saturation: "open",
+    buyer: "Hospital nursing education, patient safety and quality teams",
+    replaces: "Classroom SBAR drills, incident-driven retraining",
+    why: "Failure to escalate is a documented and recurring cause of preventable harm. The barrier is hierarchy and confidence, which is a rehearsal problem, not a knowledge problem.",
+    risk: "Buyer sits in quality and safety rather than L&D, so the sales motion is unfamiliar to most training vendors.",
+    moat: "Tying practice to incident data, so the simulator drills the escalations that actually failed in that hospital.",
+    verdict: "Open and unusually well-defined. A narrow product that only did escalation confidence would have no direct competitor today.",
+    orgs: ["Oxford Medical Simulation", "Kognito", "ScenarioIQ"],
+  },
+  {
+    id: "therapy-training", name: "Therapist & counsellor skills practice",
+    role: "counterpart", domain: ["health", "education", "social"], modality: ["voice", "text"], saturation: "emerging",
+    buyer: "Counselling psychology and MSW programmes, clinical supervisors",
+    replaces: "Peer roleplay, scarce supervised client hours, paid simulated clients",
+    why: "Trainees need supervised hours they cannot get, and real clients cannot ethically be practice material. A simulated client is one of the few places where synthetic is clearly better than the alternative.",
+    risk: "Supervision bodies must accept simulated hours toward licensure, and that is unresolved. Without it the product is practice, not progress.",
+    moat: "Accreditation recognition, and skill-classification models that score technique (reflection, MI adherence) rather than sentiment.",
+    verdict: "Emerging with strong fundamentals and pilot evidence already published. The licensure-hours question is the whole game — solve that and the category is yours.",
+    orgs: ["SimCare", "Praxplay", "Lyssn", "Empathy Helper", "Kognito"],
+  },
+  {
+    id: "motivational-interviewing", name: "Motivational interviewing & behaviour change",
+    role: "counterpart", domain: ["health", "social"], modality: ["voice"], saturation: "emerging",
+    buyer: "Public health programmes, addiction services, health coaching employers",
+    replaces: "MI workshops with coded audio review, which are slow and expensive to grade",
+    why: "MI has a rigorous, decades-old coding scheme, so unlike most soft skills it is genuinely measurable. That makes automated scoring defensible rather than hand-wavy.",
+    risk: "Fidelity coding is subtle and a shallow implementation produces confident nonsense that erodes trust with clinically literate buyers.",
+    moat: "Validated automated fidelity coding against the established human-coded standard.",
+    verdict: "Small but real, and the measurability is unusual. A wedge into the much larger health-coaching workforce.",
+    orgs: ["Lyssn", "SimCare", "Kognito"],
+  },
+  {
+    id: "mgr-difficult", name: "Manager difficult conversations",
+    role: "counterpart", domain: ["hr"], modality: ["voice", "video", "xr", "hitl"], saturation: "contested",
+    buyer: "L&D, HR business partners, leadership development",
+    replaces: "Actor-based roleplay days, leadership offsites",
+    why: "Performance reviews, layoffs and conduct conversations are high-consequence and low-frequency, and most managers are never rehearsed before doing one for real.",
+    risk: "L&D budgets are soft and the category has a long history of engagement collapsing after the mandated first session.",
+    moat: "Human-in-the-loop realism at the top end (Mursion's model) or tight integration into the HR workflow so practice is triggered by an actual upcoming conversation.",
+    verdict: "Contested by well-funded incumbents. Beating them on generic scenarios is unlikely; triggering practice from a real calendar event is a different product.",
+    orgs: ["Mursion", "Bodyswaps", "Talespin", "Attensi", "Exec", "Yoodli", "VirtualSpeech"],
+  },
+  {
+    id: "interview-practice", name: "Candidate interview practice",
+    role: "counterpart", domain: ["hiring", "education"], modality: ["voice", "video"], saturation: "crowded",
+    buyer: "Job seekers directly; university career services; outplacement firms",
+    replaces: "Mock interviews with careers advisors and friends",
+    why: "Universal anxiety, clear willingness to pay at the moment of need, and a job the AI does obviously well.",
+    risk: "Consumer churn is savage — the need evaporates the moment someone is hired. Free alternatives from Google and LinkedIn set the price at roughly zero.",
+    moat: "Institutional distribution through universities and outplacement, where the buyer is not the churning individual.",
+    verdict: "Crowded and structurally churn-cursed as a consumer product. Only interesting through an institutional channel.",
+    orgs: ["Yoodli", "Final Round AI", "Google Interview Warmup", "Bodyswaps", "VirtualSpeech", "Oomou"],
+  },
+  {
+    id: "deposition-prep", name: "Deposition & witness preparation",
+    role: "counterpart", domain: ["legal"], modality: ["voice", "video"], saturation: "open",
+    buyer: "Litigation practice groups, corporate legal operations, in-house counsel",
+    replaces: "Hired actors for mock depositions and senior partner time billed at $800+/hour",
+    why: "The economics are extreme: the thing being replaced is the most expensive hour in professional services. Associates get few reps before their first real deposition, and witnesses get almost none.",
+    risk: "Privilege and confidentiality make firms cautious about putting case facts into any vendor's system. Deployment model matters more than product quality.",
+    moat: "Privilege-safe architecture and rubric credibility with litigators. Trust, not technology.",
+    verdict: "Among the clearest open opportunities in the map. DepoSim is early evidence the category is real, and the field is otherwise close to empty.",
+    orgs: ["DepoSim", "AltaClaro", "Exec"],
+  },
+  {
+    id: "courtroom-advocacy", name: "Oral advocacy & moot court",
+    role: "counterpart", domain: ["legal", "education"], modality: ["voice"], saturation: "open",
+    buyer: "Law schools, bar preparation providers, advocacy training bodies",
+    replaces: "Faculty and volunteer judges for moot court, which limits practice to a few rounds a year",
+    why: "A simulated bench that interrupts with hard questions is a well-specified problem, and the scarcity of judges is the binding constraint on practice today.",
+    risk: "Law school budgets are tight and faculty scepticism about AI in legal education is currently high.",
+    moat: "Jurisdiction-specific procedure and question patterns; a bench that behaves like a real appellate panel.",
+    verdict: "Open, small, and a natural adjacency to deposition prep. Better as a second product than a first.",
+    orgs: ["AltaClaro", "DepoSim"],
+  },
+  {
+    id: "police-deescalation", name: "Police de-escalation & crisis response",
+    role: "counterpart", domain: ["safety"], modality: ["voice", "xr"], saturation: "emerging",
+    buyer: "Police academies, state training commissions, municipal risk management",
+    replaces: "Scenario days with hired role-players, VR simulators costing six figures",
+    why: "Political and legal pressure on use-of-force outcomes has created mandated de-escalation training hours that departments struggle to staff and deliver.",
+    risk: "Procurement is slow, politically exposed, and dominated by entrenched simulator vendors with hardware relationships.",
+    moat: "Certification against state training mandates, and evidence of behavioural transfer that survives litigation scrutiny.",
+    verdict: "Emerging with real mandated budget. The incumbents sell hardware; a software-only entrant has a genuine cost story but a brutal sales cycle.",
+    orgs: ["MILO", "Axon", "Wrap Reality", "Forge Simulations", "Kaiden AI", "Mursion"],
+  },
+  {
+    id: "crisis-hotline", name: "Crisis line & suicide intervention training",
+    role: "counterpart", domain: ["safety", "social"], modality: ["voice", "text"], saturation: "open",
+    buyer: "Crisis line operators, 988-type services, volunteer-based charities",
+    replaces: "Role-play with trainers, which is the sole practice route and severely rations volunteer onboarding",
+    why: "Volunteer crisis services are throughput-limited by training capacity, and the counterpart — a person in acute distress — is one you categorically cannot recruit for practice.",
+    risk: "The highest-consequence content in the entire landscape. A simulator that trains the wrong reflex is actively dangerous, and any vendor here carries serious ethical exposure.",
+    moat: "Clinical governance and endorsement from the crisis-intervention bodies. Nothing else will get you deployed.",
+    verdict: "Open, high-impact, and correspondingly high-responsibility. Only viable with genuine clinical partnership; not a solo-founder category.",
+    orgs: ["Kognito", "SimCare", "Praxplay"],
+  },
+  {
+    id: "lang-conversation", name: "Language conversation partner",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["voice"], saturation: "crowded",
+    buyer: "Consumers directly; some school and corporate licensing",
+    replaces: "Conversation exchange partners, private tutors, immersion",
+    why: "The clearest consumer case in the space: speaking practice is what learners lack and what tutors are expensive for, and an infinitely patient partner removes the embarrassment barrier.",
+    risk: "Extremely crowded, heavily funded, and Duolingo bundles it. Consumer retention in language learning is historically dismal.",
+    moat: "Curriculum and assessment integration, or ownership of a specific language pair the giants underserve.",
+    verdict: "Crowded at the consumer end. The unclaimed ground is institutional assessment, not another practice app.",
+    orgs: ["Speak", "Praktika", "Loora", "TalkPal", "ELSA", "Duolingo", "Talkio AI"],
+  },
+  {
+    id: "pharma-rep", name: "Pharma & medical device rep detailing",
+    role: "counterpart", domain: ["health", "sales"], modality: ["voice", "video"], saturation: "contested",
+    buyer: "Pharma commercial training, medical affairs, compliance",
+    replaces: "Roleplay certification with district managers, in-person launch training",
+    why: "Every claim a rep makes is regulated, so practice is not optional — it is a compliance artefact. That converts a training spend into a risk-management spend, which is a far better budget.",
+    risk: "Regulatory review of the content itself, and long enterprise validation cycles typical of life sciences.",
+    moat: "Label-accurate claim checking and an auditable record of who was certified on what message and when.",
+    verdict: "Contested but for the right reason: the audit trail matters more than the conversation. That is a defensible product, and Quantified has already found it.",
+    orgs: ["Quantified", "Second Nature", "Attensi", "Mindtickle"],
+  },
+  {
+    id: "financial-advice", name: "Financial advice & suitability conversations",
+    role: "counterpart", domain: ["finance"], modality: ["voice"], saturation: "emerging",
+    buyer: "Wealth management, retail banking, insurance training and compliance",
+    replaces: "Compliance roleplay, supervised call monitoring, mystery shopping",
+    why: "Suitability and vulnerable-customer rules require advisers to demonstrate specific conversational behaviours, and regulators increasingly ask for evidence of competence rather than attendance.",
+    risk: "Highly regulated content, conservative buyers, and long procurement.",
+    moat: "Mapping to named regulatory duties (Consumer Duty in the UK, Reg BI in the US) so the output is evidence, not a score.",
+    verdict: "Emerging and underrated. The regulatory-evidence framing turns a nice-to-have into a filing requirement.",
+    orgs: ["Quantified", "Zenarate", "Attensi", "Second Nature"],
+  },
+  {
+    id: "teacher-parent", name: "Teacher classroom & parent conference practice",
+    role: "counterpart", domain: ["education"], modality: ["voice", "xr"], saturation: "open",
+    buyer: "Teacher preparation programmes, school districts, education authorities",
+    replaces: "Peer microteaching, limited practicum placements",
+    why: "Teacher preparation has a well-known practice gap, and the difficult parent conference is a documented driver of early-career attrition.",
+    risk: "Education budgets are the tightest of any institutional buyer, and district procurement is slow and fragmented.",
+    moat: "Alignment to teacher certification standards and integration with practicum assessment.",
+    verdict: "Open with genuine need but a hard buyer. Mursion has served it for years without the category filling in, which is itself a signal about the economics.",
+    orgs: ["Mursion", "Kognito", "Bodyswaps"],
+  },
+  {
+    id: "social-work", name: "Child protection & social work interviewing",
+    role: "counterpart", domain: ["social", "education"], modality: ["voice", "text"], saturation: "open",
+    buyer: "Social work programmes, child protection agencies, local authorities",
+    replaces: "Peer roleplay and shadowing, with almost no safe practice on the hardest cases",
+    why: "Interviewing a child about possible abuse is the clearest example in the landscape of a counterpart you must never practise on. Simulation is not a cheaper option here; it is the only ethical one.",
+    risk: "Extreme content sensitivity, safeguarding review, and public-sector procurement.",
+    moat: "Safeguarding governance and endorsement from the professional bodies.",
+    verdict: "Open and morally compelling. Academic pilots exist but no serious commercial product does. Hard, slow, and worth it.",
+    orgs: ["Empathy Helper", "SWITCH", "SimCare", "Kognito"],
+  },
+  {
+    id: "public-speaking", name: "Public speaking & presentation Q&A",
+    role: "counterpart", domain: ["hr", "education"], modality: ["voice", "video", "xr"], saturation: "contested",
+    buyer: "Individuals, L&D teams, university communication programmes",
+    replaces: "Toastmasters, speaking coaches, practising at the mirror",
+    why: "Filler words, pace and eye contact are objectively measurable, which makes automated feedback credible in a way most soft-skill scoring is not.",
+    risk: "Measurement of delivery is close to solved and commoditised. The hard part — whether the content persuaded anyone — is largely unaddressed.",
+    moat: "Moving from delivery metrics to argument quality and hostile Q&A survival.",
+    verdict: "Contested on delivery, open on substance. Nobody has convincingly built the simulator that attacks your argument rather than counting your ums.",
+    orgs: ["Yoodli", "VirtualSpeech", "Bodyswaps", "Poised", "Orai"],
+  },
+  {
+    id: "board-qa", name: "Board, investor & analyst Q&A",
+    role: "counterpart", domain: ["finance", "hr"], modality: ["voice", "video"], saturation: "open",
+    buyer: "Investor relations, CFO offices, executive coaches, IPO advisers",
+    replaces: "Rehearsal with bankers and IR consultants at extremely high day rates",
+    why: "Earnings calls and investor days are high-stakes, scheduled, and rehearsed today by expensive humans reading from a list of likely questions. That list is exactly what a model can generate from filings and prior transcripts.",
+    risk: "Material non-public information handling makes deployment sensitive. Small buyer population, though each one has a large budget.",
+    moat: "Grounding in the company's own filings and transcript history, so the questions are specific rather than generic.",
+    verdict: "Open, high-value, low-volume. A consulting-shaped business more than a SaaS one, which is possibly why nobody has built it.",
+    orgs: ["Exec", "Yoodli"],
+  },
+  {
+    id: "crisis-comms", name: "Crisis communications & hostile media",
+    role: "counterpart", domain: ["hr", "defense"], modality: ["voice", "video"], saturation: "open",
+    buyer: "Corporate communications, PR agencies, public bodies",
+    replaces: "Media training days with ex-journalists, at four-figure day rates",
+    why: "The hostile interviewer is a well-defined adversarial persona and a natural fit for simulation. Crisis drills are already an established corporate ritual with budget attached.",
+    risk: "Episodic buying — organisations train after an incident, not on a subscription rhythm.",
+    moat: "Scenario libraries drawn from real sector incidents, and integration into crisis-management exercises rather than standalone practice.",
+    verdict: "Open. Best sold as part of a crisis readiness programme rather than as a training tool, which changes who you sell to.",
+    orgs: ["Exec", "Yoodli", "Mursion"],
+  },
+  {
+    id: "regulatory-inspection", name: "Regulatory inspection & audit readiness",
+    role: "counterpart", domain: ["health", "finance", "defense"], modality: ["voice"], saturation: "open",
+    buyer: "Quality assurance, regulatory affairs, compliance in regulated manufacturing and care",
+    replaces: "Mock inspections run by ex-regulators and consultancies",
+    why: "An FDA or CQC inspection is an interrogation that staff face rarely and cannot afford to fail. Mock inspections already exist as a paid service, which proves both the need and the price point.",
+    risk: "Narrow per-sector applicability; each regulator needs its own build.",
+    moat: "Regulator-specific question banks and the credibility of ex-inspector involvement.",
+    verdict: "Open and almost entirely unserved by software. The consultancy incumbents have priced the market for you.",
+    orgs: [],
+  },
+  {
+    id: "diplomacy", name: "Diplomatic & policy negotiation simulation",
+    role: "counterpart", domain: ["defense", "education"], modality: ["text", "voice"], saturation: "open",
+    buyer: "Foreign ministries, policy schools, international organisations, think tanks",
+    replaces: "Model-UN style human simulations and expert-staffed tabletop exercises",
+    why: "Policy simulation is an established practice with a real methodology; the constraint is assembling enough qualified humans to play the other parties credibly.",
+    risk: "Tiny commercial market, heavy reliance on grant funding, and understandable scepticism about model bias in geopolitical reasoning.",
+    moat: "Historical and doctrinal grounding for each actor being simulated.",
+    verdict: "Open but commercially thin. Interesting as research or reputation-building, not as a business.",
+    orgs: [],
+  },
+  {
+    id: "mil-wargame", name: "Military wargaming & tabletop exercise",
+    role: "counterpart", domain: ["defense"], modality: ["text", "voice", "xr"], saturation: "emerging",
+    buyer: "Defence ministries, service training commands, defence contractors",
+    replaces: "Human red teams and staff-heavy exercise design",
+    why: "Wargaming is chronically bottlenecked on the people needed to play opposing forces, and defence budgets for simulation are large and stable.",
+    risk: "Clearance, procurement and on-premise requirements put this out of reach for most startups.",
+    moat: "Accreditation, security clearance, and existing primes relationships.",
+    verdict: "Emerging with real money, but the barriers are institutional rather than technical. Not accessible without defence-sector standing.",
+    orgs: ["Forge Simulations"],
+  },
+  {
+    id: "aviation-crm", name: "Aviation & safety-critical crew resource management",
+    role: "counterpart", domain: ["safety"], modality: ["voice", "xr"], saturation: "open",
+    buyer: "Airlines, flight training organisations, nuclear and rail operators",
+    replaces: "Full-flight simulator sessions with instructor-played roles, at thousands per hour",
+    why: "CRM failures — the crew who would not challenge the captain — are a documented accident cause, and the non-technical skills half of simulator time is the part that does not actually need the hardware.",
+    risk: "Aviation training is regulator-certified in fine detail; anything uncertified is supplementary and therefore unbudgeted.",
+    moat: "Regulatory certification as approved training, which is slow but extremely durable once held.",
+    verdict: "Open and structurally attractive: an expensive incumbent, a clear split between what needs hardware and what does not. The certification path is the whole barrier.",
+    orgs: [],
+  },
+  {
+    id: "autism-social", name: "Neurodivergent social skills practice",
+    role: "counterpart", domain: ["health", "education", "social"], modality: ["voice", "xr"], saturation: "emerging",
+    buyer: "Schools, therapy providers, some direct-to-family; insurers in the US",
+    replaces: "Therapist-led social skills groups, which are scarce and expensive",
+    why: "Rehearsal in a low-stakes environment, repeatable without social cost, is a well-evidenced intervention. Floreo has already navigated the clinical evidence path.",
+    risk: "Clinical validation is required for reimbursement, and the autistic community is rightly critical of tools built on normative behaviour models.",
+    moat: "Clinical evidence and reimbursement coding; co-design with autistic users rather than about them.",
+    verdict: "Emerging with an established reimbursement path. Ethically demanding and worth doing properly.",
+    orgs: ["Floreo", "Kognito"],
+  },
+  {
+    id: "dementia-care", name: "Dementia care & responsive behaviour training",
+    role: "counterpart", domain: ["health", "social"], modality: ["voice", "xr"], saturation: "open",
+    buyer: "Care home operators, home care agencies, family carer programmes",
+    replaces: "Classroom training and learning on the job at the resident's expense",
+    why: "Care work has extreme turnover, minimal training budget per head, and a counterpart whose behaviour is genuinely hard to describe in a classroom but easy to demonstrate in dialogue.",
+    risk: "The lowest per-seat budget of any buyer in this map. Unit economics have to work at care-sector prices.",
+    moat: "Regulatory training requirements in aged care, and distribution through operator groups rather than individual homes.",
+    verdict: "Open, large workforce, painfully price-sensitive. Volume play or nothing.",
+    orgs: ["Bodyswaps", "Kognito", "Attensi"],
+  },
+  {
+    id: "retail-frontline", name: "Retail & hospitality frontline service",
+    role: "counterpart", domain: ["support", "sales"], modality: ["voice", "video", "xr"], saturation: "contested",
+    buyer: "Retail and hospitality operations, franchise training",
+    replaces: "Shadowing, shift-based coaching, e-learning modules nobody finishes",
+    why: "Vast seasonal workforces that must be trained fast and cheap, with measurable outcomes in mystery-shopper and CSAT scores.",
+    risk: "Attensi and Strivr have this well covered at enterprise scale, and the per-seat price ceiling is low.",
+    moat: "Gamification and completion rates at scale; integration with workforce management.",
+    verdict: "Contested by strong incumbents with a real product advantage in engagement. Not a promising entry point.",
+    orgs: ["Attensi", "Strivr", "Zenarate", "Bodyswaps"],
+  },
+  {
+    id: "dei-bystander", name: "Harassment, bystander & ethics scenarios",
+    role: "counterpart", domain: ["hr"], modality: ["voice", "video", "xr"], saturation: "contested",
+    buyer: "HR compliance, legal, DEI functions",
+    replaces: "Click-through compliance modules that demonstrably change nothing",
+    why: "Mandated training with a well-documented effectiveness problem. Practising the intervention rather than reading about it is the obvious fix.",
+    risk: "The buyer wants completion certificates, not behaviour change. That misalignment has killed better products than this.",
+    moat: "Evidence of actual behavioural change, which matters only if a regulator or litigator starts asking for it.",
+    verdict: "Contested and structurally compromised by a buyer who is purchasing legal cover rather than outcomes. Enter only if regulation shifts toward efficacy.",
+    orgs: ["Bodyswaps", "Mursion", "Talespin", "Kognito"],
+  },
+  {
+    id: "mediation", name: "Conflict mediation & arbitration practice",
+    role: "counterpart", domain: ["legal", "hr"], modality: ["voice"], saturation: "open",
+    buyer: "Mediation training bodies, HR employee relations, ombudsman services",
+    replaces: "Roleplay with trainers in accreditation courses",
+    why: "Mediator accreditation requires assessed practical hours, and simulating two disputing parties at once is a genuinely novel capability rather than a cheaper version of something existing.",
+    risk: "Small profession, fragmented accreditation, limited budget.",
+    moat: "Multi-party simulation, which is technically harder and largely unattempted.",
+    verdict: "Open and technically interesting. Commercially small on its own; better as a capability that unlocks adjacent multi-party scenarios.",
+    orgs: [],
+  },
+  {
+    id: "journalism-interview", name: "Source & hostile interview practice for journalists",
+    role: "counterpart", domain: ["education"], modality: ["voice"], saturation: "open",
+    buyer: "Journalism schools, newsroom training desks, press freedom organisations",
+    replaces: "Peer practice and learning on live sources",
+    why: "Interviewing an evasive official is a craft skill currently learned by failing at it in public.",
+    risk: "Journalism training budgets are close to nonexistent and the industry is contracting.",
+    moat: "Little. This is a feature of a broader communications simulator.",
+    verdict: "Open because nobody wants it enough to pay. Interesting, not investable.",
+    orgs: [],
+  },
+  {
+    id: "peer-support", name: "Peer support & recovery coach training",
+    role: "counterpart", domain: ["social", "health"], modality: ["voice"], saturation: "open",
+    buyer: "Addiction and mental health services, peer certification programmes",
+    replaces: "Supervised practice hours that services cannot staff",
+    why: "The peer workforce is expanding fast in mental health and addiction services, and training infrastructure has not kept up with the growth.",
+    risk: "Grant-funded buyers with unpredictable budgets.",
+    moat: "Certification alignment with state peer-support credentialing.",
+    verdict: "Open and growing with the workforce. Modest ceiling, genuine need.",
+    orgs: ["SimCare", "Lyssn"],
+  },
+
+  // ---------- ASSESSOR ----------
+  {
+    id: "competency-assessment", name: "Leadership competency assessment",
+    role: "assessor", domain: ["hr", "hiring"], modality: ["text", "voice"], saturation: "emerging",
+    buyer: "HR, talent management, succession planning, assessment consultancies",
+    replaces: "Assessment centres with trained human assessors, at $1,000-5,000 per candidate",
+    why: "Assessment centres are the single most expensive thing in talent management and the least scalable. Their whole method is structured roleplay and in-basket exercises, which is precisely what conversational AI can run at zero marginal cost.",
+    risk: "Adverse impact and validity challenges. Assessment is legally exposed territory and the psychometric bar is real, not decorative.",
+    moat: "Validation studies and defensible psychometrics. The competency framework is the product, not the chatbot.",
+    verdict: "Emerging with excellent economics and a real moat for anyone who invests in validation. This is where ApriCOT sits, and the validation work is the durable asset.",
+    orgs: ["ApriCOT", "Quantified", "Sapia.ai", "HireVue", "Mursion"],
+  },
+  {
+    id: "oral-exam", name: "Oral examination & viva at scale",
+    role: "assessor", domain: ["education"], modality: ["voice"], saturation: "open",
+    buyer: "Universities, professional bodies, awarding organisations",
+    replaces: "Faculty time for vivas, which is why oral exams were abandoned at scale in the first place",
+    why: "Generative AI broke the written assignment as a signal of understanding. Oral assessment is the obvious remedy and was only ever dropped because it does not scale with faculty headcount. That constraint has now gone.",
+    risk: "Academic integrity bodies and disability accommodation requirements need careful handling. Assessment decisions must survive appeal.",
+    moat: "Integration with the LMS and the institution's assessment regulations; being the system of record for a grade rather than a practice tool.",
+    verdict: "The strongest open opportunity in the assessor column, and the one with the clearest forcing function. Coraltalk has the thesis right; the category is far from settled.",
+    orgs: ["Coraltalk", "Khanmigo"],
+  },
+  {
+    id: "ai-interviewer", name: "AI screening interviewer",
+    role: "assessor", domain: ["hiring"], modality: ["voice", "video"], saturation: "crowded",
+    buyer: "Talent acquisition, high-volume recruiting, staffing firms",
+    replaces: "Recruiter phone screens",
+    why: "High-volume screening is expensive, inconsistent and universally disliked. The automation case is obvious and heavily funded — over $650M raised across US AI recruiting startups in a single year.",
+    risk: "Regulatory tightening is arriving fast: NYC Local Law 144, the EU AI Act's high-risk classification, and Illinois video interview rules. Candidate backlash is significant and rising.",
+    moat: "Bias auditing, regulatory compliance, and ATS distribution. Not conversation quality.",
+    verdict: "Crowded and about to be heavily regulated. Late entry is hard to justify; the compliance layer beneath it is more interesting than the interviewer.",
+    orgs: ["HeyMilo", "Alex", "Micro1", "Mercor", "HireVue", "Sapia.ai", "Ribbon", "ConverzAI"],
+  },
+  {
+    id: "lang-proficiency", name: "Spoken language proficiency testing",
+    role: "assessor", domain: ["education", "hiring"], modality: ["voice"], saturation: "contested",
+    buyer: "Universities, immigration authorities, employers, testing bodies",
+    replaces: "Human-examined speaking tests such as IELTS and TOEFL speaking sections",
+    why: "Enormous, established, high-stakes market where the human examiner is the bottleneck and the cost.",
+    risk: "Test security, fairness across accents, and incumbents with decades of psychometric backing and government recognition.",
+    moat: "Recognition by immigration and admissions authorities. Essentially a regulatory asset.",
+    verdict: "Contested by entrenched incumbents who are themselves automating. Recognition is the barrier and it is very high.",
+    orgs: ["ELSA", "Duolingo", "Sapia.ai", "Coraltalk"],
+  },
+  {
+    id: "licensure-osce", name: "Professional licensure & OSCE-style examination",
+    role: "assessor", domain: ["health", "education"], modality: ["voice", "video"], saturation: "open",
+    buyer: "Licensing boards, royal colleges, specialty certification bodies",
+    replaces: "OSCE circuits with standardised patients and examiner panels, an enormous logistical undertaking",
+    why: "OSCEs are the most expensive assessment format in professional education. Every candidate must be examined by humans on the same day in the same conditions, which is a scheduling nightmare that AI dissolves.",
+    risk: "The highest stakes of any assessment use case. A licensure decision must withstand legal challenge, so the validation burden is severe.",
+    moat: "Board recognition, which once granted is close to permanent.",
+    verdict: "Open, extremely valuable, and correspondingly hard. A ten-year play with regulatory capture at the end of it.",
+    orgs: ["SimConverse", "Body Interact", "Coraltalk"],
+  },
+  {
+    id: "promotion-readiness", name: "Internal promotion & readiness assessment",
+    role: "assessor", domain: ["hr"], modality: ["voice", "text"], saturation: "open",
+    buyer: "Talent management, succession planning, internal mobility teams",
+    replaces: "Manager nomination and calibration meetings, which are subjective and politically distorted",
+    why: "Internal promotion decisions are made on less evidence than external hires, and the fairness exposure is comparable. A structured conversational assessment is cheaper internally because the candidates are already employees.",
+    risk: "Employees will resent being assessed by a machine for a promotion far more than candidates resent it for a screen.",
+    moat: "Integration with the performance and succession stack; longitudinal data on the same person over time.",
+    verdict: "Open and largely unnoticed. Lower regulatory heat than external hiring, same underlying technology. A sensible flank on a crowded market.",
+    orgs: ["ApriCOT", "Sapia.ai", "Quantified"],
+  },
+  {
+    id: "self-insight", name: "Self-development conversational profiling",
+    role: "assessor", domain: ["consumer", "hr"], modality: ["voice"], saturation: "emerging",
+    buyer: "Individuals; coaches; increasingly employers as a development benefit",
+    replaces: "Psychometric questionnaires and coach-led feedback sessions",
+    why: "A conversation reveals things a Likert scale cannot, and framing output as development rather than judgement sidesteps the entire regulatory burden that hiring assessment carries.",
+    risk: "Unvalidated scores presented confidently are the failure mode, and the category will attract scrutiny if it drifts toward de facto hiring use.",
+    moat: "Validation, and a coaching relationship that gives the score somewhere to go.",
+    verdict: "Emerging and cleverly positioned — Oomou's explicit refusal to be a hiring tool is a regulatory strategy as much as an ethical one. The open question is whether self-insight alone sustains a business.",
+    orgs: ["Oomou", "Yoodli", "ApriCOT"],
+  },
+  {
+    id: "exit-stay-interview", name: "Exit, stay & engagement interviews",
+    role: "assessor", domain: ["hr"], modality: ["voice", "text"], saturation: "emerging",
+    buyer: "People analytics, HR business partners, employee experience teams",
+    replaces: "HR-led exit interviews, where people tell HR nothing useful, and annual engagement surveys nobody trusts",
+    why: "The candour problem is the whole point: employees are measurably more forthcoming to a machine than to the HR person who sits near their manager. That is a capability advantage, not a cost saving.",
+    risk: "Anonymity guarantees are hard to keep credible when the transcript is analysed, and trust collapses instantly if breached.",
+    moat: "Trust architecture and aggregate insight quality across an organisation.",
+    verdict: "Emerging and genuinely differentiated — one of the few cases where AI gets better data than a human could. Underexplored relative to how obvious it looks once stated.",
+    orgs: ["Sapia.ai", "HeyMilo"],
+  },
+  {
+    id: "clinical-intake", name: "Clinical intake, triage & history capture",
+    role: "assessor", domain: ["health"], modality: ["voice", "text"], saturation: "contested",
+    buyer: "Health systems, digital health providers, payers",
+    replaces: "Nurse triage calls, intake forms, clinician time spent on history",
+    why: "History-taking is structured, repetitive and consumes expensive clinical time. Patients also disclose some things more readily to a machine.",
+    risk: "Clinical safety and regulatory classification as a medical device. Errors are patient harm, not bad UX.",
+    moat: "Clinical validation, device clearance, EHR integration.",
+    verdict: "Contested and shading toward operator rather than assessor. Interesting but the regulatory burden makes it a different kind of company.",
+    orgs: ["Wysa"],
+  },
+  {
+    id: "compliance-attestation", name: "Compliance attestation & knowledge verification",
+    role: "assessor", domain: ["finance", "health", "hr"], modality: ["voice", "text"], saturation: "open",
+    buyer: "Compliance functions, internal audit, regulated employers",
+    replaces: "Multiple-choice tests that verify nothing and are routinely gamed",
+    why: "Every regulated employer must evidence that staff understand their obligations. Everyone knows the current tick-box mechanism is theatre, and a short conversation is a far better probe of actual understanding.",
+    risk: "Requires a regulator to care about depth of understanding rather than completion records. Absent that pressure, nobody upgrades.",
+    moat: "Being the accepted evidence format for a specific regulator.",
+    verdict: "Open, and the closest thing in this map to Coraltalk's thesis applied to industry. Same forcing function, much bigger budget, almost nobody building it.",
+    orgs: ["Coraltalk", "Zenarate"],
+  },
+
+  // ---------- SUBJECT ----------
+  {
+    id: "synthetic-research", name: "Synthetic respondents & concept testing",
+    role: "subject", domain: ["research"], modality: ["text", "voice"], saturation: "contested",
+    buyer: "Insights teams, brand and product marketing, agencies",
+    replaces: "Survey panels and recruited focus groups, at a fraction of the cost and time",
+    why: "Panel recruitment is slow and expensive, and much early-stage research is directional rather than decisive. For pre-testing and iteration, synthetic is fast enough to change how often teams ask questions at all.",
+    risk: "The validity question is unresolved and possibly unresolvable for novel stimuli. Models reproduce training-data consensus, which is precisely wrong for finding what nobody expects.",
+    moat: "Calibration against real panel data, and honesty about where the method fails.",
+    verdict: "Contested and full of overclaiming. The credible position is explicitly hybrid — synthetic for iteration, real humans for decisions. Vendors who promise replacement will be found out.",
+    orgs: ["Synthetic Users", "Aaru", "Evidenza", "Lakmoos", "SYMAR", "Delve AI", "Qualtrics", "Roundtable"],
+  },
+  {
+    id: "persona-interview", name: "AI-moderated interviews with real people",
+    role: "subject", domain: ["research"], modality: ["voice", "text"], saturation: "emerging",
+    buyer: "User researchers, product teams, insights functions",
+    replaces: "Human-moderated depth interviews and the analysis time afterwards",
+    why: "Sidesteps the validity problem entirely: real humans answer, the AI just moderates and analyses at scale. You get qualitative depth at quantitative sample sizes, which was previously a straight trade-off.",
+    risk: "Participants disclose less richly to a machine on some topics, and skilled human moderators still surprise you in ways a script cannot.",
+    moat: "Moderation quality — knowing when to probe — and synthesis across hundreds of conversations.",
+    verdict: "Emerging and, in my view, the more defensible half of AI market research. It removes a real bottleneck without pretending simulated people are people.",
+    orgs: ["Listen Labs", "Outset", "Strella", "Versive", "Roundtable"],
+  },
+  {
+    id: "policy-simulation", name: "Policy & public consultation simulation",
+    role: "subject", domain: ["defense", "research"], modality: ["text"], saturation: "open",
+    buyer: "Government policy units, regulators, large NGOs",
+    replaces: "Public consultation exercises and citizen panels",
+    why: "Policy teams want to know how a measure will land before announcing it, and current consultation is slow, self-selecting and unrepresentative.",
+    risk: "Serious legitimacy problem: simulated citizens must never substitute for actually consulting citizens, and the temptation to let them will be strong.",
+    moat: "Methodological transparency and demographic calibration against real population data.",
+    verdict: "Open but ethically fraught. Defensible for pre-testing communications, indefensible as a substitute for consultation. The line matters and will be crossed by someone.",
+    orgs: ["Aaru", "Synthetic Users"],
+  },
+  {
+    id: "ux-testing", name: "Synthetic usability & product feedback",
+    role: "subject", domain: ["research"], modality: ["text"], saturation: "contested",
+    buyer: "Product and design teams",
+    replaces: "Early-round usability testing with recruited participants",
+    why: "Design teams iterate faster than recruitment cycles allow, so the first pass is often no testing at all. Synthetic feedback beats nothing.",
+    risk: "Models cannot be genuinely confused by an interface, and confusion is the entire signal usability testing exists to capture.",
+    moat: "Honestly very little. This is a feature of design tooling rather than a company.",
+    verdict: "Contested and conceptually weak — it automates the part of research that mattered least. Treat as a feature, not a category.",
+    orgs: ["Synthetic Users", "Delve AI"],
+  },
+
+  // ---------- ADVERSARY ----------
+  {
+    id: "vishing-sim", name: "Voice phishing & social engineering simulation",
+    role: "adversary", domain: ["security"], modality: ["voice", "video"], saturation: "emerging",
+    buyer: "CISOs, security awareness programmes",
+    replaces: "Email-only phishing simulation, which no longer matches the threat",
+    why: "The threat moved and the training did not. Mandiant's 2026 reporting puts interactive voice phishing at 11% of intrusions against email phishing's 6% — yet almost all awareness training is still email. That gap is the product.",
+    risk: "Simulating a deepfaked colleague's voice raises consent and employment-law issues, and a badly run campaign damages trust in internal comms.",
+    moat: "Voice cloning quality, OSINT-driven personalisation, and the compliance wrapper that makes it legally safe to run on staff.",
+    verdict: "Emerging with an unusually clean case: a measured threat shift, an existing budget line, and incumbents whose products are aimed at the wrong channel. One of the best-shaped opportunities here.",
+    orgs: ["KnowBe4", "Hoxhunt", "Adaptive Security", "Brightside AI", "Arsen", "Mirage Security"],
+  },
+  {
+    id: "ai-redteam", name: "AI model & agent red-teaming",
+    role: "adversary", domain: ["security"], modality: ["text", "voice"], saturation: "contested",
+    buyer: "AI labs, enterprises deploying agents, regulators",
+    replaces: "Manual red teams and ad hoc internal testing",
+    why: "Every organisation shipping an agent needs adversarial testing, and the EU AI Act plus procurement requirements are converting that from good practice into an obligation.",
+    risk: "Labs build this internally, and the frontier moves faster than any external tool can track.",
+    moat: "Attack libraries, an expert red-teamer network, and standing as the independent auditor of record.",
+    verdict: "Contested and consolidating fast, but the compliance-driven demand is real and durable. Independence is the asset — you cannot audit what you also build.",
+    orgs: ["Haize Labs", "Gray Swan", "Lakera", "Virtue AI", "Prompt Security"],
+  },
+  {
+    id: "scam-baiting", name: "Scam-baiting & fraud disruption",
+    role: "adversary", domain: ["security", "consumer"], modality: ["voice"], saturation: "open",
+    buyer: "Telecoms, banks, consumer protection bodies, law enforcement",
+    replaces: "Nothing. There is no incumbent, only unmet loss.",
+    why: "Inverts the whole category: instead of humans practising against AI, AI wastes the scammer's time and harvests intelligence. O2's Daisy showed the concept works and generates enormous goodwill.",
+    risk: "Legal grey area around recording and entrapment, and scammers adapt. Attribution and safety for any human in the loop need care.",
+    moat: "Telecom-level call routing access and the intelligence corpus that accumulates from thousands of engagements.",
+    verdict: "Open and genuinely novel. The intelligence by-product may be worth more than the disruption, and almost nobody is treating it as a business rather than a stunt.",
+    orgs: ["Apate.ai", "Jolly Roger Telephone", "Daisy (O2)"],
+  },
+  {
+    id: "negotiation-stress", name: "Adversarial stress-testing of agreements & plans",
+    role: "adversary", domain: ["legal", "finance"], modality: ["text"], saturation: "open",
+    buyer: "Corporate legal, strategy teams, risk functions",
+    replaces: "Devil's advocate reviews and premortems that rarely happen properly",
+    why: "Organisations are structurally bad at attacking their own plans because the incentives punish it. An AI has no career to protect.",
+    risk: "Output is easy to ignore. Without a forcing mechanism it becomes another report nobody reads.",
+    moat: "Domain-specific attack patterns and embedding into an approval gate rather than an optional review.",
+    verdict: "Open and conceptually strong, but needs a process hook. As a standalone tool it will be bought and abandoned.",
+    orgs: [],
+  },
+
+  // ---------- COMPANION ----------
+  {
+    id: "elder-companion", name: "Elder companionship & proactive check-in",
+    role: "companion", domain: ["health", "consumer", "social"], modality: ["voice"], saturation: "emerging",
+    buyer: "State Medicaid programmes, area agencies on aging, health plans, families",
+    replaces: "Nothing directly — it addresses isolation that currently goes unaddressed",
+    why: "This is the only use case in the map with a confirmed public reimbursement pathway: Washington State authorised a Medicaid code for ElliQ. Isolation has a measurable cost to payers, which turns companionship into a funded medical benefit rather than a gadget.",
+    risk: "Dependency and substitution-for-human-contact concerns are legitimate and will attract scrutiny. Efficacy evidence is still thin outside vendor pilots.",
+    moat: "Reimbursement codes and payer relationships. Once you are a covered benefit, you are very hard to dislodge.",
+    verdict: "Emerging and, to me, the most strategically interesting companion case by a distance. Reimbursement is a moat that consumer companion apps will never have.",
+    orgs: ["ElliQ", "Care Daily"],
+  },
+  {
+    id: "mental-health-support", name: "Mental health support companion",
+    role: "companion", domain: ["health", "consumer"], modality: ["text", "voice"], saturation: "contested",
+    buyer: "Health systems, employers, insurers, consumers",
+    replaces: "Waitlisted therapy; low-intensity support that is otherwise unavailable",
+    why: "Access is the binding constraint in mental health everywhere, and a great deal of benefit comes from structured low-intensity support that does not require a clinician.",
+    risk: "The highest-stakes consumer category in the map. Safety failures are catastrophic and increasingly litigated, and regulators are now paying close attention to AI therapy claims.",
+    moat: "Clinical evidence, regulatory clearance, and safety architecture — not conversation quality.",
+    verdict: "Contested and dangerous to enter casually. Woebot's wind-down despite strong clinical grounding is the cautionary data point. Clinical rigour is the only viable posture.",
+    orgs: ["Wysa", "Slingshot AI", "Woebot", "Replika"],
+  },
+  {
+    id: "consumer-companion", name: "Consumer AI companions",
+    role: "companion", domain: ["consumer"], modality: ["text", "voice"], saturation: "crowded",
+    buyer: "Consumers, via subscription",
+    replaces: "Nothing. It creates its own demand.",
+    why: "Demonstrated enormous engagement — Character.AI users average around 75 minutes a day, which exceeds most social platforms.",
+    risk: "Mounting regulatory and safeguarding pressure, particularly around minors, plus GDPR enforcement precedent from the Italian regulator's fine against Replika. Reputationally difficult to be associated with.",
+    moat: "Network effects around user-created characters, and memory depth.",
+    verdict: "Crowded, capital-intensive and heading into a regulatory storm. Enormous engagement, poor risk-adjusted returns for a new entrant.",
+    orgs: ["Character.AI", "Replika", "Talkie", "Chai", "Janitor AI"],
+  },
+
+  // ---------- CHARACTER ----------
+  {
+    id: "game-npc", name: "Game NPCs & interactive narrative",
+    role: "character", domain: ["gaming"], modality: ["voice", "text"], saturation: "contested",
+    buyer: "Game studios, from indie to AAA",
+    replaces: "Branching dialogue trees written by hand",
+    why: "Dialogue is a major content cost and a hard ceiling on how responsive a world can feel.",
+    risk: "Studios are wary of losing narrative control and of voice-actor relations. Latency and cost per interaction are real constraints in shipped games. Inworld's pivot away from being an NPC studio toward B2B infrastructure is a meaningful signal about the category's economics.",
+    moat: "Engine integration, latency, and guardrails that keep characters lore-consistent.",
+    verdict: "Contested, and the pioneer already repositioned. The tooling is ahead of studio willingness to ship it.",
+    orgs: ["Inworld AI", "Convai", "Charisma.ai", "NVIDIA ACE", "Latitude"],
+  },
+  {
+    id: "heritage-interpretation", name: "Museums, heritage & historical figures",
+    role: "character", domain: ["education", "gaming"], modality: ["voice"], saturation: "open",
+    buyer: "Museums, heritage sites, science centres, broadcasters",
+    replaces: "Audio guides and costumed interpreters",
+    why: "A visitor conversing with a historical figure is a genuinely better experience than a recorded track, and museums already fund interpretation.",
+    risk: "Historical accuracy and the ethics of putting words in the mouths of real people, especially where descendants or contested histories are involved.",
+    moat: "Scholarly grounding and institutional relationships.",
+    verdict: "Open, modest budgets, high goodwill. A credible services business rather than a scalable product, and worth doing carefully.",
+    orgs: ["Charisma.ai", "Khanmigo"],
+  },
+  {
+    id: "entertainment-ip", name: "Branded character & IP experiences",
+    role: "character", domain: ["gaming", "consumer"], modality: ["voice", "text"], saturation: "emerging",
+    buyer: "Media companies, IP holders, brands",
+    replaces: "Static marketing and one-way fan engagement",
+    why: "IP owners are looking for interactive formats, and a character people can talk to is a natural extension of an existing franchise.",
+    risk: "Brand safety is the whole problem. One screenshot of a beloved character saying something appalling is a serious incident.",
+    moat: "Guardrail reliability and licensing relationships.",
+    verdict: "Emerging and gated on brand-safety confidence rather than capability. The company that makes guardrails auditable wins the licences.",
+    orgs: ["Inworld AI", "Charisma.ai", "Character.AI"],
+  },
+
+  // ---------- OPERATOR (the crowded zone) ----------
+  {
+    id: "support-deflection", name: "Customer support deflection",
+    role: "operator", domain: ["support"], modality: ["text", "voice"], saturation: "crowded",
+    buyer: "Customer service leadership, COOs",
+    replaces: "Tier-one support headcount",
+    why: "The most funded and most obvious application of conversational AI. Cost per ticket is measured everywhere and the savings are immediate.",
+    risk: "Total commoditisation. Every helpdesk vendor ships it natively, pricing is collapsing toward per-resolution, and differentiation has essentially vanished.",
+    moat: "None at the conversation layer. Whatever is left sits in the data and workflow integrations.",
+    verdict: "Included here as the reference point for what saturation looks like. This is the market you are trying to see past, and you should.",
+    orgs: ["Intercom", "Decagon", "Sierra", "Ada", "Zendesk", "Salesforce"],
+  },
+  {
+    id: "outbound-sdr", name: "Outbound SDR & appointment setting",
+    role: "operator", domain: ["sales"], modality: ["voice", "text"], saturation: "crowded",
+    buyer: "Sales leadership, growth teams",
+    replaces: "Junior SDR headcount",
+    why: "Straightforward headcount arithmetic against a role with high turnover and low job satisfaction.",
+    risk: "Recipient tolerance is falling fast, regulation on AI calling is tightening, and deliverability and reputation costs are mounting. The buyer's own market is being poisoned by the category's success.",
+    moat: "Very little. Rapidly becoming a feature of sales engagement platforms.",
+    verdict: "Crowded and, unusually, actively value-destroying at the ecosystem level. Flagged rather than recommended.",
+    orgs: ["Nooks", "Regie.ai", "11x", "Artisan"],
+  },
+  {
+    id: "generic-agency", name: "Chatbot agencies & implementation shops",
+    role: "operator", domain: ["support", "sales"], modality: ["text", "voice"], saturation: "crowded",
+    buyer: "Mid-market companies without internal AI capability",
+    replaces: "Internal development capacity",
+    why: "A real and persistent gap: most companies cannot build this themselves and want someone to do it for them.",
+    risk: "No defensibility, no leverage, and platform vendors keep absorbing the work as their tooling improves. Margins compress every year.",
+    moat: "Vertical specialisation is the only real one, and it is a services moat, not a product one.",
+    verdict: "Included because the user asked to see it: this is the layer most crowded with undifferentiated players. Fine as a consultancy, poor as a company to build.",
+    orgs: [],
+  },
+];
+/* ---------------------------------------------------------------
+   ORGANISATIONS — the evidence layer.
+   Figures left as "—" where they could not be confidently sourced.
+   --------------------------------------------------------------- */
+
+const orgs = [
+
+  // ---------- SALES PRACTICE ----------
+  {
+    n: "Hyperbound", url: "https://www.hyperbound.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "counterpart", domain: ["sales"], modality: ["voice"],
+    uc: ["sales-cold-call", "sales-discovery", "sales-negotiation"], note: "",
+    d: "Audio-first cold call and discovery simulator with a fast custom bot builder, trained on a large corpus of B2B sales calls and supporting 25+ languages. Also scores real calls, which is the direction the category is moving."
+  },
+  {
+    n: "Second Nature", url: "https://www.secondnature.ai", hq: "🇮🇱 Israel", f: "2018", fund: "—",
+    role: "counterpart", domain: ["sales", "health", "finance"], modality: ["video", "voice"],
+    uc: ["sales-cold-call", "sales-discovery", "sales-negotiation", "pharma-rep", "financial-advice"], note: "",
+    d: "Enterprise sales training using 3D animated avatars for video-style practice, sold to large L&D-led rollouts rather than individual teams."
+  },
+  {
+    n: "Quantified", url: "https://www.quantified.ai", hq: "🇺🇸 United States", f: "2018", fund: "—",
+    role: "counterpart", domain: ["sales", "health", "finance", "hr"], modality: ["video", "voice"],
+    uc: ["sales-cold-call", "sales-discovery", "pharma-rep", "financial-advice", "competency-assessment", "promotion-readiness"], note: "",
+    d: "Simulation and communication analytics aimed squarely at regulated verticals — financial services, medical devices, pharma — where message precision and label adherence matter as much as persuasion."
+  },
+  {
+    n: "Nooks", url: "https://www.nooks.ai", hq: "🇺🇸 United States", f: "2020", fund: "—",
+    role: "counterpart", domain: ["sales"], modality: ["voice"],
+    uc: ["sales-cold-call", "outbound-sdr"], note: "",
+    d: "Parallel dialler and outbound platform with roleplay attached, positioning coaching next to live execution so practice is informed by real call outcomes."
+  },
+  {
+    n: "Mindtickle", url: "https://www.mindtickle.com", hq: "🇺🇸 United States", f: "2011", fund: "—",
+    role: "counterpart", domain: ["sales", "support"], modality: ["video", "voice"],
+    uc: ["sales-cold-call", "sales-discovery", "csr-training", "pharma-rep"], note: "",
+    d: "Established sales readiness platform that added AI roleplay to an existing certification and enablement suite — an example of the bundling pressure facing standalone practice tools."
+  },
+  {
+    n: "Allego", url: "https://www.allego.com", hq: "🇺🇸 United States", f: "2013", fund: "—",
+    role: "counterpart", domain: ["sales"], modality: ["video"],
+    uc: ["sales-cold-call", "sales-discovery"], note: "",
+    d: "Sales enablement and video coaching platform with AI practice built into its certification workflow."
+  },
+  {
+    n: "Luster", url: "https://www.luster.ai", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "counterpart", domain: ["sales"], modality: ["voice"],
+    uc: ["sales-cold-call"], note: "",
+    d: "Predictive sales roleplay focused on identifying skill gaps before they show up in pipeline, rather than practice for its own sake."
+  },
+  {
+    n: "Pactum", url: "https://pactum.com", hq: "🇺🇸 United States", f: "2019", fund: "—",
+    role: "operator", domain: ["sales", "finance"], modality: ["text"],
+    uc: ["sales-negotiation"], note: "Negotiates for real rather than training humans",
+    d: "Autonomous negotiation agent that conducts commercial negotiations with suppliers at scale for large enterprises. Included as the contrast case: the same conversational capability pointed at doing the job instead of teaching it."
+  },
+
+  // ---------- CONTACT CENTRE ----------
+  {
+    n: "Zenarate", url: "https://www.zenarate.com", hq: "🇺🇸 United States", f: "2016", fund: "—",
+    role: "counterpart", domain: ["support", "finance"], modality: ["voice", "text"],
+    uc: ["csr-training", "retail-frontline", "financial-advice", "compliance-attestation"], note: "",
+    d: "AI simulation training for contact centre agents using an observe, guided roleplay, unguided roleplay progression. Strong in compliance-driven banking and insurance protocol training."
+  },
+  {
+    n: "Cresta", url: "https://cresta.com", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "counterpart", domain: ["support"], modality: ["voice"],
+    uc: ["csr-training"], note: "",
+    d: "Real-time agent assist platform that launched a Training Simulator using its own AI agent technology as the simulated customer, grounded in the contact centre's real conversation data."
+  },
+  {
+    n: "Observe.AI", url: "https://www.observe.ai", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "counterpart", domain: ["support"], modality: ["voice"],
+    uc: ["csr-training"], note: "",
+    d: "Conversation intelligence and quality analytics for contact centres, with coaching driven by scored live calls rather than isolated practice sessions."
+  },
+
+  // ---------- CLINICAL SIMULATION ----------
+  {
+    n: "SimConverse", url: "https://www.simconverse.com", hq: "🇦🇺 Australia", f: "2019", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["voice", "text"],
+    uc: ["clinical-history", "breaking-bad-news", "licensure-osce"], note: "",
+    d: "Conversational simulated patients for medical and nursing communication training, sold to universities and health services as a replacement for paid standardised patient hours."
+  },
+  {
+    n: "Body Interact", url: "https://bodyinteract.com", hq: "🇵🇹 Portugal", f: "2014", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["text", "video"],
+    uc: ["clinical-history", "licensure-osce"], note: "",
+    d: "Virtual patient simulator with physiologically modelled cases, used for clinical reasoning and decision-making assessment across medical and nursing curricula."
+  },
+  {
+    n: "Oxford Medical Simulation", url: "https://oxfordmedicalsimulation.com", hq: "🇬🇧 United Kingdom", f: "2017", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["xr", "video"],
+    uc: ["clinical-history", "breaking-bad-news", "nursing-handover"], note: "",
+    d: "VR and screen-based clinical scenarios with automated debrief, widely adopted across nursing schools and health systems in the UK and North America."
+  },
+  {
+    n: "Shadow Health", url: "https://www.elsevier.com", hq: "🇺🇸 United States", f: "2011", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["text"],
+    uc: ["clinical-history"], note: "Acquired by Elsevier (2021)",
+    d: "Digital standardised patients for nursing education, one of the earliest at-scale deployments of conversational patient simulation and now part of Elsevier's education portfolio."
+  },
+  {
+    n: "CAE Healthcare", url: "https://www.caehealthcare.com", hq: "🇨🇦 Canada", f: "1947", fund: "—",
+    role: "counterpart", domain: ["health"], modality: ["xr", "hitl"],
+    uc: ["clinical-history"], note: "",
+    d: "Long-established healthcare simulation manufacturer, historically mannequin-based, now layering conversational and VR components onto its hardware estate."
+  },
+  {
+    n: "ScenarioIQ", url: "https://www.scenarioiq.ai", hq: "🇺🇸 United States", f: "—", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["voice", "text"],
+    uc: ["clinical-history", "nursing-handover"], note: "",
+    d: "Conversational scenario-based simulation for medical and nursing education, positioned explicitly on cost per encounter against mannequin-based training."
+  },
+  {
+    n: "MediSim VR", url: "https://www.medisimvr.com", hq: "🇮🇳 India", f: "2019", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["xr"],
+    uc: ["clinical-history"], note: "Launched a VR training centre with AIIMS (2026)",
+    d: "Indian VR medical simulation company building immersive procedural and clinical training, notable as a domestic alternative to Western simulation vendors for Indian medical colleges."
+  },
+  {
+    n: "Kognito", url: "https://kognito.com", hq: "🇺🇸 United States", f: "2003", fund: "—",
+    role: "counterpart", domain: ["health", "education", "social"], modality: ["text", "video"],
+    uc: ["breaking-bad-news", "nursing-handover", "therapy-training", "motivational-interviewing", "crisis-hotline", "teacher-parent", "social-work", "autism-social", "dementia-care", "dei-bystander"], note: "",
+    d: "The longest-running roleplay simulation company in health and education, with an unusually deep published evidence base on behaviour change — particularly in suicide prevention gatekeeper training."
+  },
+
+  // ---------- THERAPY & SOCIAL WORK TRAINING ----------
+  {
+    n: "SimCare", url: "https://simcare.ai", hq: "🇺🇸 United States", f: "—", fund: "—",
+    role: "counterpart", domain: ["health", "education", "social"], modality: ["voice", "video"],
+    uc: ["therapy-training", "motivational-interviewing", "crisis-hotline", "social-work", "peer-support"], note: "",
+    d: "AI client simulations for counsellor training, letting trainees speak with avatars and receive instant feedback on technique rather than content."
+  },
+  {
+    n: "Praxplay", url: "https://praxplay.com", hq: "—", f: "—", fund: "—",
+    role: "counterpart", domain: ["health", "education"], modality: ["voice", "text"],
+    uc: ["therapy-training", "crisis-hotline"], note: "",
+    d: "AI therapy simulation for training therapists, counsellors and psychologists through repeatable practice scenarios."
+  },
+  {
+    n: "Lyssn", url: "https://www.lyssn.io", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "assessor", domain: ["health", "social"], modality: ["voice"],
+    uc: ["therapy-training", "motivational-interviewing", "peer-support"], note: "University of Washington spin-out",
+    d: "Automated fidelity coding of therapy sessions against established human-coded standards including motivational interviewing and CBT — the rare case where soft-skill scoring rests on a validated instrument."
+  },
+  {
+    n: "Empathy Helper", url: "https://brownschool.washu.edu", hq: "🇺🇸 United States", f: "—", fund: "Academic",
+    role: "counterpart", domain: ["social", "education"], modality: ["text", "voice"],
+    uc: ["therapy-training", "social-work"], note: "Washington University Brown School project",
+    d: "Research platform generating emotionally responsive simulated clients for social work training, with pilot evidence of improved student self-efficacy and observable skill."
+  },
+  {
+    n: "SWITCH", url: "https://arxiv.org", hq: "🇺🇸 United States", f: "—", fund: "Academic",
+    role: "counterpart", domain: ["social", "education"], modality: ["text"],
+    uc: ["social-work"], note: "Research prototype",
+    d: "Social Work Interactive Training Chatbot combining client simulation with real-time counselling skill classification and a motivational interviewing progression model."
+  },
+
+  // ---------- SOFT SKILLS & IMMERSIVE ----------
+  {
+    n: "Mursion", url: "https://www.mursion.com", hq: "🇺🇸 United States", f: "2015", fund: "—",
+    role: "counterpart", domain: ["hr", "education", "safety"], modality: ["hitl", "video"],
+    uc: ["mgr-difficult", "teacher-parent", "police-deescalation", "crisis-comms", "dei-bystander", "competency-assessment"], note: "Human-in-the-loop avatars, not fully autonomous",
+    d: "Blends live human actors with digital avatars so one trained simulation specialist can play multiple characters. The highest-fidelity option in the category and the clearest demonstration that full autonomy is not always the goal."
+  },
+  {
+    n: "Bodyswaps", url: "https://bodyswaps.co", hq: "🇬🇧 United Kingdom", f: "2018", fund: "—",
+    role: "counterpart", domain: ["hr", "education", "health"], modality: ["xr", "voice"],
+    uc: ["mgr-difficult", "interview-practice", "teacher-parent", "public-speaking", "dementia-care", "retail-frontline", "dei-bystander"], note: "",
+    d: "VR and flat-screen soft skills simulations covering active listening, conflict management and interview preparation, with a distinctive replay mechanic where learners watch their own performance from the other person's perspective."
+  },
+  {
+    n: "Attensi", url: "https://www.attensi.com", hq: "🇳🇴 Norway", f: "2012", fund: "—",
+    role: "counterpart", domain: ["hr", "sales", "support", "finance", "health"], modality: ["video", "xr"],
+    uc: ["sales-discovery", "csr-training", "mgr-difficult", "pharma-rep", "financial-advice", "dementia-care", "retail-frontline"], note: "",
+    d: "Gamified simulation training at enterprise scale across retail, hospitality, financial and professional services. Competes on completion and repeat-play rates rather than conversational fidelity."
+  },
+  {
+    n: "Talespin", url: "https://www.talespin.com", hq: "🇺🇸 United States", f: "2015", fund: "—",
+    role: "counterpart", domain: ["hr"], modality: ["xr", "video"],
+    uc: ["mgr-difficult", "dei-bystander"], note: "",
+    d: "Immersive soft skills training with virtual human characters, best known for difficult workplace conversation scenarios such as delivering bad news to a direct report."
+  },
+  {
+    n: "Strivr", url: "https://www.strivr.com", hq: "🇺🇸 United States", f: "2015", fund: "—",
+    role: "counterpart", domain: ["hr", "support"], modality: ["xr"],
+    uc: ["retail-frontline"], note: "Large-scale Walmart deployment",
+    d: "Enterprise VR training platform, one of the few to reach genuine scale in frontline retail workforces."
+  },
+  {
+    n: "VirtualSpeech", url: "https://virtualspeech.com", hq: "🇬🇧 United Kingdom", f: "2016", fund: "—",
+    role: "counterpart", domain: ["hr", "education"], modality: ["xr", "voice"],
+    uc: ["mgr-difficult", "interview-practice", "public-speaking"], note: "",
+    d: "VR practice rooms simulating audiences, boardrooms and interview panels, paired with AI feedback on delivery."
+  },
+  {
+    n: "Yoodli", url: "https://yoodli.ai", hq: "🇺🇸 United States", f: "2021", fund: "—",
+    role: "assessor", domain: ["hr", "legal", "education"], modality: ["video", "voice"],
+    uc: ["mgr-difficult", "interview-practice", "public-speaking", "board-qa", "crisis-comms", "self-insight"], note: "",
+    d: "Speech coaching that scores filler words, pacing and word choice, with customisable roleplays and integrations into Zoom, Teams and Meet so it can observe real meetings as well as practice ones."
+  },
+  {
+    n: "Poised", url: "https://www.poised.com", hq: "🇺🇸 United States", f: "2020", fund: "—",
+    role: "assessor", domain: ["hr"], modality: ["voice"],
+    uc: ["public-speaking"], note: "",
+    d: "Real-time communication coach that analyses speaking performance during live meetings rather than in rehearsal."
+  },
+  {
+    n: "Orai", url: "https://orai.com", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "assessor", domain: ["hr", "education"], modality: ["voice"],
+    uc: ["public-speaking"], note: "",
+    d: "Speech coaching app scoring clarity, pace and filler words, sold to both individuals and enterprise communication programmes."
+  },
+  {
+    n: "Exec", url: "https://www.exec.com", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "counterpart", domain: ["hr", "legal", "sales", "finance"], modality: ["voice", "video"],
+    uc: ["sales-negotiation", "mgr-difficult", "deposition-prep", "board-qa", "crisis-comms"], note: "",
+    d: "AI roleplay and coaching platform with an explicit legal-team practice line, one of the few vendors treating high-stakes professional conversations as a distinct category."
+  },
+
+  // ---------- HIRING & ASSESSMENT ----------
+  {
+    n: "ApriCOT", url: "https://peoplewizconsulting.com/apricot.html", hq: "🇮🇳 India", f: "—", fund: "—",
+    role: "assessor", domain: ["hr", "hiring"], modality: ["text"],
+    uc: ["competency-assessment", "promotion-readiness", "self-insight"], note: "PeopleWiz Consulting — the reference product for this map",
+    d: "AI competency assessment running 40-minute chat roleplays and 90-minute in-basket simulations, scoring against 120+ leadership competencies across seven proficiency levels. Positioned against the cost and inconsistency of human assessment centres."
+  },
+  {
+    n: "Oomou", url: "https://oomou.co", hq: "—", f: "—", fund: "—",
+    role: "assessor", domain: ["hiring", "consumer"], modality: ["voice", "text"],
+    uc: ["self-insight", "interview-practice"], note: "Explicitly not for hiring decisions",
+    d: "Live spoken conversation with an AI interviewer across six workplace scenarios, scoring authenticity, emotional depth, social awareness, narrative clarity, openness and communicative confidence. Its terms prohibit use as the sole basis for hiring — a deliberate regulatory posture, and the product is candid that scores are not yet validated."
+  },
+  {
+    n: "HeyMilo", url: "https://www.heymilo.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "assessor", domain: ["hiring", "hr"], modality: ["voice"],
+    uc: ["ai-interviewer", "exit-stay-interview"], note: "",
+    d: "Conversational voice interviewer with transparent scoring, ATS integration and multilingual support, aimed at high-volume screening."
+  },
+  {
+    n: "Alex", url: "https://www.alexhires.com", hq: "🇺🇸 United States", f: "2023", fund: "$17M Series A",
+    role: "assessor", domain: ["hiring"], modality: ["video", "voice"],
+    uc: ["ai-interviewer"], note: "Formerly Apriora",
+    d: "AI agent conducting live video interviews covering technical screens, behavioural interviews and coding assessments, deployed at Fortune 100 enterprises and large restaurant chains."
+  },
+  {
+    n: "Micro1", url: "https://www.micro1.ai", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "assessor", domain: ["hiring"], modality: ["video"],
+    uc: ["ai-interviewer"], note: "",
+    d: "AI recruiter Zara runs the technical screening interview for micro1's own talent marketplace, with the same screening capability sold to outside employers."
+  },
+  {
+    n: "Mercor", url: "https://mercor.com", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "assessor", domain: ["hiring"], modality: ["video"],
+    uc: ["ai-interviewer"], note: "Took the majority of US AI-recruiting funding in 2025-26",
+    d: "AI interviewing and talent matching marketplace, now heavily oriented toward sourcing domain experts for AI training data work."
+  },
+  {
+    n: "HireVue", url: "https://www.hirevue.com", hq: "🇺🇸 United States", f: "2004", fund: "—",
+    role: "assessor", domain: ["hiring"], modality: ["video"],
+    uc: ["ai-interviewer", "competency-assessment"], note: "Dropped facial analysis after criticism (2021)",
+    d: "The incumbent in video interviewing and assessment. Its retreat from facial expression scoring is the clearest precedent for how regulatory and public pressure reshapes this category."
+  },
+  {
+    n: "Sapia.ai", url: "https://sapia.ai", hq: "🇦🇺 Australia", f: "2013", fund: "—",
+    role: "assessor", domain: ["hiring", "hr"], modality: ["text"],
+    uc: ["ai-interviewer", "competency-assessment", "promotion-readiness", "lang-proficiency", "exit-stay-interview"], note: "",
+    d: "Text-based structured interviewing with an explicit fairness and bias-auditing posture, using chat rather than video specifically to reduce appearance-driven bias."
+  },
+  {
+    n: "Ribbon", url: "https://www.ribbon.ai", hq: "🇨🇦 Canada", f: "2024", fund: "—",
+    role: "assessor", domain: ["hiring"], modality: ["voice"],
+    uc: ["ai-interviewer"], note: "",
+    d: "AI voice interviewer for high-volume screening, part of the 2024-26 wave of conversational recruiting entrants."
+  },
+  {
+    n: "ConverzAI", url: "https://converzai.com", hq: "🇺🇸 United States", f: "2021", fund: "—",
+    role: "assessor", domain: ["hiring"], modality: ["voice"],
+    uc: ["ai-interviewer"], note: "",
+    d: "Virtual recruiter for staffing agencies, handling sourcing conversations and screening for high-turnover placement work."
+  },
+  {
+    n: "Final Round AI", url: "https://www.finalroundai.com", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "counterpart", domain: ["hiring", "consumer"], modality: ["video", "voice"],
+    uc: ["interview-practice"], note: "",
+    d: "Consumer interview preparation with mock interviews and live assistance, a direct example of the churn-prone job-seeker business model."
+  },
+  {
+    n: "Google Interview Warmup", url: "https://grow.google/certificates/interview-warmup/", hq: "🇺🇸 United States", f: "2022", fund: "Corporate",
+    role: "counterpart", domain: ["hiring", "education"], modality: ["voice"],
+    uc: ["interview-practice"], note: "Free",
+    d: "Free interview practice tool from Google Career Certificates. Its existence sets the consumer price for interview practice at zero, which is the central problem for paid entrants."
+  },
+
+  // ---------- EDUCATION & ASSESSMENT ----------
+  {
+    n: "Coraltalk", url: "https://www.coraltalk.com", hq: "🇨🇦 Canada", f: "—", fund: "—",
+    role: "assessor", domain: ["education"], modality: ["voice"],
+    uc: ["oral-exam", "licensure-osce", "lang-proficiency", "compliance-attestation"], note: "Reference product for this map",
+    d: "AI oral assessment for higher education: teachers upload course content, configure the AI to their style and share a link. Supports roleplay scenarios, oral exams and explanation-based assessment. Deployed at York University MBA, screenwriting, French and acting programmes. The stated thesis is verifying genuine understanding now that written work can be generated."
+  },
+  {
+    n: "Khanmigo", url: "https://www.khanmigo.ai", hq: "🇺🇸 United States", f: "2023", fund: "Nonprofit",
+    role: "assessor", domain: ["education"], modality: ["text"],
+    uc: ["oral-exam", "heritage-interpretation"], note: "Khan Academy",
+    d: "Socratic AI tutor that deliberately withholds answers, with a historical-figure roleplay mode. Notable for pedagogy-first design and nonprofit distribution at scale."
+  },
+  {
+    n: "Speak", url: "https://www.speak.com", hq: "🇺🇸 United States", f: "2016", fund: "$78M+",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["voice"],
+    uc: ["lang-conversation"], note: "Backed by the OpenAI Startup Fund",
+    d: "Speaking-first language learning across 15+ languages with structured lessons built around producing speech rather than recognising it."
+  },
+  {
+    n: "Praktika", url: "https://praktika.ai", hq: "🇬🇧 United Kingdom", f: "2020", fund: "$35M+",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["video", "voice"],
+    uc: ["lang-conversation"], note: "",
+    d: "Avatar-based English tutors with distinct personalities and scenario lessons such as airport check-in and doctor visits, reporting over 20 million learners."
+  },
+  {
+    n: "Loora", url: "https://www.loora.ai", hq: "🇮🇱 Israel", f: "2021", fund: "—",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["voice"],
+    uc: ["lang-conversation"], note: "",
+    d: "English conversation practice through daily guided speaking sessions, aiming to reproduce the experience of a personal tutor."
+  },
+  {
+    n: "TalkPal", url: "https://talkpal.ai", hq: "🇪🇪 Estonia", f: "2023", fund: "—",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["voice", "text"],
+    uc: ["lang-conversation"], note: "",
+    d: "Multi-language conversation practice with debate mode, roleplay scenarios and grammar correction across a wide language set at a low price point."
+  },
+  {
+    n: "Talkio AI", url: "https://www.talkio.ai", hq: "🇩🇰 Denmark", f: "2023", fund: "—",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["voice"],
+    uc: ["lang-conversation"], note: "",
+    d: "Browser-based speaking practice with multiple AI tutors and pronunciation feedback."
+  },
+  {
+    n: "ELSA", url: "https://elsaspeak.com", hq: "🇺🇸 United States", f: "2015", fund: "$27M+",
+    role: "assessor", domain: ["education", "hiring"], modality: ["voice"],
+    uc: ["lang-conversation", "lang-proficiency"], note: "",
+    d: "Pronunciation assessment and English speaking practice with a proficiency-scoring product sold to employers and institutions as well as learners."
+  },
+  {
+    n: "Duolingo", url: "https://www.duolingo.com", hq: "🇺🇸 United States", f: "2011", fund: "Public (DUOL)",
+    role: "counterpart", domain: ["education", "consumer"], modality: ["voice", "text"],
+    uc: ["lang-conversation", "lang-proficiency"], note: "",
+    d: "Bundles AI roleplay conversation into an existing consumer subscription, and operates the Duolingo English Test as a recognised proficiency assessment. The bundling is what compresses pricing for standalone conversation apps."
+  },
+
+  // ---------- LEGAL ----------
+  {
+    n: "DepoSim", url: "https://www.altaclaro.com/deposim", hq: "🇺🇸 United States", f: "2026", fund: "—",
+    role: "counterpart", domain: ["legal"], modality: ["voice", "video"],
+    uc: ["deposition-prep", "courtroom-advocacy"], note: "AltaClaro and Verbit joint launch (2026)",
+    d: "Deposition simulator giving litigators on-demand practice with an AI witness, opposing counsel and court reporter, with rubric-based feedback. The clearest evidence so far that high-stakes legal roleplay is a real category."
+  },
+  {
+    n: "AltaClaro", url: "https://www.altaclaro.com", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "counterpart", domain: ["legal", "education"], modality: ["video"],
+    uc: ["deposition-prep", "courtroom-advocacy"], note: "",
+    d: "Experiential legal education provider using simulation-based practical training for law firms, and the pedagogy partner behind DepoSim."
+  },
+
+  // ---------- PUBLIC SAFETY ----------
+  {
+    n: "MILO", url: "https://www.faac.com/milo/", hq: "🇺🇸 United States", f: "1994", fund: "—",
+    role: "counterpart", domain: ["safety"], modality: ["video", "xr"],
+    uc: ["police-deescalation"], note: "Part of FAAC / Arotech",
+    d: "Long-established law enforcement training simulator, historically video-branching and use-of-force focused, now extending into conversational de-escalation scenarios."
+  },
+  {
+    n: "Axon", url: "https://www.axon.com", hq: "🇺🇸 United States", f: "1993", fund: "Public (AXON)",
+    role: "counterpart", domain: ["safety"], modality: ["xr"],
+    uc: ["police-deescalation"], note: "",
+    d: "Body camera and taser incumbent whose VR training division bundles empathy and de-escalation scenarios into an existing agency-wide hardware relationship."
+  },
+  {
+    n: "Wrap Reality", url: "https://wrap.com", hq: "🇺🇸 United States", f: "2016", fund: "Public (WRAP)",
+    role: "counterpart", domain: ["safety"], modality: ["xr"],
+    uc: ["police-deescalation"], note: "",
+    d: "VR training system for law enforcement covering de-escalation, crisis intervention and use-of-force decision making."
+  },
+  {
+    n: "Forge Simulations", url: "https://forgesimulations.com", hq: "🇺🇸 United States", f: "—", fund: "—",
+    role: "counterpart", domain: ["safety", "defense"], modality: ["xr"],
+    uc: ["police-deescalation", "mil-wargame"], note: "",
+    d: "Scenario-based law enforcement and tactical simulations, including decision-making under stress."
+  },
+  {
+    n: "Kaiden AI", url: "https://www.kaiden.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "counterpart", domain: ["safety", "education"], modality: ["voice"],
+    uc: ["police-deescalation"], note: "",
+    d: "Voice-driven AI simulation partnering with law enforcement academies to extend scenario training beyond firearms into de-escalation, crisis response and courtroom testimony."
+  },
+
+  // ---------- SECURITY & ADVERSARIAL ----------
+  {
+    n: "KnowBe4", url: "https://www.knowbe4.com", hq: "🇺🇸 United States", f: "2010", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["voice", "text"],
+    uc: ["vishing-sim"], note: "Launched simulated vishing and a deepfake training agent",
+    d: "The dominant security awareness training vendor, now adding conversational voice phishing simulation and deepfake audio content to a business historically built on simulated phishing email."
+  },
+  {
+    n: "Hoxhunt", url: "https://hoxhunt.com", hq: "🇫🇮 Finland", f: "2016", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["voice", "video", "text"],
+    uc: ["vishing-sim"], note: "",
+    d: "Adaptive phishing simulation that now supports generated deepfake audio and video for multichannel simulated attacks."
+  },
+  {
+    n: "Adaptive Security", url: "https://www.adaptivesecurity.com", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["voice", "video"],
+    uc: ["vishing-sim"], note: "Backed by OpenAI",
+    d: "Generates hyper-realistic phishing simulations incorporating deepfake voice and video, built specifically for the AI-enabled social engineering threat rather than retrofitted from email."
+  },
+  {
+    n: "Brightside AI", url: "https://www.brside.com", hq: "🇨🇭 Switzerland", f: "2023", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["voice", "text"],
+    uc: ["vishing-sim"], note: "",
+    d: "OSINT-driven social engineering simulation running live conversational AI phone calls with custom voice cloning alongside email campaigns."
+  },
+  {
+    n: "Arsen", url: "https://arsen.co", hq: "🇫🇷 France", f: "2020", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["voice", "text"],
+    uc: ["vishing-sim"], note: "",
+    d: "Social engineering simulation platform covering phishing, smishing and conversational vishing campaigns."
+  },
+  {
+    n: "Mirage Security", url: "https://www.miragesecurity.ai", hq: "🇺🇸 United States", f: "2024", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["voice"],
+    uc: ["vishing-sim"], note: "",
+    d: "Voice phishing simulation focused specifically on deepfake-era social engineering against employees."
+  },
+  {
+    n: "Haize Labs", url: "https://haizelabs.com", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["text"],
+    uc: ["ai-redteam"], note: "Contracts with Anthropic, Scale AI and AI21",
+    d: "Automates large-scale LLM stress-testing and red-teaming, generating diverse attack scenarios to surface jailbreaks, harmful outputs and policy violations before deployment."
+  },
+  {
+    n: "Gray Swan", url: "https://www.grayswan.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["text", "voice"],
+    uc: ["ai-redteam"], note: "",
+    d: "AI red-teaming as a service, combining automated attacks with a competitive network of expert human red-teamers drawn from public arena events."
+  },
+  {
+    n: "Lakera", url: "https://www.lakera.ai", hq: "🇨🇭 Switzerland", f: "2021", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["text"],
+    uc: ["ai-redteam"], note: "",
+    d: "LLM security platform with prompt injection defence and red-teaming, known for the Gandalf public jailbreak game that seeded its attack corpus."
+  },
+  {
+    n: "Virtue AI", url: "https://www.virtueai.com", hq: "🇺🇸 United States", f: "2024", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["text"],
+    uc: ["ai-redteam"], note: "",
+    d: "AI safety and security platform providing automated red-teaming and guardrails for enterprise model and agent deployments."
+  },
+  {
+    n: "Prompt Security", url: "https://www.prompt.security", hq: "🇮🇱 Israel", f: "2023", fund: "—",
+    role: "adversary", domain: ["security"], modality: ["text"],
+    uc: ["ai-redteam"], note: "",
+    d: "Runtime protection for enterprise generative AI use, with red-teaming features inside a broader LLM security platform."
+  },
+  {
+    n: "Apate.ai", url: "https://www.apate.ai", hq: "🇦🇺 Australia", f: "2022", fund: "—",
+    role: "adversary", domain: ["security", "consumer"], modality: ["voice"],
+    uc: ["scam-baiting"], note: "Macquarie University spin-out",
+    d: "Conversational AI that answers scam calls and keeps scammers talking, wasting their time while gathering intelligence on active campaigns for telcos and banks."
+  },
+  {
+    n: "Jolly Roger Telephone", url: "https://jollyrogertelephone.com", hq: "🇺🇸 United States", f: "2015", fund: "—",
+    role: "adversary", domain: ["consumer", "security"], modality: ["voice"],
+    uc: ["scam-baiting"], note: "",
+    d: "Consumer service that patches telemarketers and scammers through to chatbots designed to waste as much of their time as possible. An early, pre-LLM proof of the concept."
+  },
+  {
+    n: "Daisy (O2)", url: "https://news.virginmediao2.co.uk", hq: "🇬🇧 United Kingdom", f: "2024", fund: "Corporate",
+    role: "adversary", domain: ["security", "consumer"], modality: ["voice"],
+    uc: ["scam-baiting"], note: "Campaign by Virgin Media O2",
+    d: "An AI 'grandmother' deployed to answer scam calls and keep fraudsters on the line. Ran as a marketing campaign rather than a product, but demonstrated both the technique and the public appetite for it."
+  },
+
+  // ---------- RESEARCH ----------
+  {
+    n: "Synthetic Users", url: "https://www.syntheticusers.com", hq: "🇵🇹 Portugal", f: "2023", fund: "—",
+    role: "subject", domain: ["research"], modality: ["text"],
+    uc: ["synthetic-research", "ux-testing", "policy-simulation"], note: "",
+    d: "Generates simulated research participants for user and market research interviews, one of the first companies to productise the synthetic respondent idea."
+  },
+  {
+    n: "Aaru", url: "https://www.aaru.com", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "subject", domain: ["research", "defense"], modality: ["text"],
+    uc: ["synthetic-research", "policy-simulation"], note: "",
+    d: "Population-scale simulation of human behaviour aimed at election, policy and consumer prediction rather than individual interviews."
+  },
+  {
+    n: "Evidenza", url: "https://www.evidenza.ai", hq: "🇺🇸 United States", f: "2024", fund: "—",
+    role: "subject", domain: ["research", "sales"], modality: ["text"],
+    uc: ["synthetic-research"], note: "",
+    d: "Synthetic B2B audience research, generating buyer-persona responses for marketing and positioning decisions."
+  },
+  {
+    n: "Lakmoos", url: "https://lakmoos.com", hq: "🇨🇿 Czechia", f: "2023", fund: "—",
+    role: "subject", domain: ["research"], modality: ["text"],
+    uc: ["synthetic-research"], note: "",
+    d: "AI respondent panels calibrated against real demographic data, positioning on statistical representativeness rather than raw speed."
+  },
+  {
+    n: "SYMAR", url: "https://www.symar.ai", hq: "—", f: "—", fund: "—",
+    role: "subject", domain: ["research"], modality: ["text"],
+    uc: ["synthetic-research"], note: "",
+    d: "Synthetic market research platform for concept and message testing against modelled audience segments."
+  },
+  {
+    n: "Delve AI", url: "https://www.delve.ai", hq: "🇸🇬 Singapore", f: "2020", fund: "—",
+    role: "subject", domain: ["research"], modality: ["text"],
+    uc: ["synthetic-research", "ux-testing"], note: "",
+    d: "Automated persona generation from analytics and competitor data, with synthetic personas usable for interview-style questioning."
+  },
+  {
+    n: "Qualtrics", url: "https://www.qualtrics.com", hq: "🇺🇸 United States", f: "2002", fund: "—",
+    role: "subject", domain: ["research", "hr"], modality: ["text"],
+    uc: ["synthetic-research"], note: "",
+    d: "Experience management incumbent adding synthetic data and AI-moderated research to an established survey platform — the bundling risk for standalone synthetic research vendors."
+  },
+  {
+    n: "Listen Labs", url: "https://www.listenlabs.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "subject", domain: ["research"], modality: ["voice", "video"],
+    uc: ["persona-interview"], note: "Interviews real humans, AI moderates",
+    d: "AI moderator conducting and synthesising depth interviews with real participants at survey-like scale, sidestepping the validity problem that synthetic respondents carry."
+  },
+  {
+    n: "Outset", url: "https://outset.ai", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "subject", domain: ["research"], modality: ["voice", "video", "text"],
+    uc: ["persona-interview"], note: "Interviews real humans, AI moderates",
+    d: "AI-moderated qualitative research platform running hundreds of simultaneous video and voice interviews with real participants and synthesising the findings."
+  },
+  {
+    n: "Strella", url: "https://www.strella.io", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "subject", domain: ["research"], modality: ["voice", "video"],
+    uc: ["persona-interview"], note: "Interviews real humans, AI moderates",
+    d: "AI-moderated customer interviews with adaptive probing, aimed at product and insights teams that cannot staff continuous qualitative research."
+  },
+  {
+    n: "Versive", url: "https://www.versive.com", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "subject", domain: ["research"], modality: ["voice", "text"],
+    uc: ["persona-interview"], note: "Interviews real humans, AI moderates",
+    d: "AI interviewer for research and recruiting surveys, replacing static forms with adaptive conversation to raise response quality."
+  },
+  {
+    n: "Roundtable", url: "https://roundtable.ai", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "subject", domain: ["research"], modality: ["text"],
+    uc: ["persona-interview", "synthetic-research"], note: "",
+    d: "Research infrastructure covering both synthetic pretesting and quality control on real human survey responses, including bot and inattentive-respondent detection."
+  },
+
+  // ---------- COMPANION ----------
+  {
+    n: "ElliQ", url: "https://elliq.com", hq: "🇮🇱 Israel", f: "2016", fund: "—",
+    role: "companion", domain: ["health", "consumer", "social"], modality: ["voice"],
+    uc: ["elder-companion"], note: "Washington State authorised a Medicaid reimbursement code",
+    d: "Proactive care companion for older adults from Intuition Robotics, initiating conversation, suggesting activities and prompting medication. Pilot data reported roughly 95% of participants experiencing reduced loneliness, and it is the only product in this map with a confirmed public reimbursement pathway."
+  },
+  {
+    n: "Care Daily", url: "https://www.caredaily.ai", hq: "🇺🇸 United States", f: "2015", fund: "—",
+    role: "companion", domain: ["health", "social"], modality: ["voice", "text"],
+    uc: ["elder-companion"], note: "",
+    d: "AI caregiving platform combining ambient sensing with conversational check-ins for ageing in place, sold through care providers and insurers."
+  },
+  {
+    n: "Wysa", url: "https://www.wysa.com", hq: "🇮🇳 India", f: "2016", fund: "—",
+    role: "companion", domain: ["health", "consumer"], modality: ["text"],
+    uc: ["mental-health-support", "clinical-intake"], note: "FDA Breakthrough Device designation (2022)",
+    d: "Clinically grounded mental health chatbot delivering CBT-based support, sold to health systems, employers and insurers rather than primarily to consumers."
+  },
+  {
+    n: "Slingshot AI", url: "https://www.slingshot.xyz", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "companion", domain: ["health", "consumer"], modality: ["text", "voice"],
+    uc: ["mental-health-support"], note: "Builds Ash",
+    d: "Foundation model company building specifically for psychology, with the Ash therapy app as its consumer expression. Represents the well-capitalised clinical end of the companion market."
+  },
+  {
+    n: "Woebot", url: "https://woebothealth.com", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "companion", domain: ["health"], modality: ["text"],
+    uc: ["mental-health-support"], note: "Consumer app wound down (2025)",
+    d: "Pioneering CBT chatbot with a substantial published trial base. Its wind-down despite strong clinical grounding is the most instructive failure in the mental health companion category."
+  },
+  {
+    n: "Replika", url: "https://replika.com", hq: "🇺🇸 United States", f: "2017", fund: "—",
+    role: "companion", domain: ["consumer"], modality: ["text", "voice", "xr"],
+    uc: ["consumer-companion", "mental-health-support"], note: "Fined €5M by the Italian data protection authority (2025)",
+    d: "The original consumer AI companion, still the leader in one-to-one emotional companionship. Its GDPR enforcement action is the clearest regulatory precedent facing the category."
+  },
+  {
+    n: "Character.AI", url: "https://character.ai", hq: "🇺🇸 United States", f: "2021", fund: "—",
+    role: "character", domain: ["consumer", "gaming"], modality: ["text", "voice"],
+    uc: ["consumer-companion", "entertainment-ip"], note: "~20M MAU; ~75 minutes average daily use",
+    d: "User-created character platform with engagement metrics exceeding most social networks. Now under significant safeguarding scrutiny, particularly regarding minors."
+  },
+  {
+    n: "Talkie", url: "https://www.talkie-ai.com", hq: "🇸🇬 Singapore", f: "2023", fund: "—",
+    role: "character", domain: ["consumer"], modality: ["text", "voice"],
+    uc: ["consumer-companion"], note: "",
+    d: "Character companion app strong in the visual and anime niche, which briefly outpaced Character.AI in US downloads."
+  },
+  {
+    n: "Chai", url: "https://www.chai-research.com", hq: "🇬🇧 United Kingdom", f: "2021", fund: "—",
+    role: "character", domain: ["consumer"], modality: ["text"],
+    uc: ["consumer-companion"], note: "",
+    d: "Consumer character chat platform with a creator ecosystem and a permissive content posture."
+  },
+  {
+    n: "Janitor AI", url: "https://janitorai.com", hq: "—", f: "2023", fund: "—",
+    role: "character", domain: ["consumer"], modality: ["text"],
+    uc: ["consumer-companion"], note: "",
+    d: "Large user-generated character roleplay community operating at the permissive end of the content spectrum, illustrating the moderation problem the category faces."
+  },
+
+  // ---------- GAMES & CHARACTER ----------
+  {
+    n: "Inworld AI", url: "https://inworld.ai", hq: "🇺🇸 United States", f: "2021", fund: "—",
+    role: "character", domain: ["gaming"], modality: ["voice", "text"],
+    uc: ["game-npc", "entertainment-ip"], note: "Repositioned from NPC studio to B2B AI infrastructure",
+    d: "Character engine combining dialogue with personality, memory, emotion and safety layers. Its pivot toward enterprise runtime infrastructure is a meaningful signal about the economics of shipping AI NPCs in games."
+  },
+  {
+    n: "Convai", url: "https://convai.com", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "character", domain: ["gaming"], modality: ["voice"],
+    uc: ["game-npc"], note: "",
+    d: "Real-time conversational NPC platform optimised for low latency in-engine, targeting multiplayer and action titles where response delay breaks immersion."
+  },
+  {
+    n: "Charisma.ai", url: "https://charisma.ai", hq: "🇬🇧 United Kingdom", f: "2017", fund: "—",
+    role: "character", domain: ["gaming", "education"], modality: ["voice", "text"],
+    uc: ["game-npc", "heritage-interpretation", "entertainment-ip"], note: "",
+    d: "Narrative-driven character engine where authors define branches, emotional arcs and knowledge, and the AI handles natural dialogue within those constraints. Also used in heritage and educational storytelling."
+  },
+  {
+    n: "NVIDIA ACE", url: "https://developer.nvidia.com/ace", hq: "🇺🇸 United States", f: "2023", fund: "Corporate",
+    role: "character", domain: ["gaming"], modality: ["voice", "video"],
+    uc: ["game-npc"], note: "",
+    d: "Suite of speech, animation and language models for digital humans, bundled with the graphics stack studios already use."
+  },
+  {
+    n: "Latitude", url: "https://latitude.io", hq: "🇺🇸 United States", f: "2019", fund: "—",
+    role: "character", domain: ["gaming", "consumer"], modality: ["text"],
+    uc: ["game-npc"], note: "Makes AI Dungeon",
+    d: "Creator of AI Dungeon, the first mainstream generative text adventure and an early lesson in the moderation problems of open-ended roleplay."
+  },
+
+  // ---------- HEALTH & ACCESSIBILITY ----------
+  {
+    n: "Floreo", url: "https://floreotech.com", hq: "🇺🇸 United States", f: "2016", fund: "—",
+    role: "counterpart", domain: ["health", "education", "social"], modality: ["xr"],
+    uc: ["autism-social"], note: "FDA Breakthrough Device designation",
+    d: "VR social and behavioural skills practice for autistic learners, and one of the few products in this landscape to have pursued a clinical evidence and reimbursement pathway."
+  },
+
+  // ---------- OPERATOR (the crowded zone) ----------
+  {
+    n: "Intercom", url: "https://www.intercom.com", hq: "🇺🇸 United States", f: "2011", fund: "—",
+    role: "operator", domain: ["support"], modality: ["text"],
+    uc: ["support-deflection"], note: "Fin",
+    d: "Customer messaging incumbent whose Fin agent popularised per-resolution pricing, accelerating the commoditisation of support deflection."
+  },
+  {
+    n: "Decagon", url: "https://decagon.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "operator", domain: ["support"], modality: ["text", "voice"],
+    uc: ["support-deflection"], note: "",
+    d: "AI support agents for enterprise customer service, one of the most heavily funded entrants in the deflection market."
+  },
+  {
+    n: "Sierra", url: "https://sierra.ai", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "operator", domain: ["support"], modality: ["text", "voice"],
+    uc: ["support-deflection"], note: "",
+    d: "Conversational AI agent platform for customer-facing support, selling on outcome-based pricing."
+  },
+  {
+    n: "Ada", url: "https://www.ada.cx", hq: "🇨🇦 Canada", f: "2016", fund: "—",
+    role: "operator", domain: ["support"], modality: ["text", "voice"],
+    uc: ["support-deflection"], note: "",
+    d: "Automated customer service resolution platform, one of the longer-standing players now competing against native helpdesk agents."
+  },
+  {
+    n: "Zendesk", url: "https://www.zendesk.com", hq: "🇺🇸 United States", f: "2007", fund: "—",
+    role: "operator", domain: ["support"], modality: ["text", "voice"],
+    uc: ["support-deflection"], note: "",
+    d: "Helpdesk incumbent shipping AI agents natively, which is precisely the bundling that removes room for standalone deflection vendors."
+  },
+  {
+    n: "Salesforce", url: "https://www.salesforce.com", hq: "🇺🇸 United States", f: "1999", fund: "Public (CRM)",
+    role: "operator", domain: ["support", "sales"], modality: ["text", "voice"],
+    uc: ["support-deflection"], note: "Agentforce",
+    d: "CRM incumbent bundling conversational agents into the system of record, the structural endpoint for undifferentiated conversational AI."
+  },
+  {
+    n: "Regie.ai", url: "https://www.regie.ai", hq: "🇺🇸 United States", f: "2020", fund: "—",
+    role: "operator", domain: ["sales"], modality: ["text", "voice"],
+    uc: ["outbound-sdr"], note: "",
+    d: "AI sales agents handling prospecting sequences and outbound engagement."
+  },
+  {
+    n: "11x", url: "https://www.11x.ai", hq: "🇺🇸 United States", f: "2022", fund: "—",
+    role: "operator", domain: ["sales"], modality: ["text", "voice"],
+    uc: ["outbound-sdr"], note: "",
+    d: "Autonomous digital SDR marketed explicitly as a headcount replacement, and a lightning rod for debate about the category's real performance."
+  },
+  {
+    n: "Artisan", url: "https://www.artisan.co", hq: "🇺🇸 United States", f: "2023", fund: "—",
+    role: "operator", domain: ["sales"], modality: ["text"],
+    uc: ["outbound-sdr"], note: "",
+    d: "AI sales employee product known for its deliberately provocative 'stop hiring humans' campaign, which crystallised public resistance to the category."
+  },
+];
+/* ---------------------------------------------------------------
+   Views, filter engine and rendering.
+
+   The filter engine is the one from the smart fabrics map,
+   generalised: each group declares an accessor so the same
+   OR-within / AND-across logic drives both views.
+   --------------------------------------------------------------- */
+
+const GROUP_META = {
+  role:       {label: "Role AI plays", list: roles,       get: (x) => [x.role]},
+  domain:     {label: "Domain",        list: domains,     get: (x) => x.domain},
+  modality:   {label: "Modality",      list: modalities,  get: (x) => x.modality},
+  saturation: {label: "Saturation",    list: saturations, get: (x) => [x.saturation]},
+};
+
+const VIEWS = {
+  usecases: {
+    label: "Use Cases",
+    icon: "i-layout-grid",
+    rows: () => useCases,
+    groups: ["role", "domain", "modality", "saturation"],
+    noun: ["use case", "use cases"],
+    render: renderUseCases,
+    haystack: (u) => [
+      u.name, u.buyer, u.replaces, u.why, u.risk, u.moat, u.verdict,
+      labelOf(roles, u.role), labelOf(saturations, u.saturation),
+      ...u.domain.map((d) => labelOf(domains, d)),
+      ...u.modality.map((m) => labelOf(modalities, m)),
+      ...u.orgs,
+    ],
+  },
+  orgs: {
+    label: "Organisations",
+    icon: "i-building-store",
+    rows: () => orgs,
+    groups: ["role", "domain", "modality"],
+    noun: ["organisation", "organisations"],
+    render: renderOrgs,
+    haystack: (o) => [
+      o.n, o.d, o.hq, o.note || "", o.f, o.fund,
+      labelOf(roles, o.role),
+      ...o.domain.map((d) => labelOf(domains, d)),
+      ...o.modality.map((m) => labelOf(modalities, m)),
+      ...o.uc.map((id) => useCases.find((u) => u.id === id)?.name || ""),
+    ],
+  },
+};
+
+let currentView = "usecases";
+let searchQuery = "";
+let ucPin = null;   // set when arriving from a use-case card
+const filters = {role: new Set(), domain: new Set(), modality: new Set(), saturation: new Set()};
+
+const labelOf = (list, id) => list.find((x) => x.id === id)?.label || id;
+const iconOf = (list, id) => list.find((x) => x.id === id)?.icon || "i-info-circle";
+const view = () => VIEWS[currentView];
+const activeGroups = () => view().groups;
+
+function matchesGroup(row, group, active) {
+  if (active.size === 0) return true;
+  return GROUP_META[group].get(row).some((v) => active.has(v));
+}
+
+function matchesSearch(row) {
+  const s = searchQuery.toLowerCase().trim();
+  if (s === "") return true;
+  return view().haystack(row).join(" ").toLowerCase().includes(s);
+}
+
+function matchesPin(row) {
+  if (!ucPin || currentView !== "orgs") return true;
+  return row.uc.includes(ucPin);
+}
+
+// Matches every active group except `skipGroup`, plus search and any pin.
+function matchesAll(row, skipGroup) {
+  for (const g of activeGroups()) {
+    if (g === skipGroup) continue;
+    if (!matchesGroup(row, g, filters[g])) return false;
+  }
+  return matchesSearch(row) && matchesPin(row);
+}
+
+// Counted against the other groups so a chip never promises an empty result.
+function chipCount(group, id) {
+  const single = new Set([id]);
+  return view().rows().filter((r) => matchesAll(r, group) && matchesGroup(r, group, single)).length;
+}
+
+const anyFilterActive = () => activeGroups().some((g) => filters[g].size > 0) || ucPin !== null;
+
+/* ---------------------------------------------------------------
+   Chrome
+   --------------------------------------------------------------- */
+
+function icon(id, cls = "icon") {
+  return `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
+}
+
+function calculateStats() {
+  const open = useCases.filter((u) => u.saturation === "open").length;
+  const unserved = useCases.filter((u) => u.orgs.length === 0).length;
+  document.getElementById("stat-uc").textContent = useCases.length;
+  document.getElementById("stat-orgs").textContent = orgs.length;
+  document.getElementById("stat-open").textContent = open;
+  document.getElementById("stat-unserved").textContent = unserved;
+  document.getElementById("stat-countries").textContent =
+    new Set(orgs.map((o) => o.hq).filter((h) => h !== "—")).size;
+}
+
+function buildViewTabs() {
+  document.getElementById("view-tabs").innerHTML = Object.entries(VIEWS).map(([id, v]) => `
+    <button type="button" class="view-tab${id === currentView ? " active" : ""}"
+      aria-pressed="${id === currentView}" onclick="setView('${id}')">
+      ${icon(v.icon)}<span>${v.label}</span>
+      <span class="view-tab-cnt">${v.rows().length}</span>
+    </button>`).join("");
+}
+
+function setView(id, opts = {}) {
+  currentView = id;
+  if (!opts.keepFilters) {
+    Object.values(filters).forEach((s) => s.clear());
+    searchQuery = "";
+    document.getElementById("search-input").value = "";
+  }
+  if (!opts.keepPin) ucPin = null;
+  buildViewTabs();
+  buildFilterGroups();
+  render();
+  document.getElementById("results-meta").scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+function buildFilterGroups() {
+  document.getElementById("filter-groups").innerHTML = activeGroups().map((g) => {
+    const meta = GROUP_META[g];
+    const chips = meta.list.map((opt) => {
+      const active = filters[g].has(opt.id);
+      const count = chipCount(g, opt.id);
+      const dim = (!active && count === 0) ? " dim" : "";
+      const title = opt.blurb ? ` title="${opt.blurb}"` : "";
+      return `<button type="button" class="filter-btn${active ? " active" : ""}${dim}"${title}
+        aria-pressed="${active}" onclick="toggleFilter('${g}','${opt.id}')">
+        <span>${opt.label}</span><span class="filter-cnt">${count}</span>
+      </button>`;
+    }).join("");
+    return `<div class="filter-row">
+      <span class="filter-row-label">${meta.label}</span>
+      <div class="filters-grid">${chips}</div>
+    </div>`;
+  }).join("");
+
+  const pinBar = document.getElementById("pin-bar");
+  if (ucPin && currentView === "orgs") {
+    const uc = useCases.find((u) => u.id === ucPin);
+    pinBar.hidden = false;
+    pinBar.innerHTML = `<span class="pin-chip">${icon("i-arrow-right")}
+      Showing organisations in <strong>${uc.name}</strong>
+      <button type="button" class="pin-clear" onclick="clearPin()" aria-label="Clear">${icon("i-x")}</button>
+    </span>`;
+  } else {
+    pinBar.hidden = true;
+    pinBar.innerHTML = "";
+  }
+
+  document.getElementById("clear-all").hidden = !anyFilterActive();
+}
+
+function toggleFilter(group, id) {
+  const set = filters[group];
+  if (set.has(id)) set.delete(id); else set.add(id);
+  buildFilterGroups();
+  render();
+}
+
+function clearAllFilters() {
+  Object.values(filters).forEach((s) => s.clear());
+  ucPin = null;
+  buildFilterGroups();
+  render();
+}
+
+function clearPin() {
+  ucPin = null;
+  buildFilterGroups();
+  render();
+}
+
+// The cross-link: from a use case to the organisations serving it.
+function showOrgsFor(ucId) {
+  ucPin = ucId;
+  setView("orgs", {keepPin: true});
+}
+
+/* ---------------------------------------------------------------
+   Card rendering
+   --------------------------------------------------------------- */
+
+function domainChips(list) {
+  return list.map((d) => `<span class="domain-chip">${labelOf(domains, d)}</span>`).join("");
+}
+
+function modalityChips(list) {
+  return list.map((m) =>
+    `<span class="layer-chip">${icon(iconOf(modalities, m))}${labelOf(modalities, m)}</span>`).join("");
+}
+
+function rolePill(role) {
+  return `<span class="role-pill role-${role}">${icon(iconOf(roles, role))}${labelOf(roles, role)}</span>`;
+}
+
+function renderUseCases(rows) {
+  return rows.map((u) => {
+    const served = u.orgs.length;
+    const footer = served
+      ? `<button type="button" class="org-link" onclick="showOrgsFor('${u.id}')">
+           ${served} ${served === 1 ? "organisation" : "organisations"} ${icon("i-arrow-right")}
+         </button>
+         <span class="org-names">${u.orgs.slice(0, 4).join(" · ")}${served > 4 ? ` · +${served - 4}` : ""}</span>`
+      : `<span class="unserved">${icon("i-target")} No purpose-built vendor found</span>`;
+
+    return `
+      <div class="uc-card">
+        <div class="card-header">
+          <h3 class="uc-name">${u.name}</h3>
+          <span class="sat-badge sat-${u.saturation}">${labelOf(saturations, u.saturation)}</span>
+        </div>
+
+        <div class="attr-row">
+          ${rolePill(u.role)}
+          ${modalityChips(u.modality)}
+        </div>
+        <div class="attr-row">${domainChips(u.domain)}</div>
+
+        <div class="facts">
+          <div class="fact"><span class="fact-label">Buyer</span><span>${u.buyer}</span></div>
+          <div class="fact"><span class="fact-label">Replaces</span><span>${u.replaces}</span></div>
+        </div>
+
+        <div class="verdict-block">
+          <span class="verdict-label">${icon("i-target")} Verdict <em>my judgement</em></span>
+          <p>${u.verdict}</p>
+        </div>
+
+        <details class="analysis">
+          <summary>Full analysis ${icon("i-chevron-down", "icon chev")}</summary>
+          <p><span class="an-label">${icon("i-bulb")} Why it works</span>${u.why}</p>
+          <p><span class="an-label">${icon("i-alert-triangle")} What breaks it</span>${u.risk}</p>
+          <p><span class="an-label">${icon("i-shield-lock")} Where the moat is</span>${u.moat}</p>
+        </details>
+
+        <div class="card-footer">${footer}</div>
+      </div>`;
+  }).join("");
+}
+
+function renderOrgs(rows) {
+  return rows.map((o) => {
+    const ucTags = o.uc.map((id) => {
+      const uc = useCases.find((x) => x.id === id);
+      return `<span class="usecase-tag">${uc ? uc.name : id}</span>`;
+    }).join("");
+
+    return `
+      <div class="company-card">
+        <div class="card-header">
+          <a href="${o.url}" target="_blank" rel="noopener noreferrer" class="company-name">
+            ${o.n} ${icon("i-external-link", "icon ext")}
+          </a>
+          ${rolePill(o.role)}
+        </div>
+
+        <div class="attr-row">${modalityChips(o.modality)}${domainChips(o.domain)}</div>
+
+        <p class="company-desc">${o.d}</p>
+
+        <div class="usecase-container">
+          <span class="usecase-label">Use cases</span>
+          <div class="usecase-tags">${ucTags}</div>
+        </div>
+
+        <div class="card-footer">
+          ${o.hq !== "—" ? `<span class="footer-meta-item">${icon("i-map-pin")}${o.hq}</span>` : ""}
+          ${o.f !== "—" ? `<span class="footer-meta-item">${icon("i-calendar")}Est. ${o.f}</span>` : ""}
+          ${o.fund !== "—" ? `<span class="footer-meta-item">${icon("i-coins")}${o.fund}</span>` : ""}
+          ${o.note ? `<span class="status-note">${icon("i-info-circle")}${o.note}</span>` : ""}
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function render() {
+  const grid = document.getElementById("grid");
+  const v = view();
+  const visible = v.rows().filter((r) => matchesAll(r, null));
+  const [one, many] = v.noun;
+
+  document.getElementById("results-count").textContent =
+    `${visible.length} ${visible.length === 1 ? one : many} visible`;
+
+  grid.className = currentView === "usecases" ? "grid-layout grid-uc" : "grid-layout";
+
+  if (visible.length === 0) {
+    grid.innerHTML = `
+      <div class="zero-state">
+        ${icon("i-search-off", "icon zero-icon")}
+        <p style="font-weight: 500;">Nothing matches those filters.</p>
+        <p style="font-size: 0.8rem; margin-top: 4px;">Try clearing a filter or broadening your search.</p>
+      </div>`;
+    return;
+  }
+
+  grid.innerHTML = v.render(visible);
+}
+
+document.getElementById("search-input").addEventListener("input", (e) => {
+  searchQuery = e.target.value;
+  buildFilterGroups();
+  render();
+});
+
+calculateStats();
+buildViewTabs();
+buildFilterGroups();
+render();
+</script>
+
+</body>
+</html>
