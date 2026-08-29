@@ -1,7 +1,8 @@
-> This repository holds two independent landscape maps:
+> This repository holds three independent pages:
 >
 > - **[Smart Fabrics & E-Textiles](https://aditya-kabra.github.io/Claude_Test/)** — this page
 > - **[Roleplay & Conversational Simulation](https://aditya-kabra.github.io/Claude_Test/roleplay/)** — see [`roleplay/`](roleplay/)
+> - **[Daily Start — Inspiration, Gratitude & Reminders](https://aditya-kabra.github.io/Claude_Test/daily/)** — see [`daily/`](daily/)
 
 # Global Smart Fabrics & E-Textiles Ecosystem Map
 

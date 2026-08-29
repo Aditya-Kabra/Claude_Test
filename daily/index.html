@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Start — Inspiration, Gratitude &amp; Reminders</title>
+  <style>
+    :root {
+      --color-bg-base: #f9fafb;
+      --color-bg-card: #ffffff;
+      --color-border: #e5e7eb;
+      --color-border-hover: #cbd5e1;
+      --color-text-primary: #111827;
+      --color-text-secondary: #4b5563;
+      --color-text-tertiary: #9ca3af;
+      --color-accent: #7c3aed;
+      --color-accent-hover: #6d28d9;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg-base: #0f172a;
+        --color-bg-card: #1e293b;
+        --color-border: #334155;
+        --color-border-hover: #475569;
+        --color-text-primary: #f8fafc;
+        --color-text-secondary: #cbd5e1;
+        --color-text-tertiary: #64748b;
+        --color-accent: #a78bfa;
+        --color-accent-hover: #c4b5fd;
+      }
+    }
+
+    /* Inline SVG icons: sized in em so font-size still controls them. */
+    .icon {
+      width: 1em;
+      height: 1em;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: -0.125em;
+      flex-shrink: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+
+    .ecosystem-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-title-row h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .header-title-row p {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+      max-width: 78ch;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-val {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 2px;
+    }
+
+    .stat-lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+    }
+
+    /* ---------- Today's three ---------- */
+    .today-panel {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .today-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 0.875rem;
+    }
+
+    .today-head h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .today-date {
+      font-size: 0.775rem;
+      color: var(--color-text-tertiary);
+    }
+
+    .today-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .today-card {
+      border: 1px solid var(--color-border);
+      border-left: 3px solid var(--color-accent);
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+      background: var(--color-bg-base);
+      padding: 0.875rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .today-card .today-theme {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-tertiary);
+    }
+
+    .today-line {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      color: var(--color-text-primary);
+    }
+
+    .today-voice {
+      font-size: 0.75rem;
+      color: var(--color-text-secondary);
+    }
+
+    .today-jump {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--color-accent);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .today-jump:hover { text-decoration: underline; }
+
+    .reroll-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-accent);
+      background: transparent;
+      color: var(--color-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+    }
+
+    .reroll-btn:hover { background: var(--color-accent); color: #fff; }
+
+    /* ---------- Controls ---------- */
+    .controls-bar {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-md);
+      background-color: var(--color-bg-base);
+      color: var(--color-text-primary);
+      outline: none;
+      transition: border-color 0.15s ease;
+      font-family: inherit;
+    }
+
+    .search-input:focus { border-color: var(--color-accent); }
+
+    .search-icon {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-tertiary);
+      font-size: 1.1rem;
+    }
+
+    .filter-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .filter-row-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-tertiary);
+      padding-top: 6px;
+    }
+
+    .filters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      background: var(--color-border);
+      color: var(--color-text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--color-text-primary);
+      color: var(--color-bg-card);
+      border-color: var(--color-text-primary);
+    }
+
+    .filter-btn.dim { opacity: 0.4; }
+
+    .filter-cnt {
+      opacity: 0.6;
+      font-size: 0.7rem;
+      background: rgba(0,0,0,0.06);
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    .filter-btn.active .filter-cnt { background: rgba(255,255,255,0.2); }
+
+    @media (prefers-color-scheme: dark) {
+      .filter-cnt { background: rgba(255,255,255,0.08); }
+    }
+
+    .clear-all-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--color-accent);
+      background: transparent;
+      color: var(--color-accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+      align-self: flex-start;
+    }
+
+    .clear-all-btn:hover { background: var(--color-accent); color: #fff; }
+    .clear-all-btn[hidden] { display: none; }
+
+    .results-meta {
+      font-size: 0.8rem;
+      color: var(--color-text-tertiary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ---------- Grid and cards ---------- */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .insight-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+      scroll-margin-top: 1rem;
+    }
+
+    .insight-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-border-hover);
+      box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .insight-card.flash {
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.18);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .insight-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      line-height: 1.3;
+      color: var(--color-text-primary);
+    }
+
+    .category-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .moment-pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .insight-line {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--color-text-primary);
+      padding-left: 12px;
+      border-left: 3px solid var(--color-accent);
+    }
+
+    .insight-line.is-idea {
+      border-left-style: dashed;
+      font-style: italic;
+    }
+
+    .attrib {
+      font-size: 0.725rem;
+      color: var(--color-text-tertiary);
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .attrib strong { color: var(--color-text-secondary); font-weight: 600; }
+
+    .kind-tag {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .kind-quote { background: #eef2ff; color: #3730a3; border: 1px solid #6366f1; }
+    .kind-idea  { background: #f8fafc; color: #475569; border: 1px solid #94a3b8; }
+
+    .insight-desc {
+      font-size: 0.825rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .practice-container {
+      background: rgba(0, 0, 0, 0.02);
+      border-left: 3px solid var(--color-accent);
+      padding: 6px 10px;
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .practice-container { background: rgba(255, 255, 255, 0.03); }
+      .kind-quote { background: #1e1b4b; color: #c7d2fe; border-color: #6366f1; }
+      .kind-idea  { background: #1e293b; color: #cbd5e1; border-color: #64748b; }
+    }
+
+    .practice-label {
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .practice-text {
+      font-size: 0.8rem;
+      color: var(--color-text-primary);
+      line-height: 1.45;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .insight-tag {
+      font-size: 0.725rem;
+      font-weight: 600;
+      background: var(--color-bg-base);
+      color: var(--color-text-primary);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+    }
+
+    .card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .form-chip {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--color-bg-base);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .form-chip .icon { font-size: 0.8rem; opacity: 0.7; }
+
+    .footer-meta-item {
+      font-size: 0.725rem;
+      color: var(--color-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+
+    .footer-meta-item .icon { font-size: 0.85rem; }
+
+    a.footer-meta-item:hover { color: var(--color-accent); text-decoration: underline; }
+
+    /* Theme palette */
+    .cat-inspiration { background: #f5f0fb; color: #3a1f6b; border: 1px solid #6b3fa0; }
+    .cat-gratitude   { background: #fbf4e6; color: #5a3a08; border: 1px solid #8c6010; }
+    .cat-motivation  { background: #fdeeea; color: #7c2d12; border: 1px solid #c2410c; }
+    .cat-joy         { background: #fbeaf0; color: #72243e; border: 1px solid #993556; }
+    .cat-reminders   { background: #e6f1fb; color: #0c447c; border: 1px solid #185fa5; }
+    .cat-calm        { background: #e6f8fb; color: #08445a; border: 1px solid #0f6e86; }
+    .cat-focus       { background: #e1f5ee; color: #085041; border: 1px solid #0f6e56; }
+    .cat-resilience  { background: #f1efe8; color: #444441; border: 1px solid #5f5e5a; }
+    .cat-connection  { background: #fcebeb; color: #791f1f; border: 1px solid #a32d2d; }
+    .cat-reflection  { background: #eeedfe; color: #3c3489; border: 1px solid #534ab7; }
+
+    /* Moment palette */
+    .moment-morning  { background: #fffbeb; color: #92400e; border: 1px solid #f59e0b; }
+    .moment-midday   { background: #f0fdf4; color: #166534; border: 1px solid #22c55e; }
+    .moment-evening  { background: #eef2ff; color: #3730a3; border: 1px solid #6366f1; }
+    .moment-hard     { background: #fff1f2; color: #9f1239; border: 1px solid #f43f5e; }
+    .moment-anytime  { background: #f1f5f9; color: #334155; border: 1px solid #64748b; }
+
+    @media (max-width: 640px) {
+      body { padding: 1rem; }
+      .filter-row { grid-template-columns: 1fr; gap: 4px; }
+      .filter-row-label { padding-top: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Icons from Tabler Icons (MIT), inlined so the page has no external dependencies. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M21 21l-6 -6" />
+    </symbol>
+    <symbol id="i-search-off" viewBox="0 0 24 24">
+      <path d="M5.039 5.062a7 7 0 0 0 9.91 9.89m1.584 -2.434a7 7 0 0 0 -9.038 -9.057" />
+      <path d="M3 3l18 18" />
+    </symbol>
+    <symbol id="i-external-link" viewBox="0 0 24 24">
+      <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+      <path d="M11 13l9 -9" />
+      <path d="M15 4h5v5" />
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M18 6l-12 12" />
+      <path d="M6 6l12 12" />
+    </symbol>
+    <symbol id="i-quote" viewBox="0 0 24 24">
+      <path d="M10 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5" />
+      <path d="M19 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5" />
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24">
+      <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+      <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+    </symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24">
+      <path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11" />
+    </symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+    </symbol>
+    <symbol id="i-help-circle" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M12 16v.01" />
+      <path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
+    </symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24">
+      <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3" />
+      <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3" />
+    </symbol>
+    <symbol id="i-book" viewBox="0 0 24 24">
+      <path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" />
+      <path d="M3 6l0 13" />
+      <path d="M12 6l0 13" />
+      <path d="M21 6l0 13" />
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z" />
+      <path d="M6.343 17.657l-1.414 1.414" />
+      <path d="M6.343 6.343l-1.414 -1.414" />
+      <path d="M17.657 6.343l1.414 -1.414" />
+      <path d="M17.657 17.657l1.414 1.414" />
+      <path d="M12 20v2" />
+      <path d="M12 2v2" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+    </symbol>
+    <symbol id="i-sunset" viewBox="0 0 24 24">
+      <path d="M3 13h1" />
+      <path d="M20 13h1" />
+      <path d="M5.6 6.6l.7 .7" />
+      <path d="M18.4 6.6l-.7 .7" />
+      <path d="M8 13a4 4 0 1 1 8 0" />
+      <path d="M3 17h18" />
+      <path d="M12 21v-3" />
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M12 7v5l3 3" />
+    </symbol>
+    <symbol id="i-cloud-storm" viewBox="0 0 24 24">
+      <path d="M7 18a4.6 4.4 0 0 1 0 -9h0a5 4.5 0 0 1 11 2h1a3.5 3.5 0 0 1 0 7h-1" />
+      <path d="M13 14l-2 4h3l-2 4" />
+    </symbol>
+    <symbol id="i-infinity" viewBox="0 0 24 24">
+      <path d="M9.828 9.172a4 4 0 1 0 0 5.656a10 10 0 0 0 2.172 -2.828a10 10 0 0 1 2.172 -2.828a4 4 0 1 1 0 5.656a10 10 0 0 1 -2.172 -2.828a10 10 0 0 0 -2.172 -2.828" />
+    </symbol>
+    <symbol id="i-user" viewBox="0 0 24 24">
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+    </symbol>
+    <symbol id="i-dice" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="16" rx="3" />
+      <path d="M8.5 8.5h.01" />
+      <path d="M15.5 8.5h.01" />
+      <path d="M8.5 15.5h.01" />
+      <path d="M15.5 15.5h.01" />
+    </symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24">
+      <path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z" />
+      <path d="M16 6a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z" />
+      <path d="M9 18a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6z" />
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12l14 0" />
+      <path d="M13 18l6 -6" />
+      <path d="M13 6l6 6" />
+    </symbol>
+    <symbol id="i-info-circle" viewBox="0 0 24 24">
+      <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+      <path d="M12 9h.01" />
+      <path d="M11 12h1v4h1" />
+    </symbol>
+  </defs>
+</svg>
+
+<div class="ecosystem-container">
+  <header class="header-section">
+    <div class="header-title-row">
+      <h1>Daily Start — Inspiration, Gratitude &amp; Reminders</h1>
+      <p>Short things to read before the day takes over, sorted into the areas you might actually
+      need on a given morning &mdash; gratitude, motivation, joy, calm, focus, reminders. Every card
+      carries one line, a little context, and one concrete thing to try. Verbatim quotations and
+      ideas written in this page&rsquo;s own words are <strong>labelled differently</strong>, so you always
+      know which is which.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="stat-total">0</div>
+        <div class="stat-lbl">Cards</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-themes">0</div>
+        <div class="stat-lbl">Areas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-voices">0</div>
+        <div class="stat-lbl">Voices</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-morning" style="color: #92400e;">0</div>
+        <div class="stat-lbl">Morning Starters</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="stat-quick" style="color: #166534;">0</div>
+        <div class="stat-lbl">Under 2 Minutes</div>
+      </div>
+    </div>
+  </header>
+
+  <section class="today-panel">
+    <div class="today-head">
+      <h2><svg class="icon" aria-hidden="true"><use href="#i-sparkles"/></svg> Your three for today</h2>
+      <span class="today-date" id="today-date"></span>
+      <button type="button" class="reroll-btn" onclick="reroll()">
+        <svg class="icon" aria-hidden="true"><use href="#i-dice"/></svg> Draw three more
+      </button>
+    </div>
+    <div class="today-grid" id="today-grid"></div>
+  </section>
+
+  <section class="controls-bar">
+    <div class="search-wrapper">
+      <svg class="icon search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="text" id="search-input" class="search-input"
+        placeholder="Search lines, ideas and practices (e.g. 'breathe', 'systems', 'hard day', 'Kobe', 'journal')...">
+    </div>
+
+    <div class="filter-groups" id="filter-groups"></div>
+
+    <button type="button" class="clear-all-btn" id="clear-all" hidden onclick="clearAllFilters()">
+      <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg> Clear all filters
+    </button>
+  </section>
+
+  <div class="results-meta">
+    <span id="results-count">0 cards</span>
+    <span style="font-size: 0.75rem;">Last Updated: August 2026</span>
+  </div>
+
+  <main class="grid-layout" id="grid"></main>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Lookup tables. Every id used in the data array must appear in
+   exactly one of these lists.
+   --------------------------------------------------------------- */
+
+const themes = [
+  {id: "inspiration", label: "Inspiration"},
+  {id: "gratitude",   label: "Gratitude"},
+  {id: "motivation",  label: "Motivation"},
+  {id: "joy",         label: "Joy & Delight"},
+  {id: "reminders",   label: "Reminders"},
+  {id: "calm",        label: "Calm"},
+  {id: "focus",       label: "Focus"},
+  {id: "resilience",  label: "Resilience"},
+  {id: "connection",  label: "Connection"},
+  {id: "reflection",  label: "Reflection"},
+];
+
+const moments = [
+  {id: "morning", label: "Morning",  icon: "i-sun"},
+  {id: "midday",  label: "Midday",   icon: "i-clock"},
+  {id: "evening", label: "Evening",  icon: "i-sunset"},
+  {id: "hard",    label: "Hard day", icon: "i-cloud-storm"},
+  {id: "anytime", label: "Anytime",  icon: "i-infinity"},
+];
+
+const forms = [
+  {id: "read",    label: "Read & sit with",   icon: "i-book"},
+  {id: "reframe", label: "Reframe",           icon: "i-refresh"},
+  {id: "practice",label: "Micro-practice",    icon: "i-bolt"},
+  {id: "write",   label: "Journal prompt",    icon: "i-pencil"},
+  {id: "ask",     label: "Question to carry", icon: "i-help-circle"},
+  {id: "ritual",  label: "Daily ritual",      icon: "i-repeat"},
+];
+
+/* Where each line comes from. `note` is what the person is known for. */
+const voices = [
+  {id: "kobe",        name: "Kobe Bryant",           note: "Mamba Mentality",              url: "https://en.wikipedia.org/wiki/Kobe_Bryant"},
+  {id: "howes",       name: "Lewis Howes",           note: "The School of Greatness",      url: "https://lewishowes.com"},
+  {id: "brown",       name: "Brené Brown",           note: "Daring Greatly, Dare to Lead", url: "https://brenebrown.com"},
+  {id: "clear",       name: "James Clear",           note: "Atomic Habits",                url: "https://jamesclear.com"},
+  {id: "robbins",     name: "Mel Robbins",           note: "The 5 Second Rule",            url: "https://melrobbins.com"},
+  {id: "shetty",      name: "Jay Shetty",            note: "Think Like a Monk",            url: "https://jayshetty.me"},
+  {id: "marcus",      name: "Marcus Aurelius",       note: "Meditations",                  url: "https://classics.mit.edu/Antoninus/meditations.html"},
+  {id: "seneca",      name: "Seneca",                note: "Letters to Lucilius",          url: "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius"},
+  {id: "holiday",     name: "Ryan Holiday",          note: "The Obstacle Is the Way",      url: "https://ryanholiday.net"},
+  {id: "frankl",      name: "Viktor Frankl",         note: "Man's Search for Meaning",     url: "https://en.wikipedia.org/wiki/Man%27s_Search_for_Meaning"},
+  {id: "angelou",     name: "Maya Angelou",          note: "Poet and memoirist",           url: "https://www.mayaangelou.com"},
+  {id: "oliver",      name: "Mary Oliver",           note: "Poet",                         url: "https://www.poetryfoundation.org/poets/mary-oliver"},
+  {id: "rumi",        name: "Rumi",                  note: "13th-century Persian poet",    url: "https://www.poetryfoundation.org/poets/jalal-al-din-rumi"},
+  {id: "thich",       name: "Thich Nhat Hanh",       note: "Plum Village tradition",       url: "https://plumvillage.org"},
+  {id: "brach",       name: "Tara Brach",            note: "Radical Acceptance, RAIN",     url: "https://www.tarabrach.com"},
+  {id: "neff",        name: "Kristin Neff",          note: "Self-compassion research",     url: "https://self-compassion.org"},
+  {id: "hanson",      name: "Rick Hanson",           note: "Hardwiring Happiness",         url: "https://rickhanson.net"},
+  {id: "steindlrast", name: "Br. David Steindl-Rast",note: "Gratefulness.org",             url: "https://gratefulness.org"},
+  {id: "emmons",      name: "Robert Emmons",         note: "Gratitude science, UC Davis",  url: "https://greatergood.berkeley.edu/profile/robert_emmons"},
+  {id: "duckworth",   name: "Angela Duckworth",      note: "Grit",                         url: "https://angeladuckworth.com"},
+  {id: "newport",     name: "Cal Newport",           note: "Deep Work",                    url: "https://calnewport.com"},
+  {id: "grant",       name: "Adam Grant",            note: "Organisational psychologist",  url: "https://adamgrant.net"},
+  {id: "naval",       name: "Naval Ravikant",        note: "Essays and aphorisms",         url: "https://nav.al"},
+  {id: "brooks",      name: "Arthur C. Brooks",      note: "Happiness research and column",url: "https://arthurbrooks.com"},
+  {id: "cameron",     name: "Julia Cameron",         note: "The Artist's Way",             url: "https://juliacameronlive.com"},
+  {id: "lamott",      name: "Anne Lamott",           note: "Bird by Bird",                 url: "https://en.wikipedia.org/wiki/Anne_Lamott"},
+  {id: "dweck",       name: "Carol Dweck",           note: "Mindset",                      url: "https://profiles.stanford.edu/carol-dweck"},
+];
+
+/* ---------------------------------------------------------------
+   The cards.
+
+   kind: "quote" — the line is verbatim. `src` says where from.
+         "idea"  — the line is written for this page, summarising an
+                   idea from that person's work. Never a fake quote.
+   time: minutes the practice realistically takes.
+   --------------------------------------------------------------- */
+
+const data = [
+
+  // ---------- GRATITUDE ----------
+  {
+    t: "Gratefulness comes first", cat: "gratitude", voice: "steindlrast", moment: "morning",
+    kind: "quote", src: "TED, 'Want to be happy? Be grateful' (2013)", form: ["read", "ritual"], time: 1,
+    q: "It is not happiness that makes us grateful. It is gratefulness that makes us happy.",
+    d: "The usual order puts gratitude downstream of circumstance: get the good news, then feel thankful. Steindl-Rast reverses it, which is the only version you actually control on an ordinary Tuesday.",
+    p: "Before you unlock your phone, name one thing already given to you today that you did nothing to earn.",
+    tags: ["Reordering the day", "Before the phone"]
+  },
+  {
+    t: "Weekly beats daily", cat: "gratitude", voice: "emmons", moment: "evening",
+    kind: "idea", src: "Emmons & McCullough, 'Counting Blessings Versus Burdens' (2003)", form: ["ritual", "write"], time: 5,
+    q: "Counting your blessings once a week works better than doing it every day — the daily version wears out its own novelty.",
+    d: "In the gratitude-journal studies the effect came from specificity and surprise, not frequency. A list you can write on autopilot has stopped doing anything.",
+    p: "Pick one evening a week. Write five things, each specific enough that nobody else could have written it.",
+    tags: ["Gratitude journal", "Avoiding autopilot"]
+  },
+  {
+    t: "Stay with the good thing", cat: "gratitude", voice: "hanson", moment: "anytime",
+    kind: "quote", src: "Hardwiring Happiness (2013)", form: ["practice"], time: 1,
+    q: "The brain is like Velcro for negative experiences and Teflon for positive ones.",
+    d: "Hanson's remedy is 'taking in the good': when something pleasant happens, hold attention on it for a slow twenty seconds so it has time to consolidate. Good moments are usually real. They are just short.",
+    p: "Next time something goes well, stay inside it for twenty seconds before reaching for the next thing.",
+    tags: ["Negativity bias", "Twenty seconds"]
+  },
+  {
+    t: "Thank a person, not the universe", cat: "gratitude", voice: "emmons", moment: "midday",
+    kind: "idea", src: "Gratitude research summarised at the Greater Good Science Center", form: ["practice"], time: 2,
+    q: "Gratitude aimed at a named human does more than gratitude aimed at life in general.",
+    d: "Diffuse thankfulness is pleasant and forgettable. Gratitude with an address changes a relationship, and the research consistently finds the expressed version outperforms the felt one.",
+    p: "Send one two-line message today naming exactly what someone did and what it made possible.",
+    tags: ["Expressed gratitude", "Two-line message"]
+  },
+  {
+    t: "The ordinary is the point", cat: "gratitude", voice: "brown", moment: "evening",
+    kind: "idea", src: "the 'ordinary moments' theme in Daring Greatly (2012)", form: ["reframe", "write"], time: 2,
+    q: "The people who have lost the most rarely miss the extraordinary things. They miss an ordinary Tuesday.",
+    d: "Brown's interviews with people in grief kept surfacing the same detail: what gets mourned is the mundane texture of a life, not its highlights. Which means the mundane texture is what there is to be grateful for now.",
+    p: "Write down one completely ordinary thing from today you would miss if it stopped.",
+    tags: ["Ordinary moments", "Grief-informed"]
+  },
+  {
+    t: "Wash the dishes to wash the dishes", cat: "gratitude", voice: "thich", moment: "anytime",
+    kind: "idea", src: "The Miracle of Mindfulness (1975)", form: ["practice", "reframe"], time: 2,
+    q: "If you wash the dishes only to get them done, you are not alive during the time you are washing them.",
+    d: "Thich Nhat Hanh treated chores as the test case: a life spent rushing through its own middle sections is mostly middle sections. The dishes are not in the way of your life. They are some of it.",
+    p: "Pick one chore today and do it at its natural speed, with nothing playing in the background.",
+    tags: ["Mindful chores", "No background noise"]
+  },
+  {
+    t: "Wealth you already hold", cat: "gratitude", voice: "seneca", moment: "morning",
+    kind: "quote", src: "Letters to Lucilius, Letter 2 (Gummere translation)", form: ["read", "reframe"], time: 1,
+    q: "It is not the man who has too little, but the man who craves more, that is poor.",
+    d: "Stoic gratitude is unsentimental: it works by noticing that the thing you are chasing would, once held, be absorbed into the background as quickly as everything else you once chased.",
+    p: "Name one thing you currently have that you once badly wanted. Sit with the fact that you got it.",
+    tags: ["Stoic gratitude", "Hedonic adaptation"]
+  },
+
+  // ---------- INSPIRATION ----------
+  {
+    t: "Instructions for living a life", cat: "inspiration", voice: "oliver", moment: "morning",
+    kind: "quote", src: "'Sometimes', from Red Bird (2008)", form: ["read"], time: 1,
+    q: "Instructions for living a life: Pay attention. Be astonished. Tell about it.",
+    d: "Three verbs, in order, and the order matters — astonishment is downstream of attention, and telling is what stops the whole thing evaporating by lunchtime.",
+    p: "Choose one of the three verbs to be deliberately good at today.",
+    tags: ["Attention", "Three verbs"]
+  },
+  {
+    t: "One wild and precious life", cat: "inspiration", voice: "oliver", moment: "anytime",
+    kind: "quote", src: "'The Summer Day', from House of Light (1990)", form: ["ask"], time: 1,
+    q: "Tell me, what is it you plan to do with your one wild and precious life?",
+    d: "The line lands because of the arithmetic behind it — one, singular, not repeatable. It is not a scolding question. It is an invitation to stop deferring.",
+    p: "Answer the question in one sentence, out loud, without editing it into something respectable.",
+    tags: ["Big question", "Anti-deferral"]
+  },
+  {
+    t: "Inspire, then let go", cat: "inspiration", voice: "kobe", moment: "anytime",
+    kind: "quote", src: "Widely reported in retirement-era interviews (2015–2016)", form: ["read", "reframe"], time: 1,
+    q: "The most important thing is to try and inspire people so that they can be great in whatever they want to do.",
+    d: "Late in his career Bryant kept reframing his own achievement as raw material for other people's. It is a useful reading of a good day: the output isn't only what you made, it's what your making made possible.",
+    p: "Ask who is watching how you work today, and what they'd conclude from it.",
+    tags: ["Legacy", "Being watched"]
+  },
+  {
+    t: "The wound as an opening", cat: "inspiration", voice: "rumi", moment: "hard",
+    kind: "quote", src: "Coleman Barks rendering; Rumi's originals vary by translation", form: ["read", "reframe"], time: 1,
+    q: "The wound is the place where the Light enters you.",
+    d: "Not a claim that pain is good. A claim that the parts of you that broke open are the parts that are no longer sealed — which is why people who have been through something are so often the ones with something to give.",
+    p: "Name one thing you understand only because something went badly for you.",
+    tags: ["Hard-won understanding", "Not toxic positivity"]
+  },
+  {
+    t: "Greatness on ordinary days", cat: "inspiration", voice: "howes", moment: "morning",
+    kind: "idea", src: "the through-line of The School of Greatness", form: ["reframe", "ask"], time: 1,
+    q: "Greatness is not a summit you reach. It is the standard you keep on the days nobody would notice if you dropped it.",
+    d: "Across hundreds of interviews with athletes, founders and performers, Howes' recurring finding is unglamorous: the difference shows up in the unwitnessed hours, not the visible ones.",
+    p: "Identify today's unwitnessed hour, and decide now what standard it gets.",
+    tags: ["Unwitnessed hours", "Standards"]
+  },
+  {
+    t: "Consider it a privilege to be here", cat: "inspiration", voice: "marcus", moment: "morning",
+    kind: "idea", src: "Meditations, Book 5 (the 'rising in the morning' passage)", form: ["read", "ritual"], time: 1,
+    q: "You did not have to wake up today. Getting to is the whole argument for doing something with it.",
+    d: "The Book 5 passage is a self-directed argument against staying in bed: you were made for work in the world, and the reluctance you feel is not a good enough reason not to do it.",
+    p: "Before getting out of bed, say what you are getting up for. One sentence.",
+    tags: ["Getting up", "Meditations Book 5"]
+  },
+  {
+    t: "Still I rise", cat: "inspiration", voice: "angelou", moment: "hard",
+    kind: "quote", src: "'Still I Rise', from And Still I Rise (1978)", form: ["read"], time: 1,
+    q: "You may write me down in history with your bitter, twisted lies, you may trod me in the very dirt, but still, like dust, I'll rise.",
+    d: "Angelou's poem is defiance with a rhythm you can walk to. It is worth reading aloud on the days where the news, or a person, has decided who you are.",
+    p: "Read the poem out loud once, standing up.",
+    tags: ["Defiance", "Read aloud"]
+  },
+
+  // ---------- MOTIVATION ----------
+  {
+    t: "Fall to the level of your systems", cat: "motivation", voice: "clear", moment: "morning",
+    kind: "quote", src: "Atomic Habits (2018)", form: ["reframe"], time: 1,
+    q: "You do not rise to the level of your goals. You fall to the level of your systems.",
+    d: "Motivation is a poor input because it fluctuates and a system doesn't. The question stops being how badly you want it and becomes what happens by default at 7am.",
+    p: "Take one goal you keep restating and change one default instead — where something sits, when it's scheduled, what's already open.",
+    tags: ["Systems over goals", "Defaults"]
+  },
+  {
+    t: "Every action is a vote", cat: "motivation", voice: "clear", moment: "anytime",
+    kind: "quote", src: "Atomic Habits (2018)", form: ["reframe"], time: 1,
+    q: "Every action you take is a vote for the type of person you wish to become.",
+    d: "It reframes a single small effort as evidence rather than progress. No individual vote decides anything; the tally is the identity.",
+    p: "Cast one vote in the next hour, deliberately small enough that you will actually do it.",
+    tags: ["Identity habits", "Small votes"]
+  },
+  {
+    t: "Trust the work when it matters", cat: "motivation", voice: "kobe", moment: "morning",
+    kind: "quote", src: "The Mamba Mentality: How I Play (2018) and related interviews", form: ["read", "reframe"], time: 1,
+    q: "Mamba mentality is all about focusing on the process and trusting in the hard work when it matters most.",
+    d: "Bryant's version of confidence was retrospective: it came from a documented history of preparation, not from a feeling summoned on the day. That makes it buildable.",
+    p: "Before the hard thing today, spend thirty seconds listing what you have already done to prepare for it.",
+    tags: ["Process focus", "Earned confidence"]
+  },
+  {
+    t: "Five seconds to move", cat: "motivation", voice: "robbins", moment: "morning",
+    kind: "idea", src: "the 5 Second Rule (2017)", form: ["practice"], time: 1,
+    q: "Count 5-4-3-2-1 and move before the part of you that negotiates gets a turn.",
+    d: "Robbins' rule works on the gap between impulse and talk-yourself-out-of-it. The count doesn't create motivation; it spends the window you already had before hesitation arrives.",
+    p: "Use it once today on the thing you have been circling since yesterday.",
+    tags: ["Beating hesitation", "Starting"]
+  },
+  {
+    t: "Grit is passion plus time", cat: "motivation", voice: "duckworth", moment: "midday",
+    kind: "quote", src: "Grit: The Power of Passion and Perseverance (2016)", form: ["ask"], time: 2,
+    q: "Grit is passion and perseverance for very long-term goals.",
+    d: "The word 'long-term' is doing the work. Duckworth's finding is not that gritty people try harder on a given day but that they are still pointed at the same thing years later.",
+    p: "Ask what you were working on two years ago, and whether today's effort is aimed at the same place.",
+    tags: ["Long-term goals", "Consistency"]
+  },
+  {
+    t: "Not yet", cat: "motivation", voice: "dweck", moment: "hard",
+    kind: "idea", src: "'the power of yet' (Mindset, 2006; TED 2014)", form: ["reframe"], time: 1,
+    q: "Add one word to 'I can't do this' and it becomes a status report instead of a verdict.",
+    d: "Dweck's classroom research found that grading unfinished work 'not yet' rather than 'fail' changed how students met the next attempt. The same edit works on your own internal grading.",
+    p: "Catch one 'I can't' today and append 'yet'. Say the whole sentence again.",
+    tags: ["Growth mindset", "One-word edit"]
+  },
+  {
+    t: "Motivation follows action", cat: "motivation", voice: "howes", moment: "midday",
+    kind: "idea", src: "recurring School of Greatness interview themes", form: ["reframe", "practice"], time: 2,
+    q: "Waiting to feel ready is a scheduling decision, and it schedules the thing for never.",
+    d: "The pattern Howes hears repeatedly from high performers is that the feeling arrives after the first ten minutes of work, not before it. Readiness is a product of starting, not a prerequisite.",
+    p: "Do ten minutes of the avoided thing. Reassess only after the ten minutes.",
+    tags: ["Ten minutes", "Readiness"]
+  },
+
+  // ---------- FOCUS ----------
+  {
+    t: "What deep work actually means", cat: "focus", voice: "newport", moment: "morning",
+    kind: "quote", src: "Deep Work (2016)", form: ["read", "reframe"], time: 1,
+    q: "Professional activities performed in a state of distraction-free concentration that push your cognitive capabilities to their limit.",
+    d: "Newport's definition rules out most of what a day contains, deliberately. Almost nothing qualifies by accident — it has to be scheduled and defended.",
+    p: "Block ninety minutes today and name in advance the single thing that goes in it.",
+    tags: ["Deep work", "Ninety minutes"]
+  },
+  {
+    t: "Schedule the shallow too", cat: "focus", voice: "newport", moment: "morning",
+    kind: "idea", src: "the time-blocking method in Deep Work (2016)", form: ["ritual"], time: 5,
+    q: "Give every hour a job in advance, including the boring ones, so the day stops being a queue of whoever asked last.",
+    d: "Time-blocking is less about efficiency than about authorship: a planned day can be renegotiated deliberately, whereas an unplanned day is simply spent.",
+    p: "Spend five minutes drawing today's blocks. Expect to redraw them at lunch — that is the method, not a failure of it.",
+    tags: ["Time blocking", "Authorship"]
+  },
+  {
+    t: "The monkey mind and the monk mind", cat: "focus", voice: "shetty", moment: "morning",
+    kind: "idea", src: "a framing in Think Like a Monk (2020)", form: ["reframe"], time: 2,
+    q: "The monkey mind reacts to whatever arrives. The monk mind decides in advance what deserves a reaction.",
+    d: "Shetty's contrast is practical rather than mystical: the difference is made the night before or the hour before, when the day's priorities are set while nothing is on fire.",
+    p: "Name the one thing that must be true by tonight, before you open any inbox.",
+    tags: ["Deciding in advance", "Before the inbox"]
+  },
+  {
+    t: "Trade the many for the few", cat: "focus", voice: "naval", moment: "midday",
+    kind: "quote", src: "The Almanack of Naval Ravikant (2020), via his essays and posts", form: ["reframe", "ask"], time: 1,
+    q: "Play long-term games with long-term people.",
+    d: "The line is usually read as advice about business partners, but it works on attention too: most of what competes for your day is a short-term game that pays nothing after the week it happens in.",
+    p: "Identify one thing on today's list that is a short-term game, and decline it.",
+    tags: ["Long-term games", "Declining things"]
+  },
+  {
+    t: "One brick, well laid", cat: "focus", voice: "holiday", moment: "hard",
+    kind: "idea", src: "The Obstacle Is the Way (2014)", form: ["practice", "reframe"], time: 1,
+    q: "You cannot build a wall today. You can lay the next brick as well as it can be laid.",
+    d: "Holiday's Stoic reading of overwhelm: the size of the whole is not an input to the next action, and treating it as one is how people end up doing nothing at all.",
+    p: "Write down the single next physical action, small enough to start in under a minute.",
+    tags: ["Overwhelm", "Next action"]
+  },
+  {
+    t: "Deliberate practice beats hours", cat: "focus", voice: "duckworth", moment: "midday",
+    kind: "idea", src: "the deliberate-practice chapters of Grit (2016)", form: ["ask"], time: 2,
+    q: "Repetition is not practice. Practice is repetition aimed at the specific part you are worst at.",
+    d: "The high performers Duckworth studied spent their effort on a narrowly defined weakness with immediate feedback — the least pleasant and most productive way to spend an hour.",
+    p: "Name the specific sub-skill you are avoiding, and give it twenty minutes.",
+    tags: ["Deliberate practice", "Feedback"]
+  },
+
+  // ---------- CALM ----------
+  {
+    t: "Breathing in, breathing out", cat: "calm", voice: "thich", moment: "anytime",
+    kind: "quote", src: "Being Peace (1987) / Peace Is Every Step (1991)", form: ["practice"], time: 1,
+    q: "Breathing in, I calm my body. Breathing out, I smile. Dwelling in the present moment, I know this is a wonderful moment.",
+    d: "A verse designed to be used, not admired: one line per breath, four breaths, and the whole thing takes under a minute in any doorway or lift.",
+    p: "Say it silently through four full breaths before your next meeting.",
+    tags: ["Breathing verse", "Under a minute"]
+  },
+  {
+    t: "RAIN when a feeling has you", cat: "calm", voice: "brach", moment: "hard",
+    kind: "idea", src: "the RAIN practice taught by Tara Brach", form: ["practice"], time: 5,
+    q: "Recognise what is happening. Allow it to be there. Investigate how it feels in the body. Nurture yourself the way you would a friend.",
+    d: "Four steps in a fixed order, which is the point — the sequence stops you jumping from noticing straight to fixing, which is where most attempts at composure come apart.",
+    p: "Run the four steps once, slowly, on whatever is sitting on your chest right now.",
+    tags: ["RAIN", "Difficult emotion"]
+  },
+  {
+    t: "Unplug it, including you", cat: "calm", voice: "lamott", moment: "hard",
+    kind: "quote", src: "Widely quoted from her talks and writing", form: ["practice", "reframe"], time: 5,
+    q: "Almost everything will work again if you unplug it for a few minutes, including you.",
+    d: "Lamott's joke contains a real diagnosis: a surprising share of what feels like a failure of character at 4pm is a failure of rest, and it responds to the same fix as the router.",
+    p: "Take the actual break. Not the phone. Outside, if there is an outside.",
+    tags: ["Rest", "Router logic"]
+  },
+  {
+    t: "We suffer more in imagination", cat: "calm", voice: "seneca", moment: "evening",
+    kind: "quote", src: "Letters to Lucilius, Letter 13 (Gummere translation)", form: ["reframe", "write"], time: 2,
+    q: "We suffer more often in imagination than in reality.",
+    d: "Seneca's counsel is not to stop worrying but to make the worry specific: rehearsed catastrophes are usually vaguer, and therefore worse, than the thing itself turns out to be.",
+    p: "Write the feared thing down in full detail, then write what you would actually do on the day it happened.",
+    tags: ["Worry", "Premeditation"]
+  },
+  {
+    t: "Talk to yourself like a friend", cat: "calm", voice: "neff", moment: "hard",
+    kind: "idea", src: "the three components of self-compassion (Neff, 2003)", form: ["practice", "reframe"], time: 2,
+    q: "Self-kindness, common humanity, mindfulness — the third one is what stops the first two becoming self-pity.",
+    d: "Neff's research separates self-compassion from self-esteem: it does not require you to be doing well, only to notice you are struggling and to respond as you would to someone you liked.",
+    p: "Write the sentence you would say to a friend in your exact position. Then say it to yourself, using your own name.",
+    tags: ["Self-compassion", "Use your name"]
+  },
+  {
+    t: "Take in the good, on purpose", cat: "calm", voice: "hanson", moment: "evening",
+    kind: "idea", src: "Hardwiring Happiness (2013)", form: ["ritual", "practice"], time: 2,
+    q: "Ending the day on the worst thing in it is a choice about what gets rehearsed overnight.",
+    d: "Hanson's argument is that the brain replays what it was last given. Deliberately closing on something good is not denial; it is the counterweight to a bias that needs no help.",
+    p: "Before sleep, recall one good moment from the day in sensory detail for thirty seconds.",
+    tags: ["Evening ritual", "What gets rehearsed"]
+  },
+
+  // ---------- JOY & DELIGHT ----------
+  {
+    t: "Three ingredients of happiness", cat: "joy", voice: "brooks", moment: "midday",
+    kind: "idea", src: "Brooks' enjoyment / satisfaction / meaning framework", form: ["ask", "write"], time: 3,
+    q: "Enjoyment, satisfaction and meaning — a day short on one of them is a specific problem, not a general mood.",
+    d: "Brooks' point is diagnostic. 'I feel flat' is unactionable; 'I had no enjoyment today, only satisfaction' tells you exactly what to add tomorrow.",
+    p: "Score today out of five on each of the three. Add the lowest one to tomorrow, deliberately.",
+    tags: ["Diagnostic", "Three-part score"]
+  },
+  {
+    t: "Enjoyment needs people", cat: "joy", voice: "brooks", moment: "evening",
+    kind: "idea", src: "Brooks' writing on pleasure versus enjoyment", form: ["reframe"], time: 1,
+    q: "Pleasure is solitary and fades. Enjoyment is pleasure with people and memory attached.",
+    d: "The distinction explains why a night of scrolling and a night of the same length with a friend leave such different residues. One is consumed; the other is stored.",
+    p: "Turn one solitary pleasure this week into a shared one. Same activity, one other person.",
+    tags: ["Pleasure vs enjoyment", "Shared"]
+  },
+  {
+    t: "Be astonished", cat: "joy", voice: "oliver", moment: "midday",
+    kind: "idea", src: "the attention practice running through Oliver's poems", form: ["practice"], time: 2,
+    q: "Astonishment is mostly a matter of standing still long enough for something ordinary to become strange.",
+    d: "Oliver's method was walking the same small stretch of ground for decades and finding it inexhaustible. The scarcity is rarely the scenery.",
+    p: "Spend two minutes looking at one thing you pass every day as though you had never seen it.",
+    tags: ["Noticing", "Same ground"]
+  },
+  {
+    t: "Smile before you feel it", cat: "joy", voice: "thich", moment: "morning",
+    kind: "idea", src: "Thich Nhat Hanh's teaching on the half-smile", form: ["practice"], time: 1,
+    q: "A small deliberate smile, held for three breaths, is a way of asking your body to go first.",
+    d: "The half-smile is taught as a physical practice rather than a mood: you adopt the posture of ease and let the feeling catch up, which it often does.",
+    p: "Hold a light half-smile for three breaths on waking, before you have decided what kind of day it is.",
+    tags: ["Half-smile", "Body first"]
+  },
+  {
+    t: "Delight is a skill", cat: "joy", voice: "hanson", moment: "anytime",
+    kind: "idea", src: "Hanson's work on positive neuroplasticity", form: ["ritual", "write"], time: 2,
+    q: "People who notice more small good things are not luckier. They have practised the noticing.",
+    d: "Repeatedly attending to minor pleasures makes them easier to detect — a trainable perceptual habit rather than a temperament you either have or don't.",
+    p: "Keep a running list on your phone today. Aim for five entries, none of them significant.",
+    tags: ["Five small things", "Trainable"]
+  },
+
+  // ---------- REMINDERS ----------
+  {
+    t: "Clear is kind", cat: "reminders", voice: "brown", moment: "morning",
+    kind: "quote", src: "Dare to Lead (2018)", form: ["reframe"], time: 1,
+    q: "Clear is kind. Unclear is unkind.",
+    d: "Most of the vagueness people offer as politeness is actually conflict avoidance with a nicer coat on, and it transfers the discomfort to the other person to deal with later.",
+    p: "Find the one message today where you are being vague to be nice. Rewrite it clearly.",
+    tags: ["Hard conversations", "Vagueness"]
+  },
+  {
+    t: "You control the response, not the event", cat: "reminders", voice: "marcus", moment: "hard",
+    kind: "quote", src: "Meditations, Book 8 — popular rendering; translations vary", form: ["reframe"], time: 1,
+    q: "You have power over your mind — not outside events. Realise this, and you will find strength.",
+    d: "The most circulated line in Meditations, and worth knowing that its exact wording is a modern rendering rather than a settled translation. The idea underneath it is unambiguous in the text.",
+    p: "Split today's annoyance into the part you control and the part you don't. Act only on the first.",
+    tags: ["Dichotomy of control", "Translation note"]
+  },
+  {
+    t: "Nobody is thinking about you as much as you think", cat: "reminders", voice: "grant", moment: "anytime",
+    kind: "idea", src: "the spotlight effect (Gilovich et al., 2000), often cited by Grant", form: ["reframe"], time: 1,
+    q: "The audience you are performing for is busy performing for an audience of its own.",
+    d: "The spotlight effect is one of the most replicated findings in social psychology: people consistently overestimate how much others notice their appearance, mistakes and awkwardness.",
+    p: "Recall a mistake you are still cringing about. Estimate how many others remember it. The honest number is usually zero.",
+    tags: ["Spotlight effect", "Cringe"]
+  },
+  {
+    t: "Two minutes, then decide", cat: "reminders", voice: "clear", moment: "midday",
+    kind: "idea", src: "the two-minute rule in Atomic Habits (2018)", form: ["practice"], time: 2,
+    q: "Shrink the task until starting it is trivial, and let stopping be a decision you make later.",
+    d: "The rule is about the gateway, not the goal: 'read one page', 'open the document'. Most resistance lives at the threshold, and almost none of it survives being past it.",
+    p: "Take the thing you've moved three times and do a two-minute version of it now.",
+    tags: ["Two-minute rule", "Thresholds"]
+  },
+  {
+    t: "Rest is part of the work", cat: "reminders", voice: "naval", moment: "evening",
+    kind: "idea", src: "Ravikant's writing on leverage and judgement", form: ["reframe"], time: 1,
+    q: "If your output depends on judgement rather than hours, then a tired hour is not a cheap hour. It is a negative one.",
+    d: "For work whose value is concentrated in a few good decisions, exhaustion doesn't just slow you down — it degrades the specific faculty the work is paid for.",
+    p: "Identify one decision you were about to make while tired, and move it to tomorrow morning.",
+    tags: ["Judgement work", "Tired decisions"]
+  },
+  {
+    t: "The standard is not perfection", cat: "reminders", voice: "lamott", moment: "hard",
+    kind: "idea", src: "the 'shitty first drafts' chapter of Bird by Bird (1994)", form: ["reframe"], time: 1,
+    q: "The first version is allowed to be bad. That is what it is for.",
+    d: "Lamott's argument is procedural: every finished thing you admire had an unpublished bad version underneath it, and refusing to write yours is refusing the only route to the good one.",
+    p: "Give yourself explicit permission for a bad first version of today's hardest piece of work.",
+    tags: ["First drafts", "Perfectionism"]
+  },
+  {
+    t: "Bird by bird", cat: "reminders", voice: "lamott", moment: "hard",
+    kind: "quote", src: "Bird by Bird (1994), recounting her father's advice to her brother", form: ["read", "reframe"], time: 1,
+    q: "Bird by bird, buddy. Just take it bird by bird.",
+    d: "Her brother had three months of procrastination and one night to write a report on birds. The advice is the whole book: the scale of the thing is not the unit of work.",
+    p: "Write down only the first bird. Do that one.",
+    tags: ["One at a time", "Procrastination"]
+  },
+
+  // ---------- RESILIENCE ----------
+  {
+    t: "The last of the human freedoms", cat: "resilience", voice: "frankl", moment: "hard",
+    kind: "quote", src: "Man's Search for Meaning (1946)", form: ["read"], time: 2,
+    q: "Everything can be taken from a man but one thing: the last of the human freedoms — to choose one's attitude in any given set of circumstances, to choose one's own way.",
+    d: "Written by a man whose circumstances were as extreme as circumstances get, which is why the claim is hard to argue with when applied to a bad quarter or a difficult diagnosis.",
+    p: "Name the one thing about today's situation that is still yours to choose.",
+    tags: ["Attitude", "Extremity"]
+  },
+  {
+    t: "Meaning is found, not felt", cat: "resilience", voice: "frankl", moment: "evening",
+    kind: "idea", src: "the logotherapy chapters of Man's Search for Meaning", form: ["ask", "write"], time: 3,
+    q: "Ask what the situation is asking of you, rather than what you are getting out of it.",
+    d: "Frankl inverted the question deliberately: meaning, in his account, is discovered in a task, a person, or a stance taken toward unavoidable suffering — never in an inventory of one's own satisfaction.",
+    p: "Write one sentence: what does this week require of me that only I can do?",
+    tags: ["Logotherapy", "Inverted question"]
+  },
+  {
+    t: "The obstacle is the way", cat: "resilience", voice: "holiday", moment: "hard",
+    kind: "quote", src: "The Obstacle Is the Way (2014), from a line in Meditations, Book 5", form: ["reframe"], time: 1,
+    q: "The impediment to action advances action. What stands in the way becomes the way.",
+    d: "The Stoic move is not to enjoy the obstacle but to treat it as the material you have been given — the constraint that ends one plan is usually the specification for the next one.",
+    p: "State today's blocker as a specification: 'any solution must work despite X'.",
+    tags: ["Constraints", "Marcus via Holiday"]
+  },
+  {
+    t: "Vulnerability is not weakness", cat: "resilience", voice: "brown", moment: "anytime",
+    kind: "quote", src: "Daring Greatly (2012) and her TED talks", form: ["read", "reframe"], time: 1,
+    q: "Vulnerability is the birthplace of innovation, creativity and change.",
+    d: "Brown's research reframes exposure as the precondition for anything new: you cannot produce work that might fail without accepting the possibility that it will be seen failing.",
+    p: "Identify one thing you are hiding because it isn't finished. Show it to one person today.",
+    tags: ["Exposure", "Unfinished work"]
+  },
+  {
+    t: "Suffering that is common", cat: "resilience", voice: "neff", moment: "hard",
+    kind: "idea", src: "the 'common humanity' component of self-compassion", form: ["reframe"], time: 1,
+    q: "The thought 'this shouldn't be happening to me' is what turns pain into isolation.",
+    d: "Neff's second component is a factual correction rather than a comfort: struggle is a universal feature of the situation, and remembering that removes the extra layer of feeling singled out.",
+    p: "Say it plainly: 'other people have felt exactly this'. Then continue with whatever is next.",
+    tags: ["Common humanity", "Isolation"]
+  },
+  {
+    t: "Rebound is a rehearsed skill", cat: "resilience", voice: "kobe", moment: "hard",
+    kind: "idea", src: "Bryant's accounts of responding to missed shots and losses", form: ["practice", "reframe"], time: 1,
+    q: "The next shot cannot be taken by the version of you still watching the last one.",
+    d: "Bryant's much-discussed indifference to a miss was less bravado than method: attention spent on the previous attempt is subtracted directly from the next.",
+    p: "Give the setback a fixed amount of attention — five minutes — then physically move to the next task.",
+    tags: ["Next shot", "Timed regret"]
+  },
+
+  // ---------- CONNECTION ----------
+  {
+    t: "How you made them feel", cat: "connection", voice: "angelou", moment: "anytime",
+    kind: "quote", src: "Widely attributed to Angelou, repeated across her interviews", form: ["reframe", "ask"], time: 1,
+    q: "I've learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.",
+    d: "A useful filter for a day made of small interactions: the transcript will not survive, the residue will. It changes what is worth optimising in a meeting.",
+    p: "Pick one interaction today and decide in advance how you want the other person to leave it.",
+    tags: ["Residue", "Meetings"]
+  },
+  {
+    t: "Ask a better second question", cat: "connection", voice: "grant", moment: "midday",
+    kind: "idea", src: "Grant's writing on curiosity and listening", form: ["practice"], time: 2,
+    q: "The first answer is the prepared one. The conversation starts at the second question.",
+    d: "Most exchanges stop at the socially complete answer. One follow-up — specific, and clearly built from what they just said — is the cheapest way to make someone feel heard.",
+    p: "In your next conversation, ask one follow-up that could only have come from listening.",
+    tags: ["Listening", "Follow-up"]
+  },
+  {
+    t: "Be the one who reaches out", cat: "connection", voice: "howes", moment: "midday",
+    kind: "idea", src: "Howes' writing on friendship and reaching out", form: ["practice"], time: 2,
+    q: "Almost everyone is waiting for the other person to make it less awkward. Somebody has to go first, and it costs about ninety seconds.",
+    d: "The reason old friendships lapse is rarely a decision; it is a stalemate of mutual assumption about who owes whom a message.",
+    p: "Message the person you thought of while reading this. No preamble about the gap.",
+    tags: ["Going first", "Lapsed friendships"]
+  },
+  {
+    t: "Serve, then ask", cat: "connection", voice: "shetty", moment: "anytime",
+    kind: "idea", src: "the service theme in Think Like a Monk (2020)", form: ["reframe"], time: 1,
+    q: "A day organised around what you can give is more legible than one organised around what you need.",
+    d: "Shetty's monastic framing is unusually practical for a working day: 'what does this person need from this exchange' is a question you can always answer, even when your own goal is unclear.",
+    p: "Enter one meeting today with a giving objective rather than an asking one.",
+    tags: ["Service", "Meeting objective"]
+  },
+  {
+    t: "Give people the more generous reading", cat: "connection", voice: "brown", moment: "hard",
+    kind: "idea", src: "the 'most generous assumption' idea in Rising Strong (2015)", form: ["reframe", "ask"], time: 2,
+    q: "Assume, for one hour, that everyone is doing the best they can with what they have.",
+    d: "Brown offers this as an experiment rather than a belief: whether or not it is true, holding it changes what you say next, and what you say next is usually what determines the outcome.",
+    p: "Apply it to the specific person irritating you today. Draft your reply from that assumption.",
+    tags: ["Generous assumption", "Conflict"]
+  },
+
+  // ---------- REFLECTION ----------
+  {
+    t: "Morning pages", cat: "reflection", voice: "cameron", moment: "morning",
+    kind: "quote", src: "The Artist's Way (1992)", form: ["ritual", "write"], time: 20,
+    q: "Three pages of longhand, stream-of-consciousness writing, done first thing in the morning.",
+    d: "Cameron is explicit that they are not writing — nothing is meant to be good, or reread. Their function is to move the day's noise out of the way before it can direct anything.",
+    p: "Three pages, by hand, before input of any kind. Bad is fine. Boring is fine.",
+    tags: ["Morning pages", "By hand"]
+  },
+  {
+    t: "The evening review", cat: "reflection", voice: "seneca", moment: "evening",
+    kind: "idea", src: "the nightly self-examination in On Anger, Book 3", form: ["ritual", "write"], time: 5,
+    q: "Ask each night: what did I do badly, what did I do well, and what will I do differently.",
+    d: "Seneca describes running this review daily and reports that it makes sleep easier rather than harder — the day is closed out on paper instead of relitigated at 3am.",
+    p: "Three lines before bed. Keep the tone of an auditor, not a prosecutor.",
+    tags: ["Nightly review", "Sleep"]
+  },
+  {
+    t: "Rethink on purpose", cat: "reflection", voice: "grant", moment: "midday",
+    kind: "idea", src: "Think Again (2021)", form: ["ask"], time: 3,
+    q: "Detach your identity from your opinions, and being wrong becomes an update instead of a defeat.",
+    d: "Grant's finding is that the people who change their minds fastest are not the least confident but the ones who never made a belief part of who they are.",
+    p: "Name one thing you believed a year ago and no longer do. Note how it felt to drop it.",
+    tags: ["Think again", "Updating"]
+  },
+  {
+    t: "Look at the day from above", cat: "reflection", voice: "marcus", moment: "evening",
+    kind: "idea", src: "the 'view from above' passages in Meditations, Books 7 and 9", form: ["practice", "reframe"], time: 3,
+    q: "Picture today from a great height. Most of what dominated it does not survive the zoom.",
+    d: "The exercise is a deliberate change of scale — not to make your concerns meaningless, but to re-sort them, since urgency and importance rarely survive the same altitude.",
+    p: "Replay today from above for two minutes. Note which item still looks large.",
+    tags: ["View from above", "Re-sorting"]
+  },
+  {
+    t: "What would make today good", cat: "reflection", voice: "brooks", moment: "morning",
+    kind: "idea", src: "Brooks' writing on defining a good day", form: ["ask", "write"], time: 2,
+    q: "Decide in the morning what would make today count, or you will decide it retrospectively, in your own disfavour.",
+    d: "Without a stated bar, evaluation defaults to whatever went wrong last. A single sentence written in advance turns the evening review from a mood into a measurement.",
+    p: "Write one sentence now: 'today is good if ___'. Read it tonight.",
+    tags: ["Defining the bar", "Morning sentence"]
+  },
+  {
+    t: "Notice what you are practising", cat: "reflection", voice: "thich", moment: "anytime",
+    kind: "idea", src: "Thich Nhat Hanh's teaching on habit energy", form: ["ask"], time: 2,
+    q: "You are always practising something. The question is whether you chose it.",
+    d: "Habit energy, in this teaching, is what runs the day when nothing is chosen: the repeated reaction, the automatic reach for the phone, the same reply to the same provocation.",
+    p: "Name the thing you practised most yesterday without deciding to.",
+    tags: ["Habit energy", "Unchosen repetition"]
+  },
+];
+
+/* ---------------------------------------------------------------
+   Filter state and matching.
+   OR within a group, AND across groups. An empty group is
+   unconstrained.
+   --------------------------------------------------------------- */
+
+const GROUPS = ["cat", "moment", "form", "voice"];
+
+const GROUP_META = {
+  cat:    {label: "Area",   list: themes},
+  moment: {label: "Moment", list: moments},
+  form:   {label: "Form",   list: forms},
+  voice:  {label: "Voice",  list: voices.map(v => ({id: v.id, label: v.name}))},
+};
+
+const filters = {cat: new Set(), moment: new Set(), form: new Set(), voice: new Set()};
+let searchQuery = "";
+
+const labelOf = (list, id) => list.find(x => x.id === id)?.label || id;
+const voiceOf = (id) => voices.find(v => v.id === id);
+
+function matchesGroup(item, group, active) {
+  if (active.size === 0) return true;
+  if (group === "cat")    return active.has(item.cat);
+  if (group === "moment") return active.has(item.moment);
+  if (group === "voice")  return active.has(item.voice);
+  if (group === "form")   return item.form.some(x => active.has(x));
+  return true;
+}
+
+function matchesSearch(item) {
+  const s = searchQuery.toLowerCase().trim();
+  if (s === "") return true;
+  const v = voiceOf(item.voice);
+  const haystack = [
+    item.t, item.q, item.d, item.p, item.src,
+    v.name, v.note,
+    labelOf(themes, item.cat),
+    labelOf(moments, item.moment),
+    item.kind === "quote" ? "quotation verbatim" : "paraphrase idea",
+    ...item.tags,
+    ...item.form.map(x => labelOf(forms, x)),
+  ].join(" ").toLowerCase();
+  return haystack.includes(s);
+}
+
+// Matches every active group except `skipGroup`, plus the search query.
+function matchesAll(item, skipGroup) {
+  for (const g of GROUPS) {
+    if (g === skipGroup) continue;
+    if (!matchesGroup(item, g, filters[g])) return false;
+  }
+  return matchesSearch(item);
+}
+
+// Count for one chip, measured against the other groups' active filters
+// so a chip never advertises a combination that yields nothing.
+function chipCount(group, id) {
+  const single = new Set([id]);
+  return data.filter(x => matchesAll(x, group) && matchesGroup(x, group, single)).length;
+}
+
+function anyFilterActive() {
+  return GROUPS.some(g => filters[g].size > 0);
+}
+
+/* ---------------------------------------------------------------
+   Your three for today.
+
+   Seeded on the date, so the same three stand all day and are the
+   same on every device. "Draw three more" bumps a nonce; it does
+   not persist, so tomorrow starts from the date again.
+   --------------------------------------------------------------- */
+
+let rollNonce = 0;
+
+function hashString(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+// mulberry32 — small, fast, good enough for picking three cards.
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function pickThree() {
+  const d = new Date();
+  const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}#${rollNonce}`;
+  const rnd = mulberry32(hashString(key));
+  const pick = (arr) => arr[Math.floor(rnd() * arr.length)];
+
+  // Three different areas, then one card from each, so the strip is
+  // never three variations on the same note.
+  const pool = themes.map(t => t.id);
+  const chosenThemes = [];
+  while (chosenThemes.length < 3 && pool.length) {
+    chosenThemes.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
+  }
+  return chosenThemes.map(t => {
+    const inTheme = data.filter(x => x.cat === t);
+    return {theme: t, card: pick(inTheme)};
+  });
+}
+
+function renderToday() {
+  const d = new Date();
+  document.getElementById("today-date").textContent =
+    d.toLocaleDateString(undefined, {weekday: "long", day: "numeric", month: "long"});
+
+  document.getElementById("today-grid").innerHTML = pickThree().map(({theme, card}) => {
+    const v = voiceOf(card.voice);
+    const idx = data.indexOf(card);
+    return `
+      <div class="today-card">
+        <span class="today-theme">${labelOf(themes, theme)}</span>
+        <p class="today-line">${card.kind === "quote" ? `&ldquo;${card.q}&rdquo;` : card.q}</p>
+        <span class="today-voice">${card.kind === "quote" ? "" : "In our words, from "}${v.name}</span>
+        <button type="button" class="today-jump" onclick="jumpToCard(${idx})">
+          The full card <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+        </button>
+      </div>
+    `;
+  }).join("");
+}
+
+function reroll() {
+  rollNonce++;
+  renderToday();
+}
+
+// Clears whatever is filtered out of the way first, so the card is
+// guaranteed to be in the grid before we scroll to it.
+function jumpToCard(idx) {
+  GROUPS.forEach(g => filters[g].clear());
+  searchQuery = "";
+  document.getElementById("search-input").value = "";
+  buildFilterGroups();
+  render();
+
+  const el = document.getElementById(`card-${idx}`);
+  if (!el) return;
+  el.scrollIntoView({behavior: "smooth", block: "center"});
+  el.classList.add("flash");
+  setTimeout(() => el.classList.remove("flash"), 2000);
+}
+
+/* ---------------------------------------------------------------
+   Rendering
+   --------------------------------------------------------------- */
+
+function calculateStats() {
+  document.getElementById("stat-total").textContent = data.length;
+  document.getElementById("stat-themes").textContent = new Set(data.map(x => x.cat)).size;
+  document.getElementById("stat-voices").textContent = new Set(data.map(x => x.voice)).size;
+  document.getElementById("stat-morning").textContent = data.filter(x => x.moment === "morning").length;
+  document.getElementById("stat-quick").textContent = data.filter(x => x.time <= 2).length;
+}
+
+function buildFilterGroups() {
+  const container = document.getElementById("filter-groups");
+  container.innerHTML = GROUPS.map(g => {
+    const meta = GROUP_META[g];
+    const chips = meta.list.map(opt => {
+      const active = filters[g].has(opt.id);
+      const count = chipCount(g, opt.id);
+      const dim = (!active && count === 0) ? " dim" : "";
+      return `<button type="button" class="filter-btn${active ? " active" : ""}${dim}"
+        aria-pressed="${active}" onclick="toggleFilter('${g}','${opt.id}')">
+        <span>${opt.label}</span><span class="filter-cnt">${count}</span>
+      </button>`;
+    }).join("");
+    return `<div class="filter-row">
+      <span class="filter-row-label">${meta.label}</span>
+      <div class="filters-grid">${chips}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("clear-all").hidden = !anyFilterActive();
+}
+
+function toggleFilter(group, id) {
+  const set = filters[group];
+  if (set.has(id)) set.delete(id); else set.add(id);
+  buildFilterGroups();
+  render();
+}
+
+function clearAllFilters() {
+  GROUPS.forEach(g => filters[g].clear());
+  buildFilterGroups();
+  render();
+}
+
+function timeLabel(mins) {
+  if (mins <= 1) return "About a minute";
+  return `About ${mins} minutes`;
+}
+
+function render() {
+  const grid = document.getElementById("grid");
+  const visible = data.filter(x => matchesAll(x, null));
+
+  document.getElementById("results-count").textContent =
+    `${visible.length} card${visible.length === 1 ? "" : "s"} visible`;
+
+  if (visible.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--color-text-secondary); background: var(--color-bg-card); border: 1px dashed var(--color-border); border-radius: var(--border-radius-lg);">
+        <svg class="icon" aria-hidden="true" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; color: var(--color-text-tertiary);"><use href="#i-search-off"/></svg>
+        <p style="font-weight: 500;">Nothing matches that combination.</p>
+        <p style="font-size: 0.8rem; margin-top: 4px;">Try clearing a filter or broadening your search.</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = visible.map(c => {
+    const idx = data.indexOf(c);
+    const v = voiceOf(c.voice);
+    const momentMeta = moments.find(m => m.id === c.moment);
+
+    const formChips = c.form.map(f => {
+      const meta = forms.find(x => x.id === f);
+      return `<span class="form-chip"><svg class="icon" aria-hidden="true"><use href="#${meta.icon}"/></svg>${meta.label}</span>`;
+    }).join("");
+
+    const tags = c.tags.map(t => `<span class="insight-tag">${t}</span>`).join("");
+
+    const isQuote = c.kind === "quote";
+    const attribution = isQuote
+      ? `<span class="kind-tag kind-quote">Quotation</span>
+         <span><strong>${v.name}</strong> &mdash; ${c.src}</span>`
+      : `<span class="kind-tag kind-idea">In our words</span>
+         <span>Written for this page, from <strong>${v.name}</strong> &mdash; ${c.src}</span>`;
+
+    return `
+      <article class="insight-card" id="card-${idx}">
+        <div class="card-header">
+          <span class="moment-pill moment-${c.moment}">
+            <svg class="icon" aria-hidden="true"><use href="#${momentMeta.icon}"/></svg>${momentMeta.label}
+          </span>
+          <span class="category-badge cat-${c.cat}">${labelOf(themes, c.cat)}</span>
+        </div>
+
+        <h3 class="insight-title">${c.t}</h3>
+
+        <p class="insight-line${isQuote ? "" : " is-idea"}">${isQuote ? `&ldquo;${c.q}&rdquo;` : c.q}</p>
+
+        <p class="attrib">${attribution}</p>
+
+        <p class="insight-desc">${c.d}</p>
+
+        <div class="practice-container">
+          <span class="practice-label">Try this</span>
+          <p class="practice-text">${c.p}</p>
+        </div>
+
+        <div class="tag-row">${tags}</div>
+
+        <div class="card-footer">
+          ${formChips}
+          <span class="footer-meta-item"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>${timeLabel(c.time)}</span>
+          <a class="footer-meta-item" href="${v.url}" target="_blank" rel="noopener noreferrer" style="margin-left: auto;">
+            <svg class="icon" aria-hidden="true"><use href="#i-user"/></svg>${v.name}
+            <svg class="icon" aria-hidden="true" style="font-size: 0.75rem; opacity: 0.5;"><use href="#i-external-link"/></svg>
+          </a>
+        </div>
+      </article>
+    `;
+  }).join("");
+}
+
+document.getElementById("search-input").addEventListener("input", (e) => {
+  searchQuery = e.target.value;
+  buildFilterGroups();
+  render();
+});
+
+calculateStats();
+renderToday();
+buildFilterGroups();
+render();
+</script>
+
+</body>
+</html>
