@@ -1,0 +1,54 @@
+name: Refresh Design Feed
+
+# The feed is only as good as its last pull, so it re-scrapes on a schedule and
+# commits the result. The Pages deploy is a separate workflow that runs on push.
+on:
+  schedule:
+    - cron: "17 5,17 * * *"     # twice a day, UTC
+  workflow_dispatch:
+  push:
+    paths:
+      - "design-feed/sources.json"
+      - "design-feed/scripts/**"
+      - ".github/workflows/design-feed.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: design-feed-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The scraper is standard library only, so there is nothing to install.
+      - name: Scrape every source
+        run: python3 design-feed/scripts/scrape.py
+
+      - name: Commit the new dataset
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- design-feed/data/feed.json; then
+            echo "No change in the feed — nothing to commit."
+            exit 0
+          fi
+          summary=$(python3 - <<'PY'
+          import json
+          d = json.load(open("design-feed/data/feed.json"))
+          ok = sum(1 for s in d["sources"] if s["ok"])
+          print(f'{d["count"]} items from {ok}/{len(d["sources"])} sources')
+          PY
+          )
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add design-feed/data/feed.json
+          git commit -m "Refresh design feed: ${summary}"
+          git push

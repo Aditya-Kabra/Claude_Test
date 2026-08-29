@@ -1,11 +1,15 @@
 name: Deploy to GitHub Pages
 
 # The github-pages environment only accepts deployments from the repository's
-# default branch. Both branches are listed so this deploys whichever one that
-# is, and keeps working if the default is later switched to main.
+# default branch. Every branch that might hold the site is listed so this
+# deploys whichever one is currently the default, and keeps working if the
+# default is later switched.
 on:
   push:
-    branches: [main, claude/smart-fabrics-use-cases-map-9armod]
+    branches:
+      - main
+      - claude/smart-fabrics-use-cases-map-9armod
+      - claude/design-feed-gallery-61h0qc
   workflow_dispatch:
 
 permissions:
