@@ -60,10 +60,17 @@ list grows into November.
 
 ## On the data
 
-All 15 events were found via public listings on AI Tinkerers Pune, the Pune AI Group (Meetup),
-the Meetup.com Pune machine-learning aggregator, and public academic-conference directories
-(10Times, ConferenceAlerts) — see the in-page footer for the full source list. Several of the
-listed sessions are run online by Pune-based communities rather than held in a physical Pune
-venue; those are marked "Online" in the format tag rather than misrepresented as in-person.
+All 17 events were found via public listings on AI Tinkerers Pune, the Pune AI Group (Meetup),
+the Meetup.com Pune machine-learning aggregator, [aipune.org](https://aipune.org/)'s
+community/events index, and public academic-conference directories (10Times, ConferenceAlerts,
+IEEE Pune Section) — see the in-page footer for the full source list. Several of the listed
+sessions are run online by Pune-based communities rather than held in a physical Pune venue;
+those are marked "Online" in the format tag rather than misrepresented as in-person.
 Community meetup schedules can shift after listing, so the page footer tells readers to confirm
 date, time and venue on the organizer's own registration page before attending.
+
+`aipune.org` also lists more Pune AI communities than this page currently covers — AI Study
+Group, AI Circle, Pune AI Community, Pune AI Collective, AI Pune/TensorFlow User Group Pune, and
+several adjacent ones (GDG Pune, PyData Pune, AWS User Group Pune) — but it has no visible
+maintainer or last-updated date, so treat it as a lead to verify per-community rather than a
+source to cite directly.
