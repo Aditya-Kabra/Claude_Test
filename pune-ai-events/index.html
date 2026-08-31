@@ -27,7 +27,7 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --color-bg-base: #0f172a;
       --color-bg-card: #1e293b;
       --color-bg-raised: #263449;
@@ -45,6 +45,26 @@
       --color-inperson-bg: #40310f;
     }
   }
+
+  :root[data-theme="dark"] {
+    --color-bg-base: #0f172a;
+    --color-bg-card: #1e293b;
+    --color-bg-raised: #263449;
+    --color-border: #334155;
+    --color-border-hover: #475569;
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #cbd5e1;
+    --color-text-tertiary: #64748b;
+    --color-accent: #a78bfa;
+    --color-accent-hover: #c4b5fd;
+    --color-accent-bg: #2e1f57;
+    --color-online: #22d3ee;
+    --color-online-bg: #113640;
+    --color-inperson: #fbbf24;
+    --color-inperson-bg: #40310f;
+  }
+
+  html { background: var(--color-bg-base); }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -147,6 +167,21 @@
     font-family: inherit;
   }
   .view-toggle button.active { background: var(--color-accent); color: #fff; }
+
+  .theme-toggle {
+    flex-shrink: 0;
+    width: 38px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text-secondary);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--color-border-hover); color: var(--color-text-primary); }
+  .theme-toggle .icon { width: 1.05em; height: 1.05em; }
 
   .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.5rem; }
   .filter-group:last-child { margin-bottom: 0; }
@@ -329,6 +364,9 @@
   <symbol id="ic-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="ic-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
   <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></symbol>
+  <symbol id="ic-monitor" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></symbol>
 </svg>
 
 <div class="wrap">
@@ -351,6 +389,9 @@
         <button id="btnListView" class="active" type="button"><svg class="icon"><use href="#ic-list"/></svg> List</button>
         <button id="btnCalView" type="button"><svg class="icon"><use href="#ic-calendar"/></svg> Calendar</button>
       </div>
+      <button class="theme-toggle" id="themeToggle" type="button" title="Toggle light / dark theme">
+        <svg class="icon"><use id="themeIcon" href="#ic-sun"/></svg>
+      </button>
     </div>
     <div class="filter-group">
       <span class="filter-label">Type</span>
@@ -793,6 +834,33 @@
     document.getElementById('searchInput').value = '';
     renderAll();
   });
+
+  // ---- Theme toggle (system -> light -> dark -> system) ------------------------------------------------------------
+  (function () {
+    const STORAGE_KEY = 'pune-ai-events-theme';
+    const order = ['system', 'light', 'dark'];
+    const icons = { system: 'ic-monitor', light: 'ic-sun', dark: 'ic-moon' };
+    const titles = { system: 'Theme: matching system — click for light', light: 'Theme: light — click for dark', dark: 'Theme: dark — click to match system' };
+    const btn = document.getElementById('themeToggle');
+    const icon = document.getElementById('themeIcon');
+    let mode = 'system';
+    try { mode = localStorage.getItem(STORAGE_KEY) || 'system'; } catch (e) {}
+
+    function apply() {
+      if (mode === 'system') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', mode);
+      icon.setAttribute('href', '#' + icons[mode]);
+      btn.title = titles[mode];
+    }
+
+    btn.addEventListener('click', () => {
+      mode = order[(order.indexOf(mode) + 1) % order.length];
+      try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) {}
+      apply();
+    });
+
+    apply();
+  })();
 
   renderStats();
   renderAll();
