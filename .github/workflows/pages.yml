@@ -10,6 +10,7 @@ on:
       - main
       - claude/smart-fabrics-use-cases-map-9armod
       - claude/design-feed-gallery-61h0qc
+      - claude/pune-ai-events-page-k1rsrt
   workflow_dispatch:
 
 permissions:
