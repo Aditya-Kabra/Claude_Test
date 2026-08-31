@@ -1,7 +1,12 @@
-> This repository holds three independent pages:
+> This repository holds five independent pages:
 >
 > - **[Smart Fabrics & E-Textiles](https://aditya-kabra.github.io/Claude_Test/)** — this page
 > - **[Roleplay & Conversational Simulation](https://aditya-kabra.github.io/Claude_Test/roleplay/)** — see [`roleplay/`](roleplay/)
+> - **[Design Feed](https://aditya-kabra.github.io/Claude_Test/design-feed/)** — a self-updating,
+>   personalised gallery of trending design, scraped twice a day from ~50 sources.
+>   See [`design-feed/`](design-feed/)
+> - **[Daily Start](https://aditya-kabra.github.io/Claude_Test/daily/)** — short inspiration,
+>   gratitude and reminder cards to start the day. See [`daily/`](daily/)
 > - **[Pune AI Events](https://aditya-kabra.github.io/Claude_Test/pune-ai-events/)** — see [`pune-ai-events/`](pune-ai-events/)
 
 # Global Smart Fabrics & E-Textiles Ecosystem Map
