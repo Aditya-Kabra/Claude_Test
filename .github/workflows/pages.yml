@@ -5,7 +5,7 @@ name: Deploy to GitHub Pages
 # is, and keeps working if the default is later switched to main.
 on:
   push:
-    branches: [main, claude/smart-fabrics-use-cases-map-9armod]
+    branches: [main, claude/smart-fabrics-use-cases-map-9armod, claude/pune-ai-events-page-k1rsrt]
   workflow_dispatch:
 
 permissions:

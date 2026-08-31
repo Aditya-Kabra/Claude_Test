@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pune AI Events</title>
+<style>
+  :root {
+    --color-bg-base: #f9fafb;
+    --color-bg-card: #ffffff;
+    --color-bg-raised: #f3f4f6;
+    --color-border: #e5e7eb;
+    --color-border-hover: #cbd5e1;
+    --color-text-primary: #111827;
+    --color-text-secondary: #4b5563;
+    --color-text-tertiary: #9ca3af;
+    --color-accent: #7c3aed;
+    --color-accent-hover: #6d28d9;
+    --color-accent-bg: #f5f3ff;
+    --color-online: #0891b2;
+    --color-online-bg: #ecfeff;
+    --color-inperson: #d97706;
+    --color-inperson-bg: #fffbeb;
+    --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-bg-base: #0f172a;
+      --color-bg-card: #1e293b;
+      --color-bg-raised: #263449;
+      --color-border: #334155;
+      --color-border-hover: #475569;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #cbd5e1;
+      --color-text-tertiary: #64748b;
+      --color-accent: #a78bfa;
+      --color-accent-hover: #c4b5fd;
+      --color-accent-bg: #2e1f57;
+      --color-online: #22d3ee;
+      --color-online-bg: #113640;
+      --color-inperson: #fbbf24;
+      --color-inperson-bg: #40310f;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .icon {
+    width: 1em;
+    height: 1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+  }
+
+  body {
+    font-family: var(--font-stack);
+    background-color: var(--color-bg-base);
+    color: var(--color-text-primary);
+    line-height: 1.5;
+    padding: 1.5rem;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  /* Header */
+  header { margin-bottom: 1.75rem; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    background: var(--color-accent-bg);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
+  }
+  h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+  .subtitle { color: var(--color-text-secondary); font-size: 0.95rem; max-width: 62ch; margin-bottom: 1.1rem; }
+
+  .stats-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .stat {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: 0.6rem 0.9rem;
+    min-width: 108px;
+  }
+  .stat .n { font-size: 1.25rem; font-weight: 800; line-height: 1.1; }
+  .stat .l { font-size: 0.72rem; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.15rem; }
+
+  /* Controls */
+  .controls {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    margin-bottom: 1.25rem;
+    position: sticky;
+    top: 0.75rem;
+    z-index: 5;
+  }
+  .search-row { display: flex; gap: 0.6rem; margin-bottom: 0.85rem; }
+  .search-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: 0.55rem 0.75rem;
+    background: var(--color-bg-base);
+    color: var(--color-text-tertiary);
+  }
+  .search-box input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    width: 100%;
+    font-family: inherit;
+  }
+  .view-toggle { display: flex; border: 1px solid var(--color-border); border-radius: var(--border-radius-md); overflow: hidden; flex-shrink: 0; }
+  .view-toggle button {
+    border: none;
+    background: var(--color-bg-base);
+    color: var(--color-text-secondary);
+    padding: 0 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: inherit;
+  }
+  .view-toggle button.active { background: var(--color-accent); color: #fff; }
+
+  .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.5rem; }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-label { font-size: 0.72rem; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.3rem; min-width: 62px; }
+  .chip {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-base);
+    color: var(--color-text-secondary);
+    border-radius: 999px;
+    padding: 0.32rem 0.7rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  .chip:hover { border-color: var(--color-border-hover); }
+  .chip.active { background: var(--color-accent); border-color: var(--color-accent); color: #fff; }
+  .chip .count { opacity: 0.7; font-variant-numeric: tabular-nums; }
+  .reset-btn {
+    border: none;
+    background: none;
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.32rem 0.5rem;
+    font-family: inherit;
+  }
+
+  /* List view */
+  .month-heading {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-tertiary);
+    margin: 1.4rem 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .month-heading:first-child { margin-top: 0; }
+
+  .event-card {
+    display: flex;
+    gap: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+    margin-bottom: 0.7rem;
+  }
+  .date-badge {
+    flex-shrink: 0;
+    width: 54px;
+    height: 54px;
+    border-radius: var(--border-radius-md);
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    line-height: 1.05;
+  }
+  .date-badge .dow { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.85; }
+  .date-badge .day { font-size: 1.25rem; }
+  .date-badge.tba { font-size: 0.68rem; text-align: center; padding: 0 0.2rem; }
+
+  .event-main { flex: 1; min-width: 0; }
+  .event-top-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+  .event-title { font-size: 1.02rem; font-weight: 700; color: var(--color-text-primary); text-decoration: none; }
+  .event-title:hover { color: var(--color-accent); }
+  .event-meta { display: flex; flex-wrap: wrap; gap: 0.7rem; color: var(--color-text-secondary); font-size: 0.82rem; margin: 0.35rem 0 0.5rem; }
+  .event-meta span { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .event-desc { font-size: 0.86rem; color: var(--color-text-secondary); margin-bottom: 0.55rem; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .tag.online { background: var(--color-online-bg); color: var(--color-online); }
+  .tag.inperson { background: var(--color-inperson-bg); color: var(--color-inperson); }
+  .tag.cat { background: var(--color-bg-raised); color: var(--color-text-secondary); }
+  .ics-link {
+    margin-left: auto;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: inherit;
+  }
+  .ics-link:hover { color: var(--color-accent); border-color: var(--color-accent); }
+
+  .empty-state { text-align: center; color: var(--color-text-tertiary); padding: 3rem 1rem; font-size: 0.9rem; }
+
+  /* Calendar view */
+  .cal-card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+  }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
+  .cal-nav .cal-title { font-weight: 700; font-size: 1rem; }
+  .cal-nav button {
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-base);
+    color: var(--color-text-secondary);
+    width: 30px; height: 30px;
+    border-radius: var(--border-radius-md);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .cal-nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.35rem; }
+  .cal-dow { text-align: center; font-size: 0.68rem; color: var(--color-text-tertiary); text-transform: uppercase; padding-bottom: 0.3rem; }
+  .cal-cell {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--border-radius-md);
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    position: relative;
+  }
+  .cal-cell.pad { visibility: hidden; }
+  .cal-cell.has-events { cursor: pointer; border-color: var(--color-border); font-weight: 700; color: var(--color-text-primary); }
+  .cal-cell.has-events:hover { border-color: var(--color-accent); }
+  .cal-cell.selected { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+  .cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); margin-top: 2px; }
+  .cal-cell.selected .cal-dot { background: #fff; }
+  .cal-legend { margin-top: 0.85rem; font-size: 0.78rem; color: var(--color-text-tertiary); }
+
+  footer {
+    margin-top: 2.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-tertiary);
+    font-size: 0.78rem;
+    line-height: 1.7;
+  }
+  footer a { color: var(--color-accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 560px) {
+    .filter-label { min-width: auto; width: 100%; margin-bottom: 0.15rem; }
+    .search-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none">
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="ic-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="ic-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.4 7-11.5A7 7 0 0 0 5 9.5C5 14.6 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="ic-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6M10 14 21 3"/></symbol>
+  <symbol id="ic-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="ic-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><svg class="icon"><use href="#ic-calendar"/></svg> Pune, India</div>
+    <h1>Pune AI Events</h1>
+    <p class="subtitle">A curated calendar of upcoming artificial intelligence meetups, hackathons, workshops and
+      conferences in and around Pune — hackathons run by AI Tinkerers, community meetups from the Pune AI Group and
+      Pune AI &amp; Data Science Community, corporate tech sessions, and academic AI conferences.</p>
+    <div class="stats-row" id="statsRow"></div>
+  </header>
+
+  <div class="controls">
+    <div class="search-row">
+      <label class="search-box">
+        <svg class="icon"><use href="#ic-search"/></svg>
+        <input type="text" id="searchInput" placeholder="Search events, organizers, topics…">
+      </label>
+      <div class="view-toggle">
+        <button id="btnListView" class="active" type="button"><svg class="icon"><use href="#ic-list"/></svg> List</button>
+        <button id="btnCalView" type="button"><svg class="icon"><use href="#ic-calendar"/></svg> Calendar</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Type</span>
+      <div id="categoryChips"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Format</span>
+      <div id="formatChips" style="display:inline-flex; gap:0.4rem; flex-wrap:wrap;"></div>
+      <button class="reset-btn" id="resetBtn" type="button" style="display:none;">Clear filters</button>
+    </div>
+  </div>
+
+  <div id="listView"></div>
+  <div id="calView" style="display:none;">
+    <div class="cal-card">
+      <div class="cal-nav">
+        <button id="calPrev" type="button"><svg class="icon"><use href="#ic-chevron-left"/></svg></button>
+        <span class="cal-title" id="calTitle"></span>
+        <button id="calNext" type="button"><svg class="icon"><use href="#ic-chevron-right"/></svg></button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend">Click a highlighted date to filter the list to events on that day.</div>
+    </div>
+    <div id="calListBelow"></div>
+  </div>
+
+  <footer>
+    <p>15 events curated for September–October 2026 from public listings on AI Tinkerers Pune, Pune AI Group
+      (Meetup), the Meetup.com Pune machine-learning aggregator, and public academic-conference directories
+      (10Times, ConferenceAlerts). Always confirm date, time and venue on the organizer's own registration page
+      before attending — community meetup schedules can shift. Design inspired by
+      <a href="https://www.kochi.buzz/" target="_blank" rel="noopener">kochi.buzz</a>.</p>
+    <p style="margin-top:0.4rem;">Part of the <a href="../">Claude_Test</a> landscape-map collection · single static file, no build step, no external requests.</p>
+  </footer>
+</div>
+
+<script>
+  // ---- Data -----------------------------------------------------------
+  // date: ISO start date (YYYY-MM-DD) or null when only "date TBA" is known.
+  // format: 'online' | 'inperson'
+  // category: 'hackathon' | 'meetup' | 'workshop' | 'conference' | 'corporate'
+  const categories = {
+    hackathon: 'Hackathon',
+    meetup:    'Meetup',
+    workshop:  'Workshop',
+    conference:'Conference',
+    corporate: 'Corporate / Vendor'
+  };
+
+  const events = [
+    {
+      id: 'roi-automation-pipeline', date: '2026-09-01', time: '6:00 – 8:00 PM IST',
+      title: 'Building an ROI-Driven Automation Pipeline',
+      format: 'online', venue: 'Online', org: 'Agentic AI Community Pune', category: 'meetup',
+      desc: 'A hands-on session on designing agentic automation pipelines that tie directly back to measurable ROI — from workflow mapping to evaluation.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'google-ai-deep-dive-3', date: '2026-09-02', time: '10:30 PM IST',
+      title: 'Google AI Deep Dive (Ep. 3): Multimodal Data',
+      format: 'online', venue: 'Online', org: 'Pune AI Group × Google Cloud', category: 'corporate',
+      desc: 'Combining AlloyDB and BigQuery to query unstructured and structured data through Conversational Analytics, presented by a Google Cloud engineer.',
+      link: 'https://www.meetup.com/pune-ai-group/'
+    },
+    {
+      id: 'ai-agents-security-testing', date: '2026-09-05', time: '10:00 AM IST',
+      title: 'AI Agents for Security Testing, Agentic Testing & API Automation',
+      format: 'inperson', venue: 'Pune', org: 'QA Fraternity', category: 'workshop',
+      desc: 'A practitioner session on using AI agents to automate security testing, agentic test design, and API test pipelines.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'agentic-ai-governance', date: '2026-09-05', time: '10:30 AM IST',
+      title: 'Agentic AI Governance Beyond RAG',
+      format: 'inperson', venue: 'Pune', org: 'Expert Talks Pune', category: 'meetup',
+      desc: 'A talk on governance patterns for agentic AI systems that go beyond retrieval-augmented generation — guardrails, audit trails and accountability.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'tinkerers-michelin-hackathon', date: '2026-09-06', time: '9:30 AM – 6:00 PM IST',
+      title: 'AI Tinkerers × Michelin Pune: Harness Engineering Hackathon',
+      format: 'inperson', venue: 'Pune', org: 'AI Tinkerers Pune', category: 'hackathon',
+      desc: 'A day-long hackathon building robust AI agent execution environments for real-world workflows — "go beyond the agent, orchestrate the system."',
+      link: 'https://pune.aitinkerers.org/p/ai-tinkerers-x-michelin-pune-harness-engineering-hackathon'
+    },
+    {
+      id: 'applied-ai-ethics-mixer', date: '2026-09-09', time: '5:00 PM IST',
+      title: 'Applied AI Ethics MonthlyMixer: Where Innovation Meets Responsibility',
+      format: 'online', venue: 'Online', org: 'Pune AI & Data Science Community', category: 'meetup',
+      desc: 'Monthly community mixer on applied AI ethics — responsible deployment, bias, and accountability in production AI systems.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'agents-everywhere-hackathon', date: '2026-09-12', time: '10:00 AM – 5:00 PM IST',
+      title: 'Agents, Everywhere: Bots, Channels & More — Global Hackathon',
+      format: 'inperson', venue: 'Pune', org: 'AI Tinkerers Pune', category: 'hackathon',
+      desc: 'Global hackathon challenging builders to integrate AI agents into chat, voice and messaging channels. Sponsored by OpenAI, CopilotKit and OpenRouter.',
+      link: 'https://pune.aitinkerers.org/p/agents-everywhere-beyond-the-chatbot-global-hackathon'
+    },
+    {
+      id: 'ai-engineering-stack', date: '2026-09-12', time: '10:00 AM IST',
+      title: 'The AI Engineering Stack',
+      format: 'inperson', venue: 'Pune', org: 'Indian Data Club', category: 'workshop',
+      desc: 'A walkthrough of the modern AI engineering stack — data pipelines, evaluation, orchestration and deployment tooling.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'agentic-multimodal-mixer', date: '2026-09-16', time: '5:00 PM IST',
+      title: 'Agentic AI Multimodal MonthlyMixer: Where Agent Minds Meet',
+      format: 'online', venue: 'Online', org: 'Pune AI & Data Science Community', category: 'meetup',
+      desc: 'Monthly mixer focused on multimodal agentic AI — combining vision, voice and text in agent workflows.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'google-agents-production-ep1', date: '2026-09-22', time: '10:30 PM IST',
+      title: 'Google Agents in Production for Enterprises (Virtual) — Ep. 1',
+      format: 'online', venue: 'Online', org: 'Pune AI Group × Google Cloud', category: 'corporate',
+      desc: 'Enterprise-focused series on the real-world challenges of building and deploying agentic AI at scale, with technical talks and live demos.',
+      link: 'https://www.meetup.com/pune-ai-group/'
+    },
+    {
+      id: 'data-meets-ai', date: '2026-09-26', time: '9:30 AM IST',
+      title: 'Data Meets AI',
+      format: 'inperson', venue: 'Pune', org: 'ClickHouse Pune User Group', category: 'meetup',
+      desc: 'A session on architectures where real-time analytical data stores meet AI applications — feature stores, retrieval and observability.',
+      link: 'https://www.meetup.com/find/in--pune/machine-learning/'
+    },
+    {
+      id: 'icaaics-2026', date: '2026-09-29', time: 'All day',
+      title: 'ICAAICS 2026 — Intl. Conference on Advances in AI & Computer Science',
+      format: 'inperson', venue: 'Pune', org: 'Academic / Research', category: 'conference',
+      desc: 'Peer-reviewed academic conference covering recent advances across artificial intelligence and computer science research.',
+      link: 'https://www.conferencealerts.in/pune/artificial-intelligence'
+    },
+    {
+      id: 'iccersem-2026', date: '2026-10-24', time: 'All day',
+      title: 'ICCERSEM 2026 — Circular Economy, Renewable Energy & AI-Driven Sustainable Energy Management',
+      format: 'inperson', venue: 'Pune', org: 'Academic / Research', category: 'conference',
+      desc: 'Academic conference on applying AI to sustainable and renewable energy management alongside circular-economy research.',
+      link: 'https://www.conferencealerts.in/pune/artificial-intelligence'
+    },
+    {
+      id: 'icsiaiml-2026', date: '2026-10-29', dateEnd: '2026-10-30', time: 'Two days',
+      title: 'ICSIAIML 2026 — Sustainable Innovation in AI & ML',
+      format: 'inperson', venue: 'Vishwakarma Institute of Management, Pune', org: 'Vishwakarma University', category: 'conference',
+      desc: 'A two-day conference with interactive workshops equipping participants with AI and ML tools for real-world sustainability challenges.',
+      link: 'https://10times.com/e1hs-f34x-ss5x-7'
+    },
+    {
+      id: 'aifwd-coditas', date: null, time: 'Date to be announced',
+      title: 'AIFwd by Coditas: Engineering the Future of Enterprise AI',
+      format: 'inperson', venue: 'Pune', org: 'Coditas', category: 'corporate',
+      desc: 'Enterprise AI summit with thought leaders and product engineers sharing actionable, engineering-first approaches to production AI.',
+      link: 'https://coditas.com/events'
+    }
+  ];
+
+  events.sort((a, b) => {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return a.date.localeCompare(b.date);
+  });
+
+  // ---- State ------------------------------------------------------------
+  const state = { search: '', categories: new Set(), formats: new Set(), selectedDate: null, view: 'list' };
+
+  // ---- Helpers ------------------------------------------------------------
+  const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function parseISO(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  function fmtBadge(ev) {
+    if (!ev.date) return { dow: '', day: 'TBA', tba: true };
+    const d = parseISO(ev.date);
+    return { dow: DOW[d.getDay()], day: String(d.getDate()), tba: false };
+  }
+
+  function monthKey(iso) {
+    const d = parseISO(iso);
+    return MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function matches(ev) {
+    if (state.categories.size && !state.categories.has(ev.category)) return false;
+    if (state.formats.size && !state.formats.has(ev.format)) return false;
+    if (state.selectedDate && ev.date !== state.selectedDate) return false;
+    if (state.search) {
+      const hay = (ev.title + ' ' + ev.org + ' ' + ev.desc + ' ' + categories[ev.category]).toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  }
+
+  function countWith(overrideFn) {
+    return events.filter(ev => overrideFn(ev)).length;
+  }
+
+  function icsForEvent(ev) {
+    const dt = ev.date ? ev.date.replace(/-/g, '') : null;
+    if (!dt) return null;
+    const dtEnd = ev.dateEnd ? ev.dateEnd.replace(/-/g, '') : dt;
+    const uid = ev.id + '@pune-ai-events';
+    const esc = s => String(s).replace(/[,;]/g, '\\$&').replace(/\n/g, '\\n');
+    return [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Pune AI Events//EN',
+      'BEGIN:VEVENT',
+      'UID:' + uid,
+      'DTSTAMP:' + dt + 'T000000Z',
+      'DTSTART;VALUE=DATE:' + dt,
+      'DTEND;VALUE=DATE:' + dtEnd,
+      'SUMMARY:' + esc(ev.title),
+      'DESCRIPTION:' + esc(ev.desc + ' (' + ev.time + ', ' + ev.venue + ', organized by ' + ev.org + ')'),
+      'LOCATION:' + esc(ev.venue),
+      'URL:' + esc(ev.link),
+      'END:VEVENT', 'END:VCALENDAR'
+    ].join('\r\n');
+  }
+
+  function downloadIcs(ev) {
+    const content = icsForEvent(ev);
+    if (!content) return;
+    const blob = new Blob([content], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = ev.id + '.ics';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ---- Render: stats ------------------------------------------------------------
+  function renderStats() {
+    const online = events.filter(e => e.format === 'online').length;
+    const inperson = events.length - online;
+    document.getElementById('statsRow').innerHTML = `
+      <div class="stat"><div class="n">${events.length}</div><div class="l">Events curated</div></div>
+      <div class="stat"><div class="n">${inperson}</div><div class="l">In-person</div></div>
+      <div class="stat"><div class="n">${online}</div><div class="l">Online</div></div>
+      <div class="stat"><div class="n">Sep–Oct</div><div class="l">2026</div></div>
+    `;
+  }
+
+  // ---- Render: filter chips ------------------------------------------------------------
+  function renderChips() {
+    const catWrap = document.getElementById('categoryChips');
+    catWrap.innerHTML = Object.keys(categories).map(cid => {
+      const active = state.categories.has(cid);
+      const n = countWith(ev => ev.category === cid && matchesExcept(ev, 'categories'));
+      return `<button class="chip${active ? ' active' : ''}" data-kind="categories" data-val="${cid}" type="button">
+        ${categories[cid]} <span class="count">${n}</span></button>`;
+    }).join('');
+
+    const fmtWrap = document.getElementById('formatChips');
+    const fmts = { inperson: 'In-person', online: 'Online' };
+    fmtWrap.innerHTML = Object.keys(fmts).map(fid => {
+      const active = state.formats.has(fid);
+      const n = countWith(ev => ev.format === fid && matchesExcept(ev, 'formats'));
+      return `<button class="chip${active ? ' active' : ''}" data-kind="formats" data-val="${fid}" type="button">
+        ${fmts[fid]} <span class="count">${n}</span></button>`;
+    }).join('');
+
+    document.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const kind = btn.dataset.kind, val = btn.dataset.val;
+        state[kind].has(val) ? state[kind].delete(val) : state[kind].add(val);
+        renderAll();
+      });
+    });
+
+    const anyActive = state.categories.size || state.formats.size || state.search || state.selectedDate;
+    document.getElementById('resetBtn').style.display = anyActive ? 'inline-block' : 'none';
+  }
+
+  function matchesExcept(ev, exceptKind) {
+    if (exceptKind !== 'categories' && state.categories.size && !state.categories.has(ev.category)) return false;
+    if (exceptKind !== 'formats' && state.formats.size && !state.formats.has(ev.format)) return false;
+    if (state.selectedDate && ev.date !== state.selectedDate) return false;
+    if (state.search) {
+      const hay = (ev.title + ' ' + ev.org + ' ' + ev.desc + ' ' + categories[ev.category]).toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  }
+
+  // ---- Render: event card ------------------------------------------------------------
+  function eventCardHtml(ev) {
+    const badge = fmtBadge(ev);
+    const formatLabel = ev.format === 'online' ? 'Online' : 'In-person';
+    const icon = ev.format === 'online' ? 'ic-globe' : 'ic-pin';
+    const dateLabel = ev.date
+      ? parseISO(ev.date).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' }) + (ev.dateEnd ? '–' + parseISO(ev.dateEnd).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '')
+      : 'Date TBA';
+    return `
+      <div class="event-card">
+        <div class="date-badge${badge.tba ? ' tba' : ''}">
+          ${badge.tba ? 'TBA' : `<div class="dow">${badge.dow}</div><div class="day">${badge.day}</div>`}
+        </div>
+        <div class="event-main">
+          <div class="event-top-row">
+            <a class="event-title" href="${ev.link}" target="_blank" rel="noopener">${ev.title}</a>
+          </div>
+          <div class="event-meta">
+            <span><svg class="icon"><use href="#ic-calendar"/></svg>${dateLabel}</span>
+            <span><svg class="icon"><use href="#ic-clock"/></svg>${ev.time}</span>
+            <span><svg class="icon"><use href="#${icon}"/></svg>${ev.venue}</span>
+            <span><svg class="icon"><use href="#ic-users"/></svg>${ev.org}</span>
+          </div>
+          <div class="event-desc">${ev.desc}</div>
+          <div class="tag-row">
+            <span class="tag cat">${categories[ev.category]}</span>
+            <span class="tag ${ev.format}">${formatLabel}</span>
+            <a class="ics-link" href="${ev.link}" target="_blank" rel="noopener" style="text-decoration:none;">
+              <svg class="icon"><use href="#ic-external"/></svg>Details</a>
+            ${ev.date ? `<button class="ics-link" data-ics="${ev.id}" type="button">
+              <svg class="icon"><use href="#ic-download"/></svg>Add to calendar</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderList(targetId) {
+    const filtered = events.filter(matches);
+    const target = document.getElementById(targetId);
+    if (!filtered.length) {
+      target.innerHTML = `<div class="empty-state">No events match these filters. Try clearing a filter or search term.</div>`;
+      return;
+    }
+    let html = '';
+    let lastMonth = null;
+    filtered.forEach(ev => {
+      const mk = ev.date ? monthKey(ev.date) : 'Date to be announced';
+      if (mk !== lastMonth) {
+        html += `<div class="month-heading">${mk}</div>`;
+        lastMonth = mk;
+      }
+      html += eventCardHtml(ev);
+    });
+    target.innerHTML = html;
+    target.querySelectorAll('[data-ics]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ev = events.find(e => e.id === btn.dataset.ics);
+        if (ev) downloadIcs(ev);
+      });
+    });
+  }
+
+  // ---- Calendar ------------------------------------------------------------
+  const calMonths = [{ y: 2026, m: 8 }, { y: 2026, m: 9 }]; // September (m=8, 0-indexed), October (m=9)
+  let calIndex = 0;
+
+  function renderCalendar() {
+    const { y, m } = calMonths[calIndex];
+    document.getElementById('calTitle').textContent = MONTHS[m] + ' ' + y;
+    document.getElementById('calPrev').disabled = calIndex === 0;
+    document.getElementById('calNext').disabled = calIndex === calMonths.length - 1;
+
+    const firstDay = new Date(y, m, 1).getDay();
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+    const eventsByDate = {};
+    events.forEach(ev => {
+      if (!ev.date) return;
+      const start = parseISO(ev.date);
+      const end = ev.dateEnd ? parseISO(ev.dateEnd) : start;
+      for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+        const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+        (eventsByDate[key] = eventsByDate[key] || []).push(ev);
+      }
+    });
+
+    let html = DOW.map(d => `<div class="cal-dow">${d}</div>`).join('');
+    for (let i = 0; i < firstDay; i++) html += `<div class="cal-cell pad"></div>`;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const key = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      const has = eventsByDate[key];
+      const selected = state.selectedDate === key;
+      html += `<div class="cal-cell${has ? ' has-events' : ''}${selected ? ' selected' : ''}" data-date="${key}">
+        ${day}${has ? `<span class="cal-dot"></span>` : ''}
+      </div>`;
+    }
+    document.getElementById('calGrid').innerHTML = html;
+
+    document.querySelectorAll('.cal-cell.has-events').forEach(cell => {
+      cell.addEventListener('click', () => {
+        const key = cell.dataset.date;
+        state.selectedDate = state.selectedDate === key ? null : key;
+        renderAll();
+      });
+    });
+
+    renderList('calListBelow');
+  }
+
+  // ---- Top-level render ------------------------------------------------------------
+  function renderAll() {
+    renderChips();
+    if (state.view === 'list') {
+      renderList('listView');
+    } else {
+      renderCalendar();
+    }
+  }
+
+  // ---- Wiring ------------------------------------------------------------
+  document.getElementById('searchInput').addEventListener('input', e => {
+    state.search = e.target.value.trim().toLowerCase();
+    renderAll();
+  });
+
+  document.getElementById('btnListView').addEventListener('click', () => {
+    state.view = 'list';
+    document.getElementById('btnListView').classList.add('active');
+    document.getElementById('btnCalView').classList.remove('active');
+    document.getElementById('listView').style.display = 'block';
+    document.getElementById('calView').style.display = 'none';
+    renderAll();
+  });
+
+  document.getElementById('btnCalView').addEventListener('click', () => {
+    state.view = 'cal';
+    document.getElementById('btnCalView').classList.add('active');
+    document.getElementById('btnListView').classList.remove('active');
+    document.getElementById('calView').style.display = 'block';
+    document.getElementById('listView').style.display = 'none';
+    renderAll();
+  });
+
+  document.getElementById('calPrev').addEventListener('click', () => { if (calIndex > 0) { calIndex--; renderCalendar(); } });
+  document.getElementById('calNext').addEventListener('click', () => { if (calIndex < calMonths.length - 1) { calIndex++; renderCalendar(); } });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    state.search = ''; state.categories.clear(); state.formats.clear(); state.selectedDate = null;
+    document.getElementById('searchInput').value = '';
+    renderAll();
+  });
+
+  renderStats();
+  renderAll();
+</script>
+</body>
+</html>
