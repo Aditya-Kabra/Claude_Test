@@ -11,22 +11,24 @@ import {simulate,exposure,renalClearance,type CompoundType,type Dosing,type Drug
 import {PRESETS} from './drugs.ts';
 import {compartmentFor} from './mapping';
 import Chart,{fmt} from './chart';
+import {fromAxis,toAxis,type TimeAxis} from './timeline.ts';
 
 const ATLAS_URL=import.meta.env.VITE_ATLAS_URL??'../human-atlas/models/atlas.json';
 // Multi-hue sequential ramp (pale yellow = low, deep purple = high) for concentration on a log scale.
 // Concentrations below the bottom of the scale are drawn grey, so "no drug yet" reads differently from "a little". "now" scales to the
 // highest tissue at the current time, which shows where drug is relative to elsewhere; "run" scales to
-// the peak of the whole simulation, which shows it rising and washing out.
-const SCALES={run:{label:'Whole run',decades:3},now:{label:'This moment',decades:2}} as const;
+// the peak of the whole simulation, which shows it rising and washing out; "own" scales each compartment
+// to its own peak, which shows when each one fills and empties regardless of how much it holds.
+const SCALES={run:{label:'Whole run',decades:3},own:{label:'Own peak',decades:2},now:{label:'This moment',decades:2}} as const;
 const RAMP=['#fff1a8','#fdd35c','#fca044','#f2683a','#d63a47','#a11d5d','#5a1060'];
 const GHOST='#dfe3e6',PLASMA_COLOR='#2a78d6',TISSUE_COLOR='#eb6834';
-const DEFAULT_SHOWN:CompartmentId[]=['brain','heart','lung','liver','gut','spleen','pancreas','kidney','testes','arterial','venous'];
+const DEFAULT_SHOWN:CompartmentId[]=['brain','heart','lung','liver','gut','spleen','pancreas','kidney','testes','bone','skin','arterial','venous'];
 const ROUTES:{id:Route;label:string}[]=[{id:'iv-bolus',label:'IV bolus'},{id:'iv-infusion',label:'Infusion'},{id:'oral',label:'Oral'}];
 const scene:SceneState={explode:0,visible:DEFAULT_VISIBLE,selected:[],isolate:false,view:'three-quarter',rotate:false,reset:0};
 
 const level=(c:number,peak:number,decades:number)=>{if(c<=0||peak<=0)return -1;const v=1+Math.log10(c/peak)/decades;return v<0?-1:Math.min(1,v);};
 function rampColor(t:number){if(t<0)return GHOST;const h=t*(RAMP.length-1),i=Math.min(Math.floor(h),RAMP.length-2),f=h-i;const a=parseInt(RAMP[i].slice(1),16),b=parseInt(RAMP[i+1].slice(1),16);const mix=(s:number)=>Math.round(((a>>s)&255)*(1-f)+((b>>s)&255)*f);return `rgb(${mix(16)},${mix(8)},${mix(0)})`;}
-const sample=(values:Float64Array,times:Float64Array,t:number)=>{const n=times.length-1,p=Math.min(n,Math.max(0,t/(times[n]||1)*n)),i=Math.min(Math.floor(p),n-1),f=p-i;return n<1?values[0]:values[i]*(1-f)+values[i+1]*f;};
+const sample=(values:Float64Array,times:Float64Array,t:number)=>{let lo=0,hi=times.length-1;if(hi<1||t<=times[0])return values[0];if(t>=times[hi])return values[hi];while(hi-lo>1){const m=(lo+hi)>>1;if(times[m]<=t)lo=m;else hi=m;}const f=(t-times[lo])/(times[hi]-times[lo]||1);return values[lo]*(1-f)+values[hi]*f;};
 
 function Field({label,value,onChange,step,min,max,unit,hint}:{label:string;value:number;onChange:(v:number)=>void;step?:number;min?:number;max?:number;unit?:string;hint?:string}){
  const [text,setText]=useState(String(value));useEffect(()=>setText(String(value)),[value]);
@@ -36,7 +38,7 @@ function Field({label,value,onChange,step,min,max,unit,hint}:{label:string;value
 export default function PbpkPage(){
  const [atlas,setAtlas]=useState<Atlas|null>(null),[progress,setProgress]=useState(0),[error,setError]=useState('');
  const [preset,setPreset]=useState(0),[drug,setDrug]=useState<Drug>(PRESETS[0].drug),[dosing,setDosing]=useState<Dosing>({...PRESETS[0].dosing,weight:73});
- const [time,setTime]=useState(0),[playing,setPlaying]=useState(false),[focus,setFocus]=useState<CompartmentId>('liver'),[shown,setShown]=useState<CompartmentId[]>(DEFAULT_SHOWN),[isolate,setIsolate]=useState(false),[log,setLog]=useState(true),[scale,setScale]=useState<keyof typeof SCALES>('run');
+ const [time,setTime]=useState(0),[playing,setPlaying]=useState(false),[focus,setFocus]=useState<CompartmentId>('liver'),[shown,setShown]=useState<CompartmentId[]>(DEFAULT_SHOWN),[isolate,setIsolate]=useState(false),[log,setLog]=useState(true),[scale,setScale]=useState<keyof typeof SCALES>('run'),[axis,setAxis]=useState<TimeAxis>('log');
  const [panel,setPanel]=useState<'drug'|'organs'|null>(null),[about,setAbout]=useState(false),[view,setView]=useState(scene);
  useEffect(()=>{const abort=new AbortController();fetch(ATLAS_URL,{signal:abort.signal}).then(r=>{if(!r.ok)throw new Error('The anatomy catalogue could not be loaded.');return r.json();}).then(d=>setAtlas(d as Atlas)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>abort.abort();},[]);
  const inputs=useDeferredValue(useMemo(()=>({drug,dosing}),[drug,dosing]));
@@ -45,24 +47,26 @@ export default function PbpkPage(){
  useEffect(()=>{setTime(t=>Math.min(t,duration));},[duration]);
  // Playback sweeps the whole simulation in about twelve seconds.
  const raf=useRef(0);
- useEffect(()=>{if(!playing)return;let last=performance.now();const tick=(now:number)=>{const dt=(now-last)/1000;last=now;setTime(t=>{const n=t+dt*duration/12;if(n>=duration){setPlaying(false);return duration;}return n;});raf.current=requestAnimationFrame(tick);};raf.current=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf.current);},[playing,duration]);
+ useEffect(()=>{if(!playing)return;let last=performance.now();const tick=(now:number)=>{const dt=(now-last)/1000;last=now;setTime(t=>{const u=toAxis(t,duration,axis)+dt/12;if(u>=1){setPlaying(false);return duration;}return fromAxis(u,duration,axis);});raf.current=requestAnimationFrame(tick);};raf.current=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf.current);},[playing,duration,axis]);
  const partCompartments=useMemo(()=>atlas?.parts.map(compartmentFor)??[],[atlas]);
  const meshCounts=useMemo(()=>{const c:Partial<Record<CompartmentId,number>>={};for(const id of partCompartments)if(id)c[id]=(c[id]??0)+1;return c;},[partCompartments]);
  const now=useMemo(()=>Object.fromEntries(COMPARTMENTS.map(c=>[c.id,sample(sim.conc[c.id],sim.times,time)])) as Record<CompartmentId,number>,[sim,time]);
+ const peaks=useMemo(()=>Object.fromEntries(COMPARTMENTS.map(c=>[c.id,sim.conc[c.id].reduce((m,v)=>v>m?v:m,0)])) as Record<CompartmentId,number>,[sim]);
  const decades=SCALES[scale].decades,reference=scale==='run'?sim.peak:Math.max(...COMPARTMENTS.map(c=>now[c.id]));
+ const ref=(id:CompartmentId)=>scale==='own'?peaks[id]:reference;
  const version=useRef(0);
  const overlay=useMemo<Overlay|undefined>(()=>{
   if(!atlas)return undefined;const n=atlas.parts.length,mask=new Uint8Array(n),heat=new Float32Array(n).fill(-1),visible=new Set(shown);
-  for(let i=0;i<n;i++){const id=partCompartments[i];if(!id)continue;mask[i]=visible.has(id)&&(!isolate||id===focus)?1:0;heat[i]=level(now[id],reference,decades);}
+  for(let i=0;i<n;i++){const id=partCompartments[i];if(!id)continue;mask[i]=visible.has(id)&&(!isolate||id===focus)?1:0;heat[i]=level(now[id],ref(id),decades);}
   return {mask,heat,ramp:RAMP,ghost:GHOST,version:++version.current};
- },[atlas,partCompartments,shown,isolate,focus,now,reference,decades]);
+ },[atlas,partCompartments,shown,isolate,focus,now,reference,decades,scale,peaks]);
  const lastDose=(Math.max(1,Math.round(dosing.doses))-1)*dosing.interval;
  const plasma=useMemo(()=>exposure(sim.times,sim.plasma,Math.min(lastDose,duration)),[sim,lastDose,duration]);
  const tissue=useMemo(()=>exposure(sim.times,sim.conc[focus],Math.min(lastDose,duration)),[sim,focus,lastDose,duration]);
  const {derived}=sim,cl=derived.hepaticClearance+derived.renalClearance;
  const setD=(patch:Partial<Drug>)=>{setDrug(d=>({...d,...patch}));};
  const setX=(patch:Partial<Dosing>)=>setDosing(d=>({...d,...patch}));
- const choosePreset=(i:number)=>{setPreset(i);setDrug(PRESETS[i].drug);setDosing(d=>({...PRESETS[i].dosing,weight:d.weight}));setTime(0);setPlaying(false);};
+ const choosePreset=(i:number)=>{setPreset(i);setDrug(PRESETS[i].drug);setDosing(d=>({...PRESETS[i].dosing,weight:d.weight}));setTime(0);setPlaying(false);setAxis(PRESETS[i].dosing.doses>1?'linear':'log');};
  const onSelect=(partId:string)=>{const i=atlas?.parts.findIndex(p=>p.id===partId)??-1;const id=i>=0?partCompartments[i]:null;if(id)setFocus(id);};
  const toggle=(id:CompartmentId)=>setShown(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);
  const series=useMemo(()=>[{label:'Plasma',color:PLASMA_COLOR,values:sim.plasma},{label:COMPARTMENT[focus].name,color:TISSUE_COLOR,values:sim.conc[focus]}],[sim,focus]);
@@ -113,12 +117,12 @@ export default function PbpkPage(){
    <div className="pk-legend" aria-label={`Colour scale: concentration, log scale from ${fmt(reference/10**decades)} to ${fmt(reference)} mg/L`}>
     <div className="pk-segment small" role="radiogroup" aria-label="Colour scale reference">{(Object.keys(SCALES) as (keyof typeof SCALES)[]).map(k=><button key={k} role="radio" aria-checked={scale===k} className={scale===k?'on':''} onClick={()=>setScale(k)}>{SCALES[k].label}</button>)}</div>
     <div className="pk-ramp" style={{background:`linear-gradient(90deg,${RAMP.join(',')})`}}/>
-    <div className="pk-ramp-ticks">{Array.from({length:decades+1},(_,i)=><span key={i}>{fmt(reference/10**(decades-i))}</span>)}</div>
-    <small>Concentration, mg/L (log) · {scale==='now'?'relative to the highest compartment now':'relative to the peak of the whole run'}</small>
+    <div className="pk-ramp-ticks">{Array.from({length:decades+1},(_,i)=><span key={i}>{scale==='own'?`${fmt(100/10**(decades-i))}%`:fmt(reference/10**(decades-i))}</span>)}</div>
+    <small>{scale==='own'?'Each compartment as % of its own peak (log) · shows when it fills and empties':scale==='now'?'Concentration, mg/L (log) · relative to the highest compartment now':'Concentration, mg/L (log) · relative to the peak of the whole run'}</small>
    </div>
    <div className="pk-scroll pk-list" role="list">
     {COMPARTMENTS.map(c=>{const has=!!meshCounts[c.id],on=shown.includes(c.id);return <div role="listitem" key={c.id} className={`pk-row ${focus===c.id?'focus':''}`}>
-     <button className="pk-row-main" onClick={()=>setFocus(c.id)} aria-pressed={focus===c.id}><i style={{background:rampColor(level(now[c.id],reference,decades))}}/><span>{c.name}</span><b>{fmt(now[c.id])}</b></button>
+     <button className="pk-row-main" onClick={()=>setFocus(c.id)} aria-pressed={focus===c.id}><i style={{background:rampColor(level(now[c.id],ref(c.id),decades))}}/><span>{c.name}</span><b>{fmt(now[c.id])}</b></button>
      {has?<button className="pk-eye" onClick={()=>toggle(c.id)} aria-label={`${on?'Hide':'Show'} ${c.name.toLowerCase()}`} title={on?'Hide in 3D':'Show in 3D'}>{on?<Eye size={15}/>:<EyeOff size={15}/>}</button>:<span className="pk-eye muted" title="No geometry in BodyParts3D">–</span>}
     </div>;})}
    </div>
@@ -137,12 +141,13 @@ export default function PbpkPage(){
   <section className="pk-dock glass" aria-label="Timeline">
    <div className="pk-dock-head">
     <Button variant="ghost" className="pk-play" onClick={()=>{if(time>=duration)setTime(0);setPlaying(p=>!p);}} aria-label={playing?'Pause':'Play'}>{playing?<Pause size={18}/>:<Play size={18}/>}</Button>
-    <output className="pk-time">{fmt(Math.round(time*10)/10)}<span> h</span></output>
-    <div className="pk-slider"><Slider aria-label="Time" min={0} max={duration} step={duration/1000} value={[time]} onValueChange={v=>{setPlaying(false);setTime(Array.isArray(v)?v[0]:v);}}/></div>
+    <output className="pk-time">{time<1?<>{Math.round(time*60)}<span> min</span></>:<>{fmt(Math.round(time*10)/10)}<span> h</span></>}</output>
+    <div className="pk-slider"><Slider aria-label="Time" min={0} max={1} step={.001} value={[toAxis(time,duration,axis)]} onValueChange={v=>{setPlaying(false);setTime(fromAxis(Array.isArray(v)?v[0]:v,duration,axis));}}/></div>
     <div className="pk-series">{series.map(s=><span key={s.label}><i style={{background:s.color}}/>{s.label}</span>)}</div>
+    <div className="pk-segment small" role="radiogroup" aria-label="Time axis"><button role="radio" aria-checked={axis==='log'} className={axis==='log'?'on':''} onClick={()=>setAxis('log')} title="Stretch the first minutes, where organs differ most">Log time</button><button role="radio" aria-checked={axis==='linear'} className={axis==='linear'?'on':''} onClick={()=>setAxis('linear')}>Linear time</button></div>
     <div className="pk-segment small" role="radiogroup" aria-label="Y axis scale"><button role="radio" aria-checked={log} className={log?'on':''} onClick={()=>setLog(true)}>Log</button><button role="radio" aria-checked={!log} className={!log?'on':''} onClick={()=>setLog(false)}>Linear</button></div>
    </div>
-   <Chart times={sim.times} series={series} time={time} log={log} onSeek={t=>{setPlaying(false);setTime(t);}}/>
+   <Chart times={sim.times} series={series} time={time} log={log} axis={axis} onSeek={t=>{setPlaying(false);setTime(t);}}/>
    <div className="pk-metrics">
     <span>Plasma Cmax<b>{fmt(plasma.cmax)} mg/L</b></span><span>Tmax<b>{fmt(plasma.tmax)} h</b></span><span>AUC<b>{fmt(sim.aucPlasma)} mg·h/L</b></span><span>t½<b>{plasma.halfLife?fmt(plasma.halfLife)+' h':'–'}</b></span>
     <span>Vss<b>{fmt(derived.vss/dosing.weight)} L/kg</b></span><span>CL<b>{fmt(cl)} L/h</b></span><span>{dosing.route==='oral'?'F oral':'Eh'}<b>{fmt(dosing.route==='oral'?derived.oralBioavailability:derived.hepaticExtraction)}</b></span>
@@ -158,7 +163,7 @@ export default function PbpkPage(){
    <p><strong>Structure.</strong> 14 tissue compartments plus arterial and venous blood, linked by blood flow. Each tissue is well stirred and perfusion-limited. Gut, spleen and pancreas drain into the liver through the portal vein. Clearance happens in the liver (unbound intrinsic clearance, equivalent to the well-stirred liver model) and the kidney. Oral doses are absorbed first-order from the gut lumen into gut tissue.</p>
    <p><strong>Physiology.</strong> Organ volumes and blood flows follow the ICRP 89 reference male (73 kg, cardiac output 6.5 L/min). Volumes scale with body weight; flows and GFR scale with weight<sup>0.75</sup>.</p>
    <p><strong>Distribution.</strong> Tissue:plasma partition coefficients (Kp) are predicted with the Poulin–Theil method from log P, pKa and fu, using tissue lipid and water fractions. Pancreas, testes and rest-of-body borrow gut, kidney and muscle composition. A Kp scalar adjusts all tissues at once.</p>
-   <p><strong>Colour.</strong> Each mesh takes the concentration of its compartment. The scale is logarithmic, spanning two decades below the highest compartment at the current time, or three decades below the peak of the whole run. BodyParts3D represents the liver and lungs mainly by their vessel, biliary and bronchial trees, and it has no adipose tissue.</p>
+   <p><strong>Colour.</strong> Each mesh takes the concentration of its compartment. The scale is logarithmic: three decades below the peak of the whole run, two decades below each compartment's own peak, or two decades below the highest compartment at the current time. Well-perfused organs equilibrate with blood within minutes and then fall together, so the log timeline stretches the first minutes; muscle, fat and bone fill more slowly. BodyParts3D represents the liver and lungs mainly by their vessel, biliary and bronchial trees, and it has no adipose tissue.</p>
    <p><strong>Compounds.</strong> The presets use approximate published properties. Hepatic CLint was back-calculated from typical clearance, and the Kp scalar brings Vss near reported values.</p>
    <p><strong>Limits.</strong> This is an educational model. It has no transporters, permeability limits, gut-wall metabolism, saturable kinetics, enterohepatic cycling or population variability, and it has not been validated against clinical data. Do not use it for dosing decisions.</p>
    <h3>Sources</h3>

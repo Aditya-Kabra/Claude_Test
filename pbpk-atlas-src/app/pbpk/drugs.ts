@@ -9,7 +9,7 @@ export interface Preset {drug:Drug;dosing:Omit<Dosing,'weight'>;summary:string}
 export const PRESETS:Preset[]=[
  {summary:'Lipophilic weak base with high hepatic (CYP3A) clearance.',
   drug:{kpScalar:.25,name:'Midazolam',logP:3.9,type:'base',pKa:6,fu:.03,bp:.66,clint:1350,clr:null,ka:3,fa:1},
-  dosing:{route:'iv-bolus',dose:2,infusionHours:.5,interval:24,doses:1,duration:12}},
+  dosing:{route:'oral',dose:7.5,infusionHours:.5,interval:24,doses:1,duration:12}},
  {summary:'Neutral, weakly bound compound with low clearance and near-complete absorption.',
   drug:{kpScalar:1,name:'Caffeine',logP:-.07,type:'neutral',pKa:0,fu:.7,bp:1,clint:10.7,clr:.1,ka:3,fa:1},
   dosing:{route:'oral',dose:100,infusionHours:.5,interval:24,doses:1,duration:36}},

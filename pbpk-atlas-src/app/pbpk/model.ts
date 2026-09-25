@@ -4,6 +4,7 @@
 // Hepatic clearance acts on unbound drug leaving the liver (CLint,u · fu · C_liver / Kp_liver), which
 // reproduces the well-stirred liver model at steady state. Renal clearance acts on plasma leaving
 // the kidney. Oral doses enter a gut lumen and are absorbed first-order into gut tissue.
+import {warp} from './timeline.ts';
 import {COMPARTMENTS,COMPARTMENT,PLASMA,PORTAL,SYSTEMIC,TISSUES,physiology,type CompartmentId,type Composition,type Physiology} from './physiology.ts';
 
 export type CompoundType='neutral'|'acid'|'base';
@@ -85,7 +86,7 @@ export interface Simulation {
 
 interface DoseEvent {time:number;amount:number;route:Route}
 
-export function simulate(drug:Drug,dosing:Dosing,points=600):Simulation{
+export function simulate(drug:Drug,dosing:Dosing,points=1200):Simulation{
  const phys=physiology(dosing.weight),derived=derive(drug,phys),{kp}=derived;
  const V=STATE.map(id=>phys.volume[id]),Q=STATE.map(id=>phys.flow[id]),Kb=STATE.map(id=>kp[id]/drug.bp);
  const co=phys.cardiacOutput,clr=derived.renalClearance,ka=drug.ka,fa=drug.fa;
@@ -115,13 +116,14 @@ export function simulate(drug:Drug,dosing:Dosing,points=600):Simulation{
  let fastest=co/V[iv]+co/V[ia]+co/(V[il]*Kb[il])+ka;
  for(const i of perfused)fastest=Math.max(fastest,Q[i]/(V[i]*Kb[i]));
  fastest=Math.max(fastest,phys.hepaticFlow/(V[ili]*Kb[ili])+drug.clint*drug.fu/(kp.liver*V[ili]),clr/(kp.kidney*V[ik])+Q[ik]/(V[ik]*Kb[ik]));
- const duration=Math.max(dosing.duration,.1),outputStep=duration/(points-1),h=Math.min(outputStep,.9/fastest);
+ // Output times are log-warped so the first minutes of distribution are resolved as well as the tail.
+ const duration=Math.max(dosing.duration,.1),outTimes=Array.from({length:points},(_,n)=>n===points-1?duration:warp(n/(points-1),duration)),h=Math.min(duration/points,.9/fastest);
  const y=new Float64Array(SIZE),k1=new Float64Array(SIZE),k2=new Float64Array(SIZE),k3=new Float64Array(SIZE),k4=new Float64Array(SIZE),tmp=new Float64Array(SIZE);
  const times=new Float64Array(points),conc=Object.fromEntries(STATE.map(id=>[id,new Float64Array(points)])) as Record<CompartmentId,Float64Array>,plasma=new Float64Array(points);
  const breaks=[...new Set([...doses.map(d=>d.time),...infusions.map(f=>f.end)])].filter(t=>t>0&&t<duration).sort((a,b)=>a-b);
  let t=0,nextDose=0,nextOutput=0,peak=0;const dosed=doses.reduce((s,d)=>s+d.amount,0);
  const applyDoses=()=>{while(nextDose<doses.length&&doses[nextDose].time<=t+1e-9){const d=doses[nextDose++];if(d.route==='iv-bolus')y[iv]+=d.amount;else if(d.route==='oral')y[LUMEN]+=d.amount;}};
- const record=()=>{while(nextOutput<points&&nextOutput*outputStep<=t+1e-9){const n=nextOutput++;times[n]=n*outputStep;for(let i=0;i<STATE.length;i++){const v=Math.max(0,y[i]/V[i]);conc[STATE[i]][n]=v;if(v>peak)peak=v;}plasma[n]=Math.max(0,y[iv]/V[iv]/drug.bp);}};
+ const record=()=>{while(nextOutput<points&&outTimes[nextOutput]<=t+1e-9){const n=nextOutput++;times[n]=outTimes[n];for(let i=0;i<STATE.length;i++){const v=Math.max(0,y[i]/V[i]);conc[STATE[i]][n]=v;if(v>peak)peak=v;}plasma[n]=Math.max(0,y[iv]/V[iv]/drug.bp);}};
  const step=(dt:number)=>{
   // Infusions switch only at integration breaks, so the rate is constant across a step.
   const rate=infusionRate(t+dt/2);
@@ -133,7 +135,7 @@ export function simulate(drug:Drug,dosing:Dosing,points=600):Simulation{
  };
  applyDoses();record();
  while(t<duration-1e-9){
-  const nextBreak=breaks.find(b=>b>t+1e-9)??duration,nextOut=nextOutput*outputStep,target=Math.min(nextBreak,nextOut,duration);
+  const nextBreak=breaks.find(b=>b>t+1e-9)??duration,nextOut=outTimes[Math.min(nextOutput,points-1)],target=Math.min(nextBreak,nextOut,duration);
   const dt=Math.min(h,target-t);step(dt);
   if(Math.abs(t-target)<1e-9)t=target;
   applyDoses();record();

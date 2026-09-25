@@ -17,7 +17,7 @@
 .pk-segment{display:flex;background:#edf0f2;border-radius:5px;padding:2px;gap:2px}
 .pk-segment button{flex:1;border:0;background:transparent;border-radius:4px;font-size:12px;color:var(--pk-muted);padding:6px 4px;cursor:pointer}
 .pk-segment button.on{background:#fff;color:var(--pk-ink);box-shadow:0 1px 3px #2433441a}
-.pk-segment.small button{padding:3px 8px;font-size:11px}
+.pk-segment.small button{padding:3px 8px;font-size:11px;white-space:nowrap}
 .pk-segment+.pk-grid{margin-top:10px}
 .pk-reset{margin-top:14px;font-size:12px!important;color:var(--pk-muted)!important;gap:6px}
 .pk-legend{padding:0 16px 10px;border-bottom:1px solid var(--pk-line)}
