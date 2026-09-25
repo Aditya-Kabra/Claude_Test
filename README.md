@@ -1,4 +1,4 @@
-> This repository holds five independent pages:
+> This repository holds six independent pages:
 >
 > - **[Smart Fabrics & E-Textiles](https://aditya-kabra.github.io/Claude_Test/)** — this page
 > - **[Roleplay & Conversational Simulation](https://aditya-kabra.github.io/Claude_Test/roleplay/)** — see [`roleplay/`](roleplay/)
@@ -8,6 +8,9 @@
 > - **[Daily Start](https://aditya-kabra.github.io/Claude_Test/daily/)** — short inspiration,
 >   gratitude and reminder cards to start the day. See [`daily/`](daily/)
 > - **[Pune AI Events](https://aditya-kabra.github.io/Claude_Test/pune-ai-events/)** — see [`pune-ai-events/`](pune-ai-events/)
+> - **[Human Atlas](https://aditya-kabra.github.io/Claude_Test/human-atlas/)** — prebuilt 3D anatomy explorer from
+>   [ashemag/human-atlas](https://github.com/ashemag/human-atlas) (MIT; BodyParts3D data CC BY 4.0).
+>   See [`human-atlas/`](human-atlas/)
 
 # Global Smart Fabrics & E-Textiles Ecosystem Map
 
