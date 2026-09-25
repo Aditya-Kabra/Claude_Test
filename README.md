@@ -1,4 +1,4 @@
-> This repository holds six independent pages:
+> This repository holds seven independent pages:
 >
 > - **[Smart Fabrics & E-Textiles](https://aditya-kabra.github.io/Claude_Test/)** — this page
 > - **[Roleplay & Conversational Simulation](https://aditya-kabra.github.io/Claude_Test/roleplay/)** — see [`roleplay/`](roleplay/)
@@ -11,6 +11,9 @@
 > - **[Human Atlas](https://aditya-kabra.github.io/Claude_Test/human-atlas/)** — prebuilt 3D anatomy explorer from
 >   [ashemag/human-atlas](https://github.com/ashemag/human-atlas) (MIT; BodyParts3D data CC BY 4.0).
 >   See [`human-atlas/`](human-atlas/)
+> - **[PBPK Atlas](https://aditya-kabra.github.io/Claude_Test/pbpk-atlas/)** — a whole-body PBPK model
+>   drawn on the Human Atlas anatomy, with organs coloured by drug concentration over time. Source and
+>   tests are in [`pbpk-atlas-src/`](pbpk-atlas-src/)
 
 # Global Smart Fabrics & E-Textiles Ecosystem Map
 
