@@ -13,18 +13,19 @@ import {compartmentFor} from './mapping';
 import Chart,{fmt} from './chart';
 
 const ATLAS_URL=import.meta.env.VITE_ATLAS_URL??'../human-atlas/models/atlas.json';
-// Sequential blue ramp (light = low, dark = high) for concentration on a log scale. "now" scales to the
+// Multi-hue sequential ramp (pale yellow = low, deep purple = high) for concentration on a log scale.
+// Concentrations below the bottom of the scale are drawn grey, so "no drug yet" reads differently from "a little". "now" scales to the
 // highest tissue at the current time, which shows where drug is relative to elsewhere; "run" scales to
 // the peak of the whole simulation, which shows it rising and washing out.
-const SCALES={now:{label:'This moment',decades:2},run:{label:'Whole run',decades:3}} as const;
-const RAMP=['#cde2fb','#9ec5f4','#6da7ec','#3987e5','#256abf','#184f95','#0d366b'];
+const SCALES={run:{label:'Whole run',decades:3},now:{label:'This moment',decades:2}} as const;
+const RAMP=['#fff1a8','#fdd35c','#fca044','#f2683a','#d63a47','#a11d5d','#5a1060'];
 const GHOST='#dfe3e6',PLASMA_COLOR='#2a78d6',TISSUE_COLOR='#eb6834';
 const DEFAULT_SHOWN:CompartmentId[]=['brain','heart','lung','liver','gut','spleen','pancreas','kidney','testes','arterial','venous'];
 const ROUTES:{id:Route;label:string}[]=[{id:'iv-bolus',label:'IV bolus'},{id:'iv-infusion',label:'Infusion'},{id:'oral',label:'Oral'}];
 const scene:SceneState={explode:0,visible:DEFAULT_VISIBLE,selected:[],isolate:false,view:'three-quarter',rotate:false,reset:0};
 
-const level=(c:number,peak:number,decades:number)=>c<=0||peak<=0?0:Math.min(1,Math.max(0,1+Math.log10(c/peak)/decades));
-function rampColor(t:number){const h=t*(RAMP.length-1),i=Math.min(Math.floor(h),RAMP.length-2),f=h-i;const a=parseInt(RAMP[i].slice(1),16),b=parseInt(RAMP[i+1].slice(1),16);const mix=(s:number)=>Math.round(((a>>s)&255)*(1-f)+((b>>s)&255)*f);return `rgb(${mix(16)},${mix(8)},${mix(0)})`;}
+const level=(c:number,peak:number,decades:number)=>{if(c<=0||peak<=0)return -1;const v=1+Math.log10(c/peak)/decades;return v<0?-1:Math.min(1,v);};
+function rampColor(t:number){if(t<0)return GHOST;const h=t*(RAMP.length-1),i=Math.min(Math.floor(h),RAMP.length-2),f=h-i;const a=parseInt(RAMP[i].slice(1),16),b=parseInt(RAMP[i+1].slice(1),16);const mix=(s:number)=>Math.round(((a>>s)&255)*(1-f)+((b>>s)&255)*f);return `rgb(${mix(16)},${mix(8)},${mix(0)})`;}
 const sample=(values:Float64Array,times:Float64Array,t:number)=>{const n=times.length-1,p=Math.min(n,Math.max(0,t/(times[n]||1)*n)),i=Math.min(Math.floor(p),n-1),f=p-i;return n<1?values[0]:values[i]*(1-f)+values[i+1]*f;};
 
 function Field({label,value,onChange,step,min,max,unit,hint}:{label:string;value:number;onChange:(v:number)=>void;step?:number;min?:number;max?:number;unit?:string;hint?:string}){
@@ -35,7 +36,7 @@ function Field({label,value,onChange,step,min,max,unit,hint}:{label:string;value
 export default function PbpkPage(){
  const [atlas,setAtlas]=useState<Atlas|null>(null),[progress,setProgress]=useState(0),[error,setError]=useState('');
  const [preset,setPreset]=useState(0),[drug,setDrug]=useState<Drug>(PRESETS[0].drug),[dosing,setDosing]=useState<Dosing>({...PRESETS[0].dosing,weight:73});
- const [time,setTime]=useState(0),[playing,setPlaying]=useState(false),[focus,setFocus]=useState<CompartmentId>('liver'),[shown,setShown]=useState<CompartmentId[]>(DEFAULT_SHOWN),[isolate,setIsolate]=useState(false),[log,setLog]=useState(true),[scale,setScale]=useState<keyof typeof SCALES>('now');
+ const [time,setTime]=useState(0),[playing,setPlaying]=useState(false),[focus,setFocus]=useState<CompartmentId>('liver'),[shown,setShown]=useState<CompartmentId[]>(DEFAULT_SHOWN),[isolate,setIsolate]=useState(false),[log,setLog]=useState(true),[scale,setScale]=useState<keyof typeof SCALES>('run');
  const [panel,setPanel]=useState<'drug'|'organs'|null>(null),[about,setAbout]=useState(false),[view,setView]=useState(scene);
  useEffect(()=>{const abort=new AbortController();fetch(ATLAS_URL,{signal:abort.signal}).then(r=>{if(!r.ok)throw new Error('The anatomy catalogue could not be loaded.');return r.json();}).then(d=>setAtlas(d as Atlas)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>abort.abort();},[]);
  const inputs=useDeferredValue(useMemo(()=>({drug,dosing}),[drug,dosing]));
