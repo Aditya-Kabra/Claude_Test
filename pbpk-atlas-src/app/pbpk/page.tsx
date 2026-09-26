@@ -38,7 +38,7 @@ function Field({label,value,onChange,step,min,max,unit,hint}:{label:string;value
 export default function PbpkPage(){
  const [atlas,setAtlas]=useState<Atlas|null>(null),[progress,setProgress]=useState(0),[error,setError]=useState('');
  const [preset,setPreset]=useState(0),[drug,setDrug]=useState<Drug>(PRESETS[0].drug),[dosing,setDosing]=useState<Dosing>({...PRESETS[0].dosing,weight:73});
- const [time,setTime]=useState(0),[playing,setPlaying]=useState(false),[focus,setFocus]=useState<CompartmentId>('liver'),[shown,setShown]=useState<CompartmentId[]>(DEFAULT_SHOWN),[isolate,setIsolate]=useState(false),[log,setLog]=useState(true),[scale,setScale]=useState<keyof typeof SCALES>('run'),[axis,setAxis]=useState<TimeAxis>('log');
+ const [time,setTime]=useState(0),[playing,setPlaying]=useState(false),[focus,setFocus]=useState<CompartmentId>('liver'),[shown,setShown]=useState<CompartmentId[]>(DEFAULT_SHOWN),[picked,setPicked]=useState<string|null>(null),[isolation,setIsolation]=useState<'none'|'compartment'|'structure'>('none'),[frame,setFrame]=useState<SceneState['frame']>(),[log,setLog]=useState(true),[scale,setScale]=useState<keyof typeof SCALES>('run'),[axis,setAxis]=useState<TimeAxis>('log');
  const [panel,setPanel]=useState<'drug'|'organs'|null>(null),[about,setAbout]=useState(false),[view,setView]=useState(scene);
  useEffect(()=>{const abort=new AbortController();fetch(ATLAS_URL,{signal:abort.signal}).then(r=>{if(!r.ok)throw new Error('The anatomy catalogue could not be loaded.');return r.json();}).then(d=>setAtlas(d as Atlas)).catch(e=>{if(e.name!=='AbortError')setError(e.message);});return()=>abort.abort();},[]);
  const inputs=useDeferredValue(useMemo(()=>({drug,dosing}),[drug,dosing]));
@@ -57,9 +57,9 @@ export default function PbpkPage(){
  const version=useRef(0);
  const overlay=useMemo<Overlay|undefined>(()=>{
   if(!atlas)return undefined;const n=atlas.parts.length,mask=new Uint8Array(n),heat=new Float32Array(n).fill(-1),visible=new Set(shown);
-  for(let i=0;i<n;i++){const id=partCompartments[i];if(!id)continue;mask[i]=visible.has(id)&&(!isolate||id===focus)?1:0;heat[i]=level(now[id],ref(id),decades);}
+  for(let i=0;i<n;i++){const id=partCompartments[i];if(!id)continue;mask[i]=visible.has(id)?1:0;heat[i]=level(now[id],ref(id),decades);}
   return {mask,heat,ramp:RAMP,ghost:GHOST,version:++version.current};
- },[atlas,partCompartments,shown,isolate,focus,now,reference,decades,scale,peaks]);
+ },[atlas,partCompartments,shown,now,reference,decades,scale,peaks]);
  const lastDose=(Math.max(1,Math.round(dosing.doses))-1)*dosing.interval;
  const plasma=useMemo(()=>exposure(sim.times,sim.plasma,Math.min(lastDose,duration)),[sim,lastDose,duration]);
  const tissue=useMemo(()=>exposure(sim.times,sim.conc[focus],Math.min(lastDose,duration)),[sim,focus,lastDose,duration]);
@@ -67,12 +67,19 @@ export default function PbpkPage(){
  const setD=(patch:Partial<Drug>)=>{setDrug(d=>({...d,...patch}));};
  const setX=(patch:Partial<Dosing>)=>setDosing(d=>({...d,...patch}));
  const choosePreset=(i:number)=>{setPreset(i);setDrug(PRESETS[i].drug);setDosing(d=>({...PRESETS[i].dosing,weight:d.weight}));setTime(0);setPlaying(false);setAxis(PRESETS[i].dosing.doses>1?'linear':'log');};
- const onSelect=(partId:string)=>{const i=atlas?.parts.findIndex(p=>p.id===partId)??-1;const id=i>=0?partCompartments[i]:null;if(id)setFocus(id);};
+ const onSelect=(partId:string)=>{const i=atlas?.parts.findIndex(p=>p.id===partId)??-1;const id=i>=0?partCompartments[i]:null;if(!id)return;setPicked(partId);if(id!==focus){setFocus(id);if(isolation==='compartment')setIsolation('none');}};
+ const chooseCompartment=(id:CompartmentId)=>{setFocus(id);setPicked(null);setIsolation(v=>v==='structure'||!meshCounts[id]?'none':v);};
+ const pickedPart=useMemo(()=>{const i=atlas?.parts.findIndex(p=>p.id===picked)??-1;return i>=0&&partCompartments[i]===focus?atlas!.parts[i]:null;},[atlas,picked,focus,partCompartments]);
+ // Keep isolated anatomy clear of the panels: measure them when isolation starts and on resize.
+ const measureFrame=()=>{const vis=(q:string)=>{const el=document.querySelector(q) as HTMLElement|null;return el&&el.offsetParent?el.getBoundingClientRect():null;};const w=innerWidth,h=innerHeight,l=vis('.pk-left'),r=vis('.pk-right'),d=vis('.pk-dock'),id=vis('.identity'),v=vis('.pk-views');setFrame({left:(l?l.right:0)+16,right:(r?w-r.left:v&&v.left>w/2?w-v.left:0)+16,top:(id?id.bottom:80)+16,bottom:(d?h-d.top:0)+16});};
+ useEffect(()=>{if(isolation==='none')return;measureFrame();addEventListener('resize',measureFrame);const esc=(e:KeyboardEvent)=>{if(e.key==='Escape')setIsolation('none');};addEventListener('keydown',esc);return()=>{removeEventListener('resize',measureFrame);removeEventListener('keydown',esc);};},[isolation,panel]);
+ const isolatedIds=useMemo(()=>!atlas||isolation==='none'?[]:isolation==='structure'&&picked?[picked]:atlas.parts.filter((_,i)=>partCompartments[i]===focus).map(p=>p.id),[atlas,isolation,picked,focus,partCompartments]);
+ const sceneState=useMemo<SceneState>(()=>({...view,selected:isolatedIds,isolate:isolatedIds.length>0,frame}),[view,isolatedIds,frame]);
  const toggle=(id:CompartmentId)=>setShown(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);
  const series=useMemo(()=>[{label:'Plasma',color:PLASMA_COLOR,values:sim.plasma},{label:COMPARTMENT[focus].name,color:TISSUE_COLOR,values:sim.conc[focus]}],[sim,focus]);
  const f=COMPARTMENT[focus];
  return <main className="studio pk-studio">
-  {atlas&&<AnatomyScene atlas={atlas} atlasUrl={ATLAS_URL} state={view} overlay={overlay} onSelect={onSelect} onProgress={n=>{setProgress(n);if(n===100)setError('');}} onError={setError}/>}
+  {atlas&&<AnatomyScene atlas={atlas} atlasUrl={ATLAS_URL} state={sceneState} overlay={overlay} onSelect={onSelect} onProgress={n=>{setProgress(n);if(n===100)setError('');}} onError={setError}/>}
   <div className="vignette"/>
   <header className="identity"><div className="eyebrow"><span className="status-dot"/> WHOLE-BODY PBPK</div><h1>PBPK Atlas<Badge variant="outline" className="edition">BETA</Badge></h1><div className="identity-meta">{drug.name} <span>·</span> {ROUTES.find(r=>r.id===dosing.route)?.label} {fmt(dosing.dose)} mg{dosing.doses>1?` ×${Math.round(dosing.doses)}`:''}</div></header>
   <nav className="top-actions pk-top" aria-label="Panels">
@@ -122,7 +129,7 @@ export default function PbpkPage(){
    </div>
    <div className="pk-scroll pk-list" role="list">
     {COMPARTMENTS.map(c=>{const has=!!meshCounts[c.id],on=shown.includes(c.id);return <div role="listitem" key={c.id} className={`pk-row ${focus===c.id?'focus':''}`}>
-     <button className="pk-row-main" onClick={()=>setFocus(c.id)} aria-pressed={focus===c.id}><i style={{background:rampColor(level(now[c.id],ref(c.id),decades))}}/><span>{c.name}</span><b>{fmt(now[c.id])}</b></button>
+     <button className="pk-row-main" onClick={()=>chooseCompartment(c.id)} aria-pressed={focus===c.id}><i style={{background:rampColor(level(now[c.id],ref(c.id),decades))}}/><span>{c.name}</span><b>{fmt(now[c.id])}</b></button>
      {has?<button className="pk-eye" onClick={()=>toggle(c.id)} aria-label={`${on?'Hide':'Show'} ${c.name.toLowerCase()}`} title={on?'Hide in 3D':'Show in 3D'}>{on?<Eye size={15}/>:<EyeOff size={15}/>}</button>:<span className="pk-eye muted" title="No geometry in BodyParts3D">–</span>}
     </div>;})}
    </div>
@@ -134,7 +141,12 @@ export default function PbpkPage(){
      <span>Volume<b>{fmt(sim.phys.volume[focus])} L</b></span><span>Flow<b>{focus==='liver'?fmt(sim.phys.hepaticFlow):fmt(sim.phys.flow[focus])} L/h</b></span><span>AUC<b>{fmt(tissue.auc)}</b></span>
     </div>
     {f.note&&<p className="pk-note">{f.note}</p>}
-    {!!meshCounts[focus]&&<Button variant="ghost" className={`pk-isolate ${isolate?'active':''}`} onClick={()=>setIsolate(v=>!v)}><Focus size={15}/>{isolate?'Show all compartments':'Isolate in 3D'}</Button>}
+    {pickedPart&&<div className="pk-picked"><span>Selected structure</span><b>{pickedPart.name}</b></div>}
+    {isolation!=='none'?<Button variant="ghost" className="pk-isolate active" onClick={()=>setIsolation('none')}><X size={15}/>Show whole body</Button>:
+     <div className="pk-isolate-row">
+      {pickedPart&&<Button variant="ghost" className="pk-isolate" onClick={()=>setIsolation('structure')}><Focus size={15}/>Isolate structure</Button>}
+      {!!meshCounts[focus]&&<Button variant="ghost" className="pk-isolate" onClick={()=>setIsolation('compartment')}><Focus size={15}/>Isolate {f.name.toLowerCase()}</Button>}
+     </div>}
    </div>
   </section>
 
