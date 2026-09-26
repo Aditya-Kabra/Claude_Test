@@ -71,8 +71,16 @@ export default function PbpkPage(){
  const chooseCompartment=(id:CompartmentId)=>{setFocus(id);setPicked(null);setIsolation(v=>v==='structure'||!meshCounts[id]?'none':v);};
  const pickedPart=useMemo(()=>{const i=atlas?.parts.findIndex(p=>p.id===picked)??-1;return i>=0&&partCompartments[i]===focus?atlas!.parts[i]:null;},[atlas,picked,focus,partCompartments]);
  // Keep isolated anatomy clear of the panels: measure them when isolation starts and on resize.
- const measureFrame=()=>{const vis=(q:string)=>{const el=document.querySelector(q) as HTMLElement|null;return el&&el.offsetParent?el.getBoundingClientRect():null;};const w=innerWidth,h=innerHeight,l=vis('.pk-left'),r=vis('.pk-right'),d=vis('.pk-dock'),id=vis('.identity'),v=vis('.pk-views');setFrame({left:(l?l.right:0)+16,right:(r?w-r.left:v&&v.left>w/2?w-v.left:0)+16,top:(id?id.bottom:80)+16,bottom:(d?h-d.top:0)+16});};
- useEffect(()=>{if(isolation==='none')return;measureFrame();addEventListener('resize',measureFrame);const esc=(e:KeyboardEvent)=>{if(e.key==='Escape')setIsolation('none');};addEventListener('keydown',esc);return()=>{removeEventListener('resize',measureFrame);removeEventListener('keydown',esc);};},[isolation,panel]);
+ const measureFrame=()=>{
+  const w=innerWidth,h=innerHeight,rect=(q:string)=>{const el=document.querySelector(q) as HTMLElement|null;return el&&el.offsetParent?el.getBoundingClientRect():null;};
+  const overlays=['.identity','.pk-scalebar','.pk-views','.pk-dock'].map(rect).filter((r):r is DOMRect=>!!r&&r.width<w*.9||!!r&&r.height<h*.5);
+  const l=rect('.pk-left'),r=rect('.pk-right');
+  // Bars in the upper part of the screen push the frame down; bars in the lower part push it up.
+  const top=Math.max(80,...overlays.filter(o=>o.top<h*.35).map(o=>o.bottom)),bottom=Math.min(h,...overlays.filter(o=>o.top>=h*.35).map(o=>o.top));
+  setFrame({left:(l?l.right:0)+16,right:(r?w-r.left:0)+16,top:top+12,bottom:h-bottom+12});
+ };
+ useEffect(()=>{if(!atlas)return;const id=requestAnimationFrame(measureFrame);addEventListener('resize',measureFrame);return()=>{cancelAnimationFrame(id);removeEventListener('resize',measureFrame);};},[atlas,panel]);
+ useEffect(()=>{if(isolation==='none')return;setView(s=>({...s,explode:0}));const esc=(e:KeyboardEvent)=>{if(e.key==='Escape')setIsolation('none');};addEventListener('keydown',esc);return()=>removeEventListener('keydown',esc);},[isolation]);
  const isolatedIds=useMemo(()=>!atlas||isolation==='none'?[]:isolation==='structure'&&picked?[picked]:atlas.parts.filter((_,i)=>partCompartments[i]===focus).map(p=>p.id),[atlas,isolation,picked,focus,partCompartments]);
  const sceneState=useMemo<SceneState>(()=>({...view,selected:isolatedIds,isolate:isolatedIds.length>0,frame}),[view,isolatedIds,frame]);
  const toggle=(id:CompartmentId)=>setShown(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);
@@ -121,12 +129,6 @@ export default function PbpkPage(){
 
   <section className={`pk-panel pk-right glass ${panel==='organs'?'open':''}`} aria-label="Compartments">
    <div className="panel-heading"><span>Compartments</span><Button variant="ghost" className="pk-close icon-button" onClick={()=>setPanel(null)} aria-label="Close"><X size={18}/></Button></div>
-   <div className="pk-legend" aria-label={`Colour scale: concentration, log scale from ${fmt(reference/10**decades)} to ${fmt(reference)} mg/L`}>
-    <div className="pk-segment small" role="radiogroup" aria-label="Colour scale reference">{(Object.keys(SCALES) as (keyof typeof SCALES)[]).map(k=><button key={k} role="radio" aria-checked={scale===k} className={scale===k?'on':''} onClick={()=>setScale(k)}>{SCALES[k].label}</button>)}</div>
-    <div className="pk-ramp" style={{background:`linear-gradient(90deg,${RAMP.join(',')})`}}/>
-    <div className="pk-ramp-ticks">{Array.from({length:decades+1},(_,i)=><span key={i}>{scale==='own'?`${fmt(100/10**(decades-i))}%`:fmt(reference/10**(decades-i))}</span>)}</div>
-    <small>{scale==='own'?'Each compartment as % of its own peak (log) · shows when it fills and empties':scale==='now'?'Concentration, mg/L (log) · relative to the highest compartment now':'Concentration, mg/L (log) · relative to the peak of the whole run'}</small>
-   </div>
    <div className="pk-scroll pk-list" role="list">
     {COMPARTMENTS.map(c=>{const has=!!meshCounts[c.id],on=shown.includes(c.id);return <div role="listitem" key={c.id} className={`pk-row ${focus===c.id?'focus':''}`}>
      <button className="pk-row-main" onClick={()=>chooseCompartment(c.id)} aria-pressed={focus===c.id}><i style={{background:rampColor(level(now[c.id],ref(c.id),decades))}}/><span>{c.name}</span><b>{fmt(now[c.id])}</b></button>
@@ -157,7 +159,7 @@ export default function PbpkPage(){
     <div className="pk-slider"><Slider aria-label="Time" min={0} max={1} step={.001} value={[toAxis(time,duration,axis)]} onValueChange={v=>{setPlaying(false);setTime(fromAxis(Array.isArray(v)?v[0]:v,duration,axis));}}/></div>
     <div className="pk-series">{series.map(s=><span key={s.label}><i style={{background:s.color}}/>{s.label}</span>)}</div>
     <div className="pk-segment small" role="radiogroup" aria-label="Time axis"><button role="radio" aria-checked={axis==='log'} className={axis==='log'?'on':''} onClick={()=>setAxis('log')} title="Stretch the first minutes, where organs differ most">Log time</button><button role="radio" aria-checked={axis==='linear'} className={axis==='linear'?'on':''} onClick={()=>setAxis('linear')}>Linear time</button></div>
-    <div className="pk-segment small" role="radiogroup" aria-label="Y axis scale"><button role="radio" aria-checked={log} className={log?'on':''} onClick={()=>setLog(true)}>Log</button><button role="radio" aria-checked={!log} className={!log?'on':''} onClick={()=>setLog(false)}>Linear</button></div>
+    <div className="pk-segment small pk-yscale" role="radiogroup" aria-label="Y axis scale"><button role="radio" aria-checked={log} className={log?'on':''} onClick={()=>setLog(true)}>Log</button><button role="radio" aria-checked={!log} className={!log?'on':''} onClick={()=>setLog(false)}>Linear</button></div>
    </div>
    <Chart times={sim.times} series={series} time={time} log={log} axis={axis} onSeek={t=>{setPlaying(false);setTime(t);}}/>
    <div className="pk-metrics">
@@ -166,7 +168,13 @@ export default function PbpkPage(){
    </div>
   </section>
 
-  <nav className="pk-views" aria-label="Camera">{(['three-quarter','front','side','back'] as const).map((v,i)=><button key={v} className={view.view===v?'on':''} onClick={()=>setView(s=>({...s,view:v,reset:s.reset+1}))} aria-label={`${v} view`}>{['¾','F','S','B'][i]}</button>)}</nav>
+  <div className="pk-scalebar glass" aria-label={`Colour key: log scale from ${fmt(reference/10**decades)} to ${fmt(reference)} mg/L`}>
+   <div className="pk-scalebar-head"><strong>Colour key</strong><div className="pk-segment small" role="radiogroup" aria-label="Colour scale reference">{(Object.keys(SCALES) as (keyof typeof SCALES)[]).map(k=><button key={k} role="radio" aria-checked={scale===k} className={scale===k?'on':''} onClick={()=>setScale(k)}>{SCALES[k].label}</button>)}</div></div>
+   <div className="pk-scalebar-body"><span className="pk-none" title="Below the bottom of the scale, or no drug yet"><i style={{background:GHOST}}/>none</span><div><div className="pk-ramp" style={{background:`linear-gradient(90deg,${RAMP.join(',')})`}}/>
+   <div className="pk-ramp-ticks">{Array.from({length:decades+1},(_,i)=><span key={i}>{scale==='own'?`${fmt(100/10**(decades-i))}%`:fmt(reference/10**(decades-i))}</span>)}</div></div></div>
+   <small>{scale==='own'?'% of each compartment’s own peak (log)':scale==='now'?'mg/L (log), relative to the highest compartment now':'mg/L (log), relative to the peak of the whole run'}</small>
+  </div>
+  <nav className="pk-views" aria-label="Camera">{(['three-quarter','front','side','back'] as const).map((v,i)=><button key={v} className={view.view===v?'on':''} onClick={()=>setView(s=>({...s,view:v,reset:s.reset+1}))} aria-label={`${v} view`}>{['¾','F','S','B'][i]}</button>)}<i/><label className="pk-explode"><span>Explode</span><Slider aria-label="Explode anatomy" min={0} max={100} step={1} value={[view.explode*100]} onValueChange={v=>{const x=(Array.isArray(v)?v[0]:v)/100;setIsolation('none');setView(s=>({...s,explode:x,view:x>.8?'front':s.view}));}}/><output>{Math.round(view.explode*100)}%</output></label></nav>
 
   {progress<100&&!error&&<div className="loading glass" role="status"><Activity size={18}/><div><strong>Preparing the anatomy</strong><span>{progress}% · Loading {atlas?.parts.length.toLocaleString()??'2,234'} pieces</span><div className="loading-track"><i style={{width:`${progress}%`}}/></div></div></div>}
   {error&&<div className="loading glass error" role="alert"><p>{error}</p><Button variant="ghost" onClick={()=>location.reload()}>Reload viewer</Button></div>}
